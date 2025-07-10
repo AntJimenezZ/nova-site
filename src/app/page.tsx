@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Code,
   Smartphone,
@@ -13,11 +15,55 @@ import {
   ArrowRight,
   Star,
   ChevronDown,
+  Menu,
+  X,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function HomePage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Cerrar menú móvil cuando se hace clic fuera o se presiona Escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isMenuOpen && !target.closest("header")) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("click", handleClickOutside);
+      document.addEventListener("keydown", handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, [isMenuOpen]);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const headerOffset = 80; // Altura del header + margen
+      const elementPosition = element.offsetTop - headerOffset;
+
+      window.scrollTo({
+        top: elementPosition,
+        behavior: "smooth",
+      });
+    }
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -30,62 +76,110 @@ export default function HomePage() {
             </span>
           </div>
           <nav className="hidden lg:flex items-center space-x-6">
-            <Link
-              href="#inicio"
-              className="text-sm font-medium hover:text-blue-900 transition-colors"
+            <button
+              onClick={() => scrollToSection("inicio")}
+              className="text-sm font-medium hover:text-blue-900 transition-colors cursor-pointer"
             >
               Inicio
-            </Link>
-            <Link
-              href="#sobre-nosotros"
-              className="text-sm font-medium hover:text-blue-900 transition-colors"
+            </button>
+            <button
+              onClick={() => scrollToSection("sobre-nosotros")}
+              className="text-sm font-medium hover:text-blue-900 transition-colors cursor-pointer"
             >
               Sobre Nosotros
-            </Link>
-            <Link
-              href="#servicios"
-              className="text-sm font-medium hover:text-blue-900 transition-colors"
+            </button>
+            <button
+              onClick={() => scrollToSection("servicios")}
+              className="text-sm font-medium hover:text-blue-900 transition-colors cursor-pointer"
             >
               Servicios
-            </Link>
-            <Link
-              href="#portafolio"
-              className="text-sm font-medium hover:text-blue-900 transition-colors"
+            </button>
+            <button
+              onClick={() => scrollToSection("portafolio")}
+              className="text-sm font-medium hover:text-blue-900 transition-colors cursor-pointer"
             >
               Portafolio
-            </Link>
-            <Link
-              href="#precios"
-              className="text-sm font-medium hover:text-blue-900 transition-colors"
+            </button>
+            <button
+              onClick={() => scrollToSection("precios")}
+              className="text-sm font-medium hover:text-blue-900 transition-colors cursor-pointer"
             >
               Precios
-            </Link>
-            <Link
-              href="#contacto"
-              className="text-sm font-medium hover:text-blue-900 transition-colors"
+            </button>
+            <button
+              onClick={() => scrollToSection("contacto")}
+              className="text-sm font-medium hover:text-blue-900 transition-colors cursor-pointer"
             >
               Contacto
-            </Link>
+            </button>
           </nav>
           <button className="hidden sm:block bg-blue-900 hover:bg-blue-800 text-white px-3 py-2 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors">
             Cotizar Proyecto
           </button>
           {/* Mobile menu button */}
-          <button className="lg:hidden p-2">
-            <svg
-              className="h-6 w-6 text-gray-900"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden p-2 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            {isMenuOpen ? (
+              <X className="h-6 w-6 text-gray-900" />
+            ) : (
+              <Menu className="h-6 w-6 text-gray-900" />
+            )}
           </button>
+        </div>
+
+        {/* Mobile menu */}
+        <div
+          className={`lg:hidden border-t bg-white/95 backdrop-blur transition-all duration-300 ease-in-out ${
+            isMenuOpen
+              ? "opacity-100 max-h-96 translate-y-0"
+              : "opacity-0 max-h-0 -translate-y-2 pointer-events-none"
+          }`}
+        >
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex flex-col space-y-4">
+              <button
+                onClick={() => scrollToSection("inicio")}
+                className="text-left text-sm font-medium hover:text-blue-900 transition-colors py-2"
+              >
+                Inicio
+              </button>
+              <button
+                onClick={() => scrollToSection("sobre-nosotros")}
+                className="text-left text-sm font-medium hover:text-blue-900 transition-colors py-2"
+              >
+                Sobre Nosotros
+              </button>
+              <button
+                onClick={() => scrollToSection("servicios")}
+                className="text-left text-sm font-medium hover:text-blue-900 transition-colors py-2"
+              >
+                Servicios
+              </button>
+              <button
+                onClick={() => scrollToSection("portafolio")}
+                className="text-left text-sm font-medium hover:text-blue-900 transition-colors py-2"
+              >
+                Portafolio
+              </button>
+              <button
+                onClick={() => scrollToSection("precios")}
+                className="text-left text-sm font-medium hover:text-blue-900 transition-colors py-2"
+              >
+                Precios
+              </button>
+              <button
+                onClick={() => scrollToSection("contacto")}
+                className="text-left text-sm font-medium hover:text-blue-900 transition-colors py-2"
+              >
+                Contacto
+              </button>
+              <button className="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors mt-4">
+                Cotizar Proyecto
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -116,7 +210,10 @@ export default function HomePage() {
                   Comenzar Proyecto
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </button>
-                <button className="border border-gray-300 hover:border-blue-900 text-gray-900 px-4 sm:px-6 py-3 rounded-md font-medium transition-colors text-sm sm:text-base">
+                <button
+                  onClick={() => scrollToSection("portafolio")}
+                  className="border border-gray-300 hover:border-blue-900 text-gray-900 px-4 sm:px-6 py-3 rounded-md font-medium transition-colors text-sm sm:text-base"
+                >
                   Ver Portafolio
                 </button>
               </div>
