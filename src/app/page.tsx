@@ -78,7 +78,7 @@ const team = [
     description: "Desarrollador full stack con experiencia en desarrollo de aplicaciones web y móviles",
     avatar: "/logos/FotoAnthony .jpg",
     // Información profesional para la parte trasera
-    experience: "Experiencia en Desarrollo de Softwarea",
+    experience: "Experiencia en Desarrollo de Software",
     technologies: ["React", "Vue.js", "React Native", "Firebase", "TypeScript"],
     education: "Ingeniería Computación",
     achievements: ["20+ aplicaciones móviles y web", "Especialista en Backend Development", "Líder técnico"],

@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, CheckCircle2, FileText, Mail, Phone } from "lucide-react"
+import { ArrowRight, CheckCircle2, Mail, Phone } from "lucide-react"
 
 export default function GuiaProyectoPage() {
   const pasos = [
