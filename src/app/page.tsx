@@ -21,7 +21,11 @@ import {
   Linkedin,
   Twitter,
   ArrowRight,
+  ArrowUp,
 } from "lucide-react"
+import Link from "next/link"
+import { projects } from "@/lib/projects"
+import Image from "next/image"
 
 const techIcons = [
   { name: "HTML", color: "text-orange-500" },
@@ -96,26 +100,7 @@ const team = [
   },
 ]
 
-const projects = [
-  {
-    title: "Market-Place",
-    description: "Tienda online completa con carrito de compras y pasarela de pagos",
-    image: "/placeholder.svg?height=300&width=500",
-    tech: ["React", "Node.js", "MongoDB"],
-  },
-  {
-    title: "Software de Asistencia",
-    description: "Panel de control empresarial para el registro de asistencia de los empleados y pagos",
-    image: "/placeholder.svg?height=300&width=500",
-    tech: ["Vue.js", "Python", "PostgreSQL"],
-  },
-  {
-    title: "Restaurant App",
-    description: "Aplicación de reservas y pedidos para restaurantes",
-    image: "/placeholder.svg?height=300&width=500",
-    tech: ["React Native", "Firebase", "Stripe"],
-  },
-]
+// projects imported from @/lib/projects
 
 const testimonials = [
   {
@@ -169,10 +154,25 @@ export default function LandingPage() {
   const [heroVisible, setHeroVisible] = useState(false)
   // Nuevo: Estado para animación de transición de proyectos
   const [projectTransition, setProjectTransition] = useState(false)
+  // Estado: controla qué miembro está abierto en móvil (detalles)
+  const [openMember, setOpenMember] = useState<number | null>(null)
+  // Dirección de transición del carrusel
+  const [transitionDir, setTransitionDir] = useState<'next' | 'prev'>('next')
+  // Autoplay pausa/activo
+  const [isPaused, setIsPaused] = useState(false)
+  // Visibilidad del carrusel en viewport
+  const portfolioAutoRef = useRef<HTMLDivElement | null>(null)
+  const [inView, setInView] = useState(true)
+  // Visibilidad de la pestaña
+  const [docVisible, setDocVisible] = useState(true)
+  // Soporte de swipe para carrusel en móvil
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
 
   useEffect(() => {
     setTimeout(() => setHeroVisible(true), 200)
   }, [])
+
+  // (Botón volver arriba ahora está en el footer)
 
   // Elimina el useEffect de avance automático
   // useEffect(() => {
@@ -182,11 +182,12 @@ export default function LandingPage() {
   //       setCurrentProject((prev) => (prev + 1) % projects.length)
   //       setProjectTransition(false)
   //     }, 400) // Duración de la animación
-  //   }, 3000)
+  //   }, 2000)
   //   return () => clearInterval(interval)
   // }, [])
 
   const nextProject = () => {
+    setTransitionDir('next')
     setProjectTransition(true)
     setTimeout(() => {
       setCurrentProject((prev) => (prev + 1) % projects.length)
@@ -195,12 +196,44 @@ export default function LandingPage() {
   }
 
   const prevProject = () => {
+    setTransitionDir('prev')
     setProjectTransition(true)
     setTimeout(() => {
       setCurrentProject((prev) => (prev - 1 + projects.length) % projects.length)
       setProjectTransition(false)
     }, 400)
   }
+
+  // Observar si el carrusel está en viewport
+  useEffect(() => {
+    const el = portfolioAutoRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const obs = new IntersectionObserver(
+      (entries) => {
+        setInView(entries[0]?.isIntersecting ?? true)
+      },
+      { threshold: 0.3 }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  // Escuchar visibilidad del documento (pestaña activa)
+  useEffect(() => {
+    const handler = () => setDocVisible(document.visibilityState === 'visible')
+    document.addEventListener('visibilitychange', handler)
+    handler()
+    return () => document.removeEventListener('visibilitychange', handler)
+  }, [])
+
+  // Autoavance del carrusel con pausa al hover, fuera de vista o pestaña oculta
+  useEffect(() => {
+    if (isPaused || !inView || !docVisible) return
+    const id = setInterval(() => {
+      nextProject()
+    }, 4000)
+    return () => clearInterval(id)
+  }, [isPaused, inView, docVisible, currentProject])
 
   // En cada sección principal:
   // Servicios
@@ -253,7 +286,13 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative overflow-hidden">
+      {/* Decoración de fondo: gradientes y patrón sutil */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-32 -right-24 h-80 w-80 rounded-full bg-blue-600/20 blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-violet-600/20 blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.05]" style={{backgroundImage:'radial-gradient(circle at 1px 1px, #fff 1px, transparent 1px)', backgroundSize: '24px 24px'}} />
+      </div>
       {/* Botón flotante de menú en la parte superior derecha */}
       <button
         className={`fixed top-8 right-8 z-50 shadow-lg focus:outline-none transition-all duration-200 cursor-pointer bg-transparent p-0 border-0 ${menuOpen ? 'scale-110 ring-4 ring-blue-400/40 shadow-2xl' : ''}`}
@@ -289,51 +328,56 @@ export default function LandingPage() {
             <a href="#contact" className="block text-lg text-slate-300 hover:text-blue-400 transition-colors" onClick={() => setMenuOpen(false)}>
               Contacto
             </a>
-            <Button className="mt-4 w-full bg-gradient-to-r from-slate-700 to-blue-600 hover:from-slate-600 hover:to-blue-500">
-              Comenzar
+            <Button asChild variant="gradient" className="mt-4 w-full">
+              <Link href="/guia-proyecto" onClick={() => setMenuOpen(false)}>
+                Comenzar
+              </Link>
             </Button>
           </div>
         </div>
       )}
 
       {/* Hero Section */}
-      <section className="w-full h-screen min-h-[600px] px-4 bg-slate-900 relative overflow-hidden flex items-center justify-center">
+      <section className="w-full h-auto md:h-screen min-h-[520px] sm:min-h-[600px] px-4 bg-slate-900 relative overflow-hidden flex items-center justify-center">
         <img
           src="/logos/edificios-ciudad-de-noche_1280x720_xtrafondos.com.jpg"
           alt="Edificios ciudad de noche"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
         />
-        <div className="container mx-auto text-center relative z-10 flex flex-col items-center justify-center h-full">
+        <div className="container mx-auto text-center relative z-10 flex flex-col items-center justify-center h-full pt-20 pb-16 md:pt-0 md:pb-0">
           <div
             className={`transition-all duration-1000 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"}`}
           >
             <div className="mb-10">
-              <div className="w-32 h-32 bg-gradient-to-r from-slate-700 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
-                <Code2 className="w-16 h-16 text-white" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-slate-600/60 bg-slate-800/60 px-3 py-1 text-xs text-slate-300 mb-6">
+                <span className="inline-block h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
+                Desarrollo a medida
               </div>
-              <h1 className="text-6xl md:text-8xl font-extrabold mb-8 drop-shadow-lg">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-r from-slate-700 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                <Code2 className="w-12 h-12 sm:w-16 sm:h-16 text-white" />
+              </div>
+              <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-6 sm:mb-8 drop-shadow-lg">
                 <span className="bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
                   NovaSite
                 </span>
               </h1>
-              <p className="text-2xl md:text-3xl text-slate-100 mb-4 font-semibold drop-shadow">
+              <p className="text-xl sm:text-2xl md:text-3xl text-slate-100 mb-3 sm:mb-4 font-semibold drop-shadow">
                 Desarrollo de Software
               </p>
-              <p className="text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow">
+              <p className="text-base sm:text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto mb-8 sm:mb-10 drop-shadow px-2">
                 Transformamos tus ideas en soluciones digitales innovadoras. Desarrollo web profesional, e-commerce y aplicaciones personalizadas.
               </p>
             </div>
-            <div className={`flex flex-wrap justify-center gap-6 mb-16 transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className={`flex flex-wrap justify-center gap-4 sm:gap-6 mb-12 sm:mb-16 transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               {techIcons.map((tech, index) => (
                 <Badge
                   key={index}
                   variant="outline"
-                  className={`px-6 py-3 text-lg border-2 border-slate-400/60 bg-slate-800/60 transition-all duration-500 shadow-md rounded-xl overflow-hidden relative group`}
-                  style={{ minWidth: 120, minHeight: 48 }}
+                  className={`px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base md:text-lg border-2 border-slate-400/60 bg-slate-800/60 transition-all duration-500 shadow-md rounded-xl overflow-hidden relative group min-w-[96px] sm:min-w-[120px] min-h-12`}
                 >
                   <span
                     className={
-                      `block transition-all duration-500 ease-in-out text-center text-lg font-semibold text-blue-400 ` +
+                      `block transition-all duration-500 ease-in-out text-center text-sm sm:text-base md:text-lg font-semibold text-blue-400 ` +
                       (techFade[index] ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 -translate-y-4 scale-90')
                     }
                     style={{ letterSpacing: 1 }}
@@ -343,25 +387,34 @@ export default function LandingPage() {
                 </Badge>
               ))}
             </div>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
               <Button
-                size="lg"
-                className="hero-btn text-2xl px-12 py-5 font-bold bg-gradient-to-r from-slate-700 to-blue-600 hover:from-slate-600 hover:to-blue-500 shadow-xl"
+                asChild
+                size="xl"
+                variant="gradient"
+                className="hero-btn text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold group"
               >
-                Comenzar Proyecto
-                <ArrowRight className="ml-3 w-7 h-7" />
+                <Link href="/guia-proyecto" aria-label="Guía para comenzar un proyecto en NovaSite">
+                  Comenzar Proyecto
+                  <ArrowRight className="ml-3 w-6 h-6 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
               </Button>
               <Button
-                size="lg"
-                variant="outline"
-                className="hero-btn hero-btn-outline text-2xl px-12 py-5 border-slate-400/60 hover:bg-slate-800 bg-transparent text-slate-100 font-bold shadow-xl"
+                asChild
+                size="xl"
+                variant="outlineGlow"
+                className="hero-btn hero-btn-outline text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold"
               >
-                Ver Portafolio
+                <Link href="/proyectos" aria-label="Ver todos los proyectos de NovaSite">
+                  Ver Portafolio
+                </Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
+
+      
 
       {/* Services Section */}
       <section
@@ -383,11 +436,13 @@ export default function LandingPage() {
             {services.map((service, index) => (
               <Card
                 key={index}
-                className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg bg-slate-700 hover:bg-slate-600"
+                tabIndex={0}
+                className="relative overflow-hidden group cursor-pointer transition-all duration-300 border-0 shadow-lg bg-slate-700 hover:bg-slate-600 hover:-translate-y-2 hover:scale-[1.02] ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 rounded-xl"
               >
+                <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{background:'linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)'}} />
                 <CardHeader className="text-center">
                   <div className="w-16 h-16 bg-gradient-to-r from-slate-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:from-slate-500 group-hover:to-blue-400 transition-all duration-300">
-                    <service.icon className="w-8 h-8 text-white transition-colors duration-300" />
+                    <service.icon className="w-8 h-8 text-white transition-transform duration-300 group-hover:scale-110" />
                   </div>
                   <CardTitle className="text-xl mb-2 text-slate-100">{service.title}</CardTitle>
                 </CardHeader>
@@ -422,14 +477,18 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
             {team.map((member, index) => (
               <div key={index} className="group perspective-1000">
-                <div className="relative w-full h-[500px] transition-all duration-700 transform-style-preserve-3d group-hover:rotate-x-180">
+                <div className="relative w-full h-[420px] md:h-[500px] transition-all duration-700 transform-style-preserve-3d md:group-hover:rotate-x-180">
                   {/* Frente de la tarjeta */}
                   <div className="absolute inset-0 backface-hidden">
-                    <Card className="text-center h-full border-0 shadow-xl bg-slate-700 p-8 flex flex-col justify-center">
-                      <div className="w-44 h-44 mx-auto mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center square-avatar">
+                    <Card
+                      tabIndex={0}
+                      className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.01]"
+                    >
+                      <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{background:'linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)'}} />
+                      <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center square-avatar">
                         <img
                           src={member.avatar || "/placeholder.svg"}
                           alt={member.name}
@@ -442,15 +501,59 @@ export default function LandingPage() {
                       <CardTitle className="text-2xl text-slate-100 mb-2">{member.name}</CardTitle>
                       <Badge className="bg-gradient-to-r from-slate-600 to-blue-500 text-white text-base py-2 px-4 mb-4">{member.role}</Badge>
                       <CardDescription className="text-slate-300 text-lg">{member.description}</CardDescription>
-                      <div className="mt-6 text-slate-400 text-sm">
+                      <div className="mt-6 text-slate-400 text-sm hidden md:block">
                         <p>Pasa el mouse para ver más información</p>
+                      </div>
+
+                      {/* Detalles en móvil: colapsable */}
+                      <div className="md:hidden mt-4">
+                        <button
+                          className="inline-flex items-center text-sm font-medium text-blue-400 underline underline-offset-4 hover:text-blue-300 active:scale-[0.98] transition"
+                          onClick={() => setOpenMember(openMember === index ? null : index)}
+                          aria-expanded={openMember === index}
+                          aria-controls={`member-details-${index}`}
+                        >
+                          {openMember === index ? 'Ocultar detalles' : 'Ver más'}
+                        </button>
+                        {openMember === index && (
+                          <div
+                            id={`member-details-${index}`}
+                            className="mt-4 rounded-lg bg-slate-800/70 ring-1 ring-slate-600/40 p-4 transition-all duration-300 text-left"
+                          >
+                            <div className="space-y-4">
+                              <div>
+                                <h4 className="text-blue-400 font-semibold mb-1 text-sm">Experiencia</h4>
+                                <p className="text-slate-300 text-sm leading-6">{member.experience}</p>
+                              </div>
+                              <div className="border-t border-slate-700/60 pt-3">
+                                <h4 className="text-blue-400 font-semibold mb-1 text-sm">Educación</h4>
+                                <p className="text-slate-300 text-sm leading-6">{member.education}</p>
+                              </div>
+                              <div className="border-t border-slate-700/60 pt-3">
+                                <h4 className="text-blue-400 font-semibold mb-2 text-sm">Tecnologías</h4>
+                                <div className="flex flex-wrap gap-2">
+                                  {member.technologies.map((tech, techIndex) => (
+                                    <Badge
+                                      key={techIndex}
+                                      variant="outline"
+                                      className="border-blue-500 text-blue-400 bg-slate-600/80 text-[11px] px-2 py-1"
+                                    >
+                                      {tech}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </Card>
                   </div>
-                  
+                   
                   {/* Parte trasera de la tarjeta */}
-                  <div className="absolute inset-0 backface-hidden rotate-x-180">
-                    <Card className="text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-8 flex flex-col justify-center">
+                  <div className="hidden md:block absolute inset-0 backface-hidden rotate-x-180">
+                    <Card className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 group-hover:ring-blue-500/40 transition-transform duration-300">
+                      <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{background:'linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)'}} />
                       <div className="mb-6">
                         <h3 className="text-2xl font-bold text-slate-100 mb-4">{member.name}</h3>
                         <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-base py-2 px-4 mb-4">{member.role}</Badge>
@@ -524,15 +627,42 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="relative max-w-4xl mx-auto">
-            <Card className={`overflow-hidden shadow-xl border-0 bg-slate-700 transition-all duration-500 ${projectTransition ? 'opacity-0 translate-x-10' : 'opacity-100 translate-x-0'}`}>
+          <div
+            ref={portfolioAutoRef}
+            className="relative max-w-4xl mx-auto focus:outline-none"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            tabIndex={0}
+            role="region"
+            aria-roledescription="carrusel"
+            aria-label="Proyectos destacados"
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowLeft') { e.preventDefault(); prevProject(); }
+              if (e.key === 'ArrowRight') { e.preventDefault(); nextProject(); }
+            }}
+            onTouchStart={(e) => setTouchStartX(e.changedTouches[0]?.clientX ?? null)}
+            onTouchEnd={(e) => {
+              if (touchStartX == null) return
+              const dx = e.changedTouches[0]?.clientX - touchStartX
+              if (Math.abs(dx) > 40) {
+                if (dx > 0) prevProject(); else nextProject();
+              }
+              setTouchStartX(null)
+            }}
+          >
+            <Card className={`overflow-hidden shadow-xl border-0 bg-slate-700 transition-all duration-500 ${projectTransition ? (transitionDir === 'next' ? 'opacity-0 translate-x-10' : 'opacity-0 -translate-x-10') : 'opacity-100 translate-x-0'} `}>
               <div className="md:flex">
                 <div className="md:w-1/2">
-                  <img
-                    src={projects[currentProject].image || "/placeholder.svg"}
-                    alt={projects[currentProject].title}
-                    className="w-full h-64 md:h-full object-cover"
-                  />
+                  <div className="relative w-full h-64 md:h-full min-h-[260px] rounded-xl overflow-hidden ring-1 ring-slate-600/50 shadow-lg bg-slate-900">
+                    <Image
+                      src={projects[currentProject].image}
+                      alt={projects[currentProject].title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority={currentProject === 0}
+                      className="object-contain object-center p-2"
+                    />
+                  </div>
                 </div>
                 <div className="md:w-1/2 p-8">
                   <h3 className="text-2xl font-bold mb-4 text-slate-100">{projects[currentProject].title}</h3>
@@ -544,9 +674,12 @@ export default function LandingPage() {
                       </Badge>
                     ))}
               </div>
-                  <Button className="bg-gradient-to-r from-slate-700 to-blue-600 hover:from-slate-600 hover:to-blue-500">
+                  <Button
+                    variant="gradient"
+                    className="group relative overflow-hidden rounded-full px-5 py-3 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+                  >
                     Ver Proyecto
-                    <ArrowRight className="ml-2 w-4 h-4" />
+                    <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
                   </Button>
                 </div>
               </div>
@@ -555,7 +688,7 @@ export default function LandingPage() {
             <Button
               variant="outline"
               size="icon"
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-slate-600 shadow-lg hover:bg-slate-500 text-white border-slate-500"
+              className="hidden sm:flex absolute left-4 top-1/2 transform -translate-y-1/2 bg-slate-600 shadow-lg hover:bg-slate-500 text-white border-slate-500"
               onClick={prevProject}
             >
               <ChevronLeft className="w-4 h-4" />
@@ -563,14 +696,14 @@ export default function LandingPage() {
             <Button
               variant="outline"
               size="icon"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-slate-600 shadow-lg hover:bg-slate-500 text-white border-slate-500"
+              className="hidden sm:flex absolute right-4 top-1/2 transform -translate-y-1/2 bg-slate-600 shadow-lg hover:bg-slate-500 text-white border-slate-500"
               onClick={nextProject}
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
             </div>
 
-          <div className="flex justify-center mt-8 space-x-2">
+          <div className="flex justify-center mt-8 space-x-2" role="tablist" aria-label="Indicadores de carrusel">
             {projects.map((_, index) => (
               <button
                 key={index}
@@ -580,8 +713,27 @@ export default function LandingPage() {
                     : "bg-slate-600 hover:bg-slate-500"
                 }`}
                 onClick={() => setCurrentProject(index)}
+                role="tab"
+                aria-selected={index === currentProject}
+                aria-current={index === currentProject ? 'true' : undefined}
+                aria-label={`Ir al proyecto ${index + 1}`}
               />
             ))}
+          </div>
+
+          {/* Botón para ver todos los proyectos */}
+          <div className="flex justify-center mt-10">
+            <Button
+              asChild
+              size="xl"
+              variant="gradient"
+              className="relative overflow-hidden rounded-full px-8 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+            >
+              <Link href="/proyectos" aria-label="Ver todos los proyectos de NovaSite" className="flex items-center">
+                Ver todos los proyectos
+                <ArrowRight className="ml-3 w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -611,8 +763,10 @@ export default function LandingPage() {
             {testimonials.map((testimonial, index) => (
               <Card
                 key={index}
-                className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg bg-slate-700"
+                tabIndex={0}
+                className="relative overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] border-0 shadow-lg bg-slate-700 rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50"
               >
+                <span className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300" style={{background:'linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)'}} />
                 <CardHeader>
                   <div className="flex items-center space-x-1 mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
@@ -749,6 +903,17 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-12 px-4">
         <div className="container mx-auto">
+          <div className="flex justify-center mb-8">
+            <Button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              size="xl"
+              variant="glow"
+              className="rounded-full"
+            >
+              Volver al inicio
+              <ArrowUp className="ml-2 w-5 h-5" />
+            </Button>
+          </div>
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
