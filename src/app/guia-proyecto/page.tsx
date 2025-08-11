@@ -172,10 +172,7 @@ export default function GuiaProyectoPage() {
                 <Phone className="w-5 h-5 text-blue-400" />
                 <span>+1 (555) 123-4567</span>
               </div>
-              <div className="pt-2 flex gap-3">
-                <Button asChild variant="gradient" className="rounded-full">
-                  <Link href="/">Volver al inicio</Link>
-                </Button>
+              <div className="pt-2 flex">
                 <Button asChild variant="outlineGlow" className="rounded-full">
                   <Link href="#" aria-disabled>Descargar brief (próximamente)</Link>
                 </Button>
@@ -209,12 +206,15 @@ export default function GuiaProyectoPage() {
         </section>
 
         {/* CTA final */}
-        <div className="mt-14 flex justify-center">
+        <div className="mt-14 flex justify-center gap-3">
           <Button asChild size="xl" variant="gradient" className="rounded-full px-8 group relative overflow-hidden before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]">
             <Link href="/contacto" aria-label="Contáctanos para iniciar tu proyecto">
               Iniciar ahora
               <ArrowRight className="ml-3 w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
+          </Button>
+          <Button asChild size="xl" variant="outlineGlow" className="rounded-full px-8">
+            <Link href="/" aria-label="Volver al inicio">Volver al inicio</Link>
           </Button>
         </div>
       </div>
