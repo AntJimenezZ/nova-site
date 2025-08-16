@@ -695,6 +695,8 @@ export default function LandingPage() {
         <Image
           src="/logos/ciudad-ciencia-ficcion-arte-digital_1280x720_xtrafondos.com.jpg"
           alt="Ciudad ciencia ficción"
+          width={1280}
+          height={720}
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
           style={{ objectPosition: "center" }}
         />
@@ -730,6 +732,8 @@ export default function LandingPage() {
                         <Image
                           src={member.avatar || "/placeholder.svg"}
                           alt={member.name}
+                          width={200}
+                          height={200}
                           className="w-full h-full object-cover rounded-xl"
                           loading="lazy"
                           decoding="async"
