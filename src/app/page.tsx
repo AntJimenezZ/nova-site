@@ -334,6 +334,7 @@ export default function LandingPage() {
       }, 350)
     }, 2200)
     return () => clearInterval(interval)
+    //eslint-disable-next-line
   }, [])
 
   // Toast de feedback para el formulario de contacto
@@ -418,7 +419,7 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="w-full h-auto md:h-screen min-h-[520px] sm:min-h-[600px] px-4 bg-slate-900 relative overflow-hidden flex items-center justify-center">
-        <img
+        <Image
           src="/logos/edificios-ciudad-de-noche_1280x720_xtrafondos.com.jpg"
           alt="Edificios ciudad de noche"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
@@ -540,7 +541,7 @@ export default function LandingPage() {
         ref={teamRef}
         className={`py-16 px-4 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden transition-all duration-1000 ${teamVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'}`}
       >
-        <img
+        <Image
           src="/logos/ciudad-ciencia-ficcion-arte-digital_1280x720_xtrafondos.com.jpg"
           alt="Ciudad ciencia ficción"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
@@ -568,7 +569,7 @@ export default function LandingPage() {
                     >
                       <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{background:'linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)'}} />
                       <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center square-avatar">
-                        <img
+                        <Image
                           src={member.avatar || "/placeholder.svg"}
                           alt={member.name}
                           className="w-full h-full object-cover rounded-xl"
@@ -850,7 +851,7 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+            {testimonials.map((testimonial) => (
               <Card
                 key={testimonial.id}
                 tabIndex={0}
@@ -872,7 +873,7 @@ export default function LandingPage() {
                   
                   {/* Comentario */}
                   <CardDescription className="text-slate-300 text-base leading-relaxed">
-                    "{testimonial.comment}"
+                    <q>{testimonial.comment}</q>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

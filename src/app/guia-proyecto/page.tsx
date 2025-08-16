@@ -348,6 +348,7 @@ export default function GuiaProyectoPage() {
                     pushToast('success', '¡Enviado! Te responderemos pronto.');
                     form.reset();
                   } catch (err) {
+                    console.error('Error al enviar el formulario:', err);
                     pushToast('error', 'Error de red. Intenta nuevamente.');
                   }
                 }}
@@ -575,6 +576,7 @@ export default function GuiaProyectoPage() {
                       const filename = `requerimientos_${(nombre || 'proyecto').replace(/\s+/g, '_')}.pdf`;
                       doc.save(filename.toLowerCase());
                     } catch (err) {
+                      console.error('Error al generar el PDF:', err);
                       pushToast('error', 'No se pudo generar el PDF. Intenta nuevamente.');
                     }
                   }}

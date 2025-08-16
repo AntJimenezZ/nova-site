@@ -100,6 +100,7 @@ export default function ContactoPage() {
                     pushToast('success', '¡Enviado! Te responderemos pronto.');
                     form.reset();
                   } catch (err) {
+                    console.error('Error al enviar el formulario:', err);
                     pushToast('error', 'Error de red. Intenta nuevamente.');
                   }
                 }}
@@ -328,6 +329,7 @@ export default function ContactoPage() {
                       doc.save(filename.toLowerCase());
                     } catch (err) {
                       pushToast('error', 'No se pudo generar el PDF. Intenta nuevamente.');
+                      console.error('Error al generar el PDF:', err);
                     }
                   }}
                 >

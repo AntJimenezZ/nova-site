@@ -6,7 +6,7 @@ import { projects } from "@/lib/projects"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, X, ExternalLink, Github } from "lucide-react"
+import { ArrowRight, X } from "lucide-react"
 import { useState } from "react"
 
 export default function ProyectosPage() {
