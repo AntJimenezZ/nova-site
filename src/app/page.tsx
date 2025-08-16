@@ -20,11 +20,15 @@ import {
   Github,
   Linkedin,
   Twitter,
+  Instagram,
   ArrowRight,
   ArrowUp,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react"
 import Link from "next/link"
 import { projects } from "@/lib/projects"
+import { testimonials } from "@/lib/testimonials"
 import Image from "next/image"
 
 const techIcons = [
@@ -102,29 +106,7 @@ const team = [
 
 // projects imported from @/lib/projects
 
-const testimonials = [
-  {
-    name: "María González",
-    company: "TechStart Solutions",
-    content:
-      "NovaSite transformó completamente nuestra presencia digital. El equipo es profesional y entrega resultados excepcionales.",
-    rating: 5,
-  },
-  {
-    name: "Carlos Rodríguez",
-    company: "E-Shop Plus",
-    content:
-      "Nuestra tienda online ha aumentado las ventas un 300% desde que trabajamos con NovaSite. Altamente recomendados.",
-    rating: 5,
-  },
-  {
-    name: "Ana Martínez",
-    company: "Creative Agency",
-    content:
-      "El diseño y la funcionalidad de nuestro sitio web superaron todas nuestras expectativas. Excelente trabajo.",
-    rating: 5,
-  },
-]
+
 
 // Hook para animar aparición al hacer scroll y resetear cuando sale del viewport
 function useScrollReveal<T extends HTMLElement = HTMLElement>() {
@@ -167,6 +149,16 @@ export default function LandingPage() {
   const [docVisible, setDocVisible] = useState(true)
   // Soporte de swipe para carrusel en móvil
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  
+  // Estados para el formulario de contacto
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   useEffect(() => {
     setTimeout(() => setHeroVisible(true), 200)
@@ -247,6 +239,65 @@ export default function LandingPage() {
   // Contacto
   const [contactRef, contactVisible] = useScrollReveal<HTMLElement>()
 
+  // Función para manejar cambios en el formulario
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  // Función para enviar el formulario
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    // Validación básica
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      pushToast('error', 'Por favor, completa todos los campos.')
+      return
+    }
+
+    // Validación de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(formData.email)) {
+      pushToast('error', 'Por favor, ingresa un email válido.')
+      return
+    }
+
+    setIsSubmitting(true)
+    setSubmitStatus('idle')
+
+    try {
+      // Enviar el formulario a la API route
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        setSubmitStatus('success')
+        setFormData({ name: '', email: '', subject: '', message: '' })
+        pushToast('success', '¡Mensaje enviado! Te contactaremos pronto.')
+      } else {
+        console.error('Error del servidor:', result.error)
+        setSubmitStatus('error')
+        pushToast('error', 'No pudimos enviar tu mensaje. Intenta nuevamente.')
+      }
+    } catch (error) {
+      console.error('Error al enviar el mensaje:', error)
+      setSubmitStatus('error')
+      pushToast('error', 'Ocurrió un error de conexión. Intenta de nuevo.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   // Lista de ideas de desarrollo de software para los cuadros
   const randomIdeas = [
     "Innovación Digital",
@@ -285,8 +336,36 @@ export default function LandingPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // Toast de feedback para el formulario de contacto
+  const [toast, setToast] = useState<null | { type: 'success' | 'error' | 'info', message: string }>(null)
+  const pushToast = (type: 'success' | 'error' | 'info', message: string) => {
+    setToast({ type, message })
+    // Ocultar automáticamente después de 4s
+    setTimeout(() => setToast(null), 4000)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative overflow-hidden">
+      {/* Toast flotante (feedback de formulario) */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-[100] animate-slide-fade-in">
+          <div className={`flex items-start gap-3 px-4 py-3 rounded-xl border shadow-xl backdrop-blur bg-slate-900/85 ${toast.type === 'success' ? 'border-emerald-500/40' : toast.type === 'error' ? 'border-rose-500/40' : 'border-slate-500/40'}`}>
+            <div className={`mt-0.5 ${toast.type === 'success' ? 'text-emerald-400' : toast.type === 'error' ? 'text-rose-400' : 'text-slate-300'}`}>
+              {toast.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : toast.type === 'error' ? <XCircle className="w-5 h-5" /> : <Mail className="w-5 h-5" />}
+            </div>
+            <div className="text-sm text-slate-100 pr-1">
+              {toast.message}
+            </div>
+            <button
+              onClick={() => setToast(null)}
+              className="ml-1 text-slate-400 hover:text-slate-200 transition"
+              aria-label="Cerrar notificación"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
       {/* Decoración de fondo: gradientes y patrón sutil */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-32 -right-24 h-80 w-80 rounded-full bg-blue-600/20 blur-3xl" />
@@ -392,7 +471,7 @@ export default function LandingPage() {
                 asChild
                 size="xl"
                 variant="gradient"
-                className="hero-btn text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold group"
+                className="hero-btn group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
               >
                 <Link href="/guia-proyecto" aria-label="Guía para comenzar un proyecto en NovaSite">
                   Comenzar Proyecto
@@ -403,7 +482,7 @@ export default function LandingPage() {
                 asChild
                 size="xl"
                 variant="outlineGlow"
-                className="hero-btn hero-btn-outline text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold"
+                className="hero-btn hero-btn-outline group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
               >
                 <Link href="/proyectos" aria-label="Ver todos los proyectos de NovaSite">
                   Ver Portafolio
@@ -650,7 +729,24 @@ export default function LandingPage() {
               setTouchStartX(null)
             }}
           >
-            <Card className={`overflow-hidden shadow-xl border-0 bg-slate-700 transition-all duration-500 ${projectTransition ? (transitionDir === 'next' ? 'opacity-0 translate-x-10' : 'opacity-0 -translate-x-10') : 'opacity-100 translate-x-0'} `}>
+            <Card
+              className={`group relative overflow-hidden shadow-xl border-0 bg-slate-700 transition-all duration-500 ring-1 ring-white/5 hover:-translate-y-1 hover:ring-blue-400/40 hover:shadow-[0_10px_40px_-10px_rgba(37,99,235,0.35)] ${projectTransition ? (transitionDir === 'next' ? 'opacity-0 translate-x-10' : 'opacity-0 -translate-x-10') : 'opacity-100 translate-x-0'} `}
+              onMouseMove={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                const r = el.getBoundingClientRect();
+                const x = ((e.clientX - r.left) / r.width) * 100;
+                const y = ((e.clientY - r.top) / r.height) * 100;
+                el.style.setProperty('--x', `${x}%`);
+                el.style.setProperty('--y', `${y}%`);
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement;
+                el.style.removeProperty('--x');
+                el.style.removeProperty('--y');
+              }}
+            >
+              {/* Glow radial that follows mouse */}
+              <div className="pointer-events-none absolute -inset-24 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20" style={{background:"radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(59,130,246,0.25), transparent 40%)"}} />
               <div className="md:flex">
                 <div className="md:w-1/2">
                   <div className="relative w-full h-64 md:h-full min-h-[260px] rounded-xl overflow-hidden ring-1 ring-slate-600/50 shadow-lg bg-slate-900">
@@ -660,7 +756,7 @@ export default function LandingPage() {
                       fill
                       sizes="(max-width: 768px) 100vw, 50vw"
                       priority={currentProject === 0}
-                      className="object-contain object-center p-2"
+                      className="object-contain object-center p-2 transition-transform duration-500 group-hover:scale-[1.03]"
                     />
                   </div>
                 </div>
@@ -743,45 +839,54 @@ export default function LandingPage() {
         ref={testimonialsRef}
         className={`py-16 px-4 bg-gradient-to-r from-slate-900 to-slate-800 transition-all duration-1000 ${testimonialsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'}`}
       >
-        <img
-          src="/logos/chica-sola-en-la-ciudad-ilustracion_1280x720_xtrafondos.com.jpg"
-          alt="Chica sola en la ciudad"
-          className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
-          style={{ objectPosition: 'center' }}
-        />
         <div className="container mx-auto relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-              Lo Que Dicen Nuestros Clientes
+              Qué Dicen Nuestros Clientes
             </h2>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              La satisfacción de nuestros clientes es nuestra mejor carta de presentación
+              Valoraciones reales de clientes satisfechos con nuestros proyectos
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
               <Card
-                key={index}
+                key={testimonial.id}
                 tabIndex={0}
-                className="relative overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] border-0 shadow-lg bg-slate-700 rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50"
+                className="relative overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] border-0 shadow-lg bg-slate-700/90 backdrop-blur-sm rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50"
               >
                 <span className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300" style={{background:'linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)'}} />
-                <CardHeader>
-                  <div className="flex items-center space-x-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                    ))}
-                </div>
+                <CardHeader className="pb-4">
+                  {/* Proyecto relacionado */}
+                  <div className="flex items-center justify-between mb-3">
+                    <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs px-3 py-1">
+                      {testimonial.projectTitle}
+                    </Badge>
+                    <div className="flex items-center space-x-1">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Comentario */}
                   <CardDescription className="text-slate-300 text-base leading-relaxed">
-                    {testimonial.content}
+                    "{testimonial.comment}"
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="border-t pt-4">
-                    <p className="font-semibold text-slate-100">{testimonial.name}</p>
-                    <p className="text-sm text-slate-400">{testimonial.company}</p>
-              </div>
+                  <div className="border-t border-slate-600/50 pt-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white font-semibold text-sm">
+                        {testimonial.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-slate-100 text-sm">{testimonial.name}</p>
+                        <p className="text-xs text-slate-400">{testimonial.role} en {testimonial.company}</p>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -815,7 +920,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-slate-100">Email</p>
-                    <p className="text-slate-300">contacto@novasite.dev</p>
+                    <p className="text-slate-300">novasite@gmail.com</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -824,7 +929,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-slate-100">Teléfono</p>
-                    <p className="text-slate-300">+1 (555) 123-4567</p>
+                    <p className="text-slate-300">+506 8304-7436</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -833,7 +938,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-slate-100">Ubicación</p>
-                    <p className="text-slate-300">Ciudad de México, México</p>
+                    <p className="text-slate-300">Costa Rica, Alajuela</p>
                   </div>
                 </div>
               </div>
@@ -842,25 +947,34 @@ export default function LandingPage() {
                 <h4 className="text-lg font-semibold mb-4 text-slate-100">Síguenos</h4>
                 <div className="flex space-x-4">
                   <Button
+                    asChild
                     size="icon"
                     variant="outline"
                     className="hover:bg-slate-700 hover:border-slate-500 bg-slate-600 text-white border-slate-500"
                   >
-                    <Github className="w-5 h-5" />
+                    <a href="https://github.com/AlejandroBlanco13" target="_blank" rel="noopener noreferrer" aria-label="Visitar nuestro GitHub">
+                      <Github className="w-5 h-5" />
+                    </a>
                   </Button>
                   <Button
+                    asChild
                     size="icon"
                     variant="outline"
                     className="hover:bg-slate-700 hover:border-slate-500 bg-slate-600 text-white border-slate-500"
                   >
-                    <Linkedin className="w-5 h-5" />
+                    <a href="https://www.instagram.com/novasitesc/" target="_blank" rel="noopener noreferrer" aria-label="Visitar nuestro Instagram">
+                      <Instagram className="w-5 h-5" />
+                    </a>
                   </Button>
                   <Button
+                    asChild
                     size="icon"
                     variant="outline"
                     className="hover:bg-slate-700 hover:border-slate-500 bg-slate-600 text-white border-slate-500"
                   >
-                    <Twitter className="w-5 h-5" />
+                    <a href="https://x.com/nova_sitesc" target="_blank" rel="noopener noreferrer" aria-label="Visitar nuestro X (Twitter)">
+                      <Twitter className="w-5 h-5" />
+                    </a>
                   </Button>
                 </div>
               </div>
@@ -871,29 +985,74 @@ export default function LandingPage() {
                 <CardTitle>Envíanos un Mensaje</CardTitle>
                 <CardDescription>Cuéntanos sobre tu proyecto y te contactaremos pronto</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium mb-2 block text-slate-200">Nombre</label>
-                    <Input placeholder="Tu nombre" />
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block text-slate-200">Nombre</label>
+                      <Input 
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Tu nombre" 
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block text-slate-200">Email</label>
+                      <Input 
+                        name="email"
+                        type="email" 
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="tu@email.com" 
+                        required
+                      />
+                    </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium mb-2 block text-slate-200">Email</label>
-                    <Input type="email" placeholder="tu@email.com" />
+                    <label className="text-sm font-medium mb-2 block text-slate-200">Asunto</label>
+                    <Input 
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      placeholder="¿En qué podemos ayudarte?" 
+                      required
+                    />
                   </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block text-slate-200">Asunto</label>
-                  <Input placeholder="¿En qué podemos ayudarte?" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium mb-2 block text-slate-200">Mensaje</label>
-                  <Textarea placeholder="Cuéntanos sobre tu proyecto..." className="min-h-[120px]" />
-                </div>
-                <Button className="w-full bg-gradient-to-r from-slate-700 to-blue-600 hover:from-slate-600 hover:to-blue-500">
-                  Enviar Mensaje
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block text-slate-200">Mensaje</label>
+                    <Textarea 
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder="Cuéntanos sobre tu proyecto..." 
+                      className="min-h-[120px]" 
+                      required
+                    />
+                  </div>
+                  
+                  {/* Mensaje de estado */}
+                  {submitStatus === 'success' && (
+                    <div className="p-3 bg-green-600/20 border border-green-500/30 rounded-lg text-green-400 text-sm">
+                      ¡Mensaje enviado! Se abrirá tu cliente de email para completar el envío.
+                    </div>
+                  )}
+                  {submitStatus === 'error' && (
+                    <div className="p-3 bg-red-600/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                      Hubo un error al enviar el mensaje. Por favor, intenta de nuevo.
+                    </div>
+                  )}
+                  
+                  <Button 
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="group relative overflow-hidden rounded-full w-full sm:w-auto px-6 py-3 cursor-pointer bg-gradient-to-r from-slate-700 to-blue-600 hover:from-slate-600 hover:to-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 disabled:opacity-50 disabled:cursor-not-allowed before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+                  >
+                    {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
+                    <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>
@@ -908,7 +1067,7 @@ export default function LandingPage() {
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               size="xl"
               variant="glow"
-              className="rounded-full"
+              className="rounded-full cursor-pointer"
             >
               Volver al inicio
               <ArrowUp className="ml-2 w-5 h-5" />
@@ -966,14 +1125,14 @@ export default function LandingPage() {
               <h4 className="font-semibold mb-4">Empresa</h4>
               <ul className="space-y-2 text-slate-400">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="/sobre-nosotros" className="hover:text-white transition-colors">
                     Sobre Nosotros
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <Link href="/proyectos" className="hover:text-white transition-colors">
                     Portafolio
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
@@ -991,15 +1150,15 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4">Contacto</h4>
               <ul className="space-y-2 text-slate-400">
-                <li>contacto@novasite.dev</li>
-                <li>+1 (555) 123-4567</li>
-                <li>Ciudad de México, México</li>
+                <li>novasitesc@gmail.com</li>
+                <li>+(506) 8304-7436</li>
+                <li>Costa Rica, Alajuela</li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2024 NovaSite. Todos los derechos reservados.</p>
+            <p>&copy; 2025 NovaSite. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
@@ -1026,6 +1185,15 @@ export default function LandingPage() {
           animation: slideInRight 0.45s cubic-bezier(0.4,0,0.2,1);
         }
         .hamburger span { position: absolute; left: 0; width: 100%; height: 4px; background: white; border-radius: 2px; transition: all 0.3s cubic-bezier(.4,2,.6,1); }
+        /* Animación para toasts (slide + fade in) */
+        @keyframes slideFadeIn {
+          0% { transform: translateY(-8px); opacity: 0; filter: blur(6px); }
+          60% { transform: translateY(2px); opacity: 1; filter: blur(1px); }
+          100% { transform: translateY(0); opacity: 1; filter: blur(0); }
+        }
+        .animate-slide-fade-in {
+          animation: slideFadeIn 0.42s cubic-bezier(.34,1.56,.64,1) both;
+        }
       `}</style>
       {/* Estilos globales para los botones del hero */}
       <style jsx global>{`
