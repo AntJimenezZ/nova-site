@@ -536,8 +536,8 @@ export default function LandingPage() {
         <Image
           src="/logos/edificios-ciudad-de-noche_1280x720_xtrafondos.com.jpg"
           alt="Edificios ciudad de noche"
-          width={1280}
-          height={720}
+          fill
+          sizes="100vw"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
         />
         <div className="container mx-auto text-center relative z-10 flex flex-col items-center justify-center h-full pt-20 pb-16 md:pt-0 md:pb-0">
@@ -695,8 +695,8 @@ export default function LandingPage() {
         <Image
           src="/logos/ciudad-ciencia-ficcion-arte-digital_1280x720_xtrafondos.com.jpg"
           alt="Ciudad ciencia ficción"
-          width={1280}
-          height={720}
+          fill
+          sizes="100vw"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
           style={{ objectPosition: "center" }}
         />
@@ -714,12 +714,12 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
             {team.map((member, index) => (
               <div key={index} className="group perspective-1000">
-                <div className="relative w-full h-[420px] md:h-[500px] transition-all duration-700 transform-style-preserve-3d md:group-hover:rotate-x-180">
+                <div className="relative w-full h-auto md:h-[500px] transition-all duration-700 transform-style-preserve-3d md:group-hover:rotate-x-180">
                   {/* Frente de la tarjeta */}
-                  <div className="absolute inset-0 backface-hidden">
+                  <div className="md:absolute md:inset-0 backface-hidden">
                     <Card
                       tabIndex={0}
-                      className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.01]"
+                      className="relative overflow-hidden text-center md:h-full border-0 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.01]"
                     >
                       <span
                         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -740,13 +740,13 @@ export default function LandingPage() {
                           style={{ imageRendering: "auto" }}
                         />
                       </div>
-                      <CardTitle className="text-2xl text-slate-100 mb-2">
+                      <CardTitle className="text-2xl text-slate-100 mb-2 text-balance break-words leading-tight">
                         {member.name}
                       </CardTitle>
-                      <Badge className="bg-gradient-to-r from-slate-600 to-blue-500 text-white text-base py-2 px-4 mb-4">
+                      <Badge className="bg-gradient-to-r from-slate-600 to-blue-500 text-white text-sm md:text-base py-1.5 md:py-2 px-3 md:px-4 mb-4 whitespace-normal break-words">
                         {member.role}
                       </Badge>
-                      <CardDescription className="text-slate-300 text-lg">
+                      <CardDescription className="text-slate-300 text-base sm:text-lg leading-snug">
                         {member.description}
                       </CardDescription>
                       <div className="mt-6 text-slate-400 text-sm hidden md:block">
@@ -815,7 +815,7 @@ export default function LandingPage() {
                   </div>
 
                   {/* Parte trasera de la tarjeta */}
-                  <div className="hidden md:block absolute inset-0 backface-hidden rotate-x-180">
+                  <div className="hidden md:block md:absolute md:inset-0 backface-hidden rotate-x-180">
                     <Card className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 group-hover:ring-blue-500/40 transition-transform duration-300">
                       <span
                         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"

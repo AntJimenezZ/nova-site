@@ -82,7 +82,7 @@ export default function ProyectosPage() {
               </div>
               <div className="px-3 sm:px-6 py-3 sm:py-4 grid gap-4 sm:gap-5 max-h-[80vh] overflow-y-auto">
                 <div className="relative w-full h-44 sm:h-56 bg-slate-800 rounded-lg overflow-hidden ring-1 ring-slate-700/40">
-                  <Image src={active.image} alt={active.title} fill className="object-contain object-center p-2" />
+                  <Image src={active.image} alt={active.title} fill sizes="(max-width: 640px) 90vw, 560px" className="object-contain object-center p-2" />
                 </div>
                 <p className="text-slate-300 text-sm sm:text-base">
                   {active.longDescription ?? active.description}

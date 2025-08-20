@@ -161,7 +161,7 @@ export default function SobreNosotrosPage() {
                 <div className="pointer-events-none absolute -inset-24 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20" style={{background:"radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(14,165,233,0.25), transparent 40%)"}} />
                 <CardContent className="p-0">
                   <div className="relative h-48 bg-slate-900 overflow-hidden">
-                    <Image src={m.avatar} alt={m.name} fill className="object-cover transition-transform duration-500 group-hover:scale-[1.06]" />
+                    <Image src={m.avatar} alt={m.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.06]" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
                   <div className="p-4">
