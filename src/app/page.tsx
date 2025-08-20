@@ -714,7 +714,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
             {team.map((member, index) => (
               <div key={index} className="group perspective-1000">
-                <div className="relative w-full h-auto md:h-[500px] transition-all duration-700 transform-style-preserve-3d md:group-hover:rotate-x-180">
+                <div className="relative w-full h-auto md:min-h-[600px] lg:min-h-[660px] md:h-auto transition-all duration-700 transform-style-preserve-3d md:group-hover:rotate-x-180">
                   {/* Frente de la tarjeta */}
                   <div className="md:absolute md:inset-0 backface-hidden">
                     <Card
@@ -816,7 +816,7 @@ export default function LandingPage() {
 
                   {/* Parte trasera de la tarjeta */}
                   <div className="hidden md:block md:absolute md:inset-0 backface-hidden rotate-x-180">
-                    <Card className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 group-hover:ring-blue-500/40 transition-transform duration-300">
+                    <Card className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-6 flex flex-col justify-start rounded-xl ring-1 ring-slate-600/40 group-hover:ring-blue-500/40 transition-transform duration-300">
                       <span
                         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{
@@ -824,32 +824,32 @@ export default function LandingPage() {
                             "linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)",
                         }}
                       />
-                      <div className="mb-6">
-                        <h3 className="text-2xl font-bold text-slate-100 mb-4">
+                      <div className="mb-4">
+                        <h3 className="text-xl md:text-2xl font-bold text-slate-100 mb-2 leading-tight">
                           {member.name}
                         </h3>
-                        <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-base py-2 px-4 mb-4">
+                        <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm md:text-base py-1.5 md:py-2 px-3 md:px-4 mb-2 whitespace-normal break-words">
                           {member.role}
                         </Badge>
                       </div>
 
-                      <div className="space-y-4 text-left">
+                      <div className="space-y-3 text-left">
                         <div>
-                          <h4 className="text-blue-400 font-semibold mb-2">
+                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
                             Experiencia
                           </h4>
-                          <p className="text-slate-300">{member.experience}</p>
+                          <p className="text-slate-300 text-sm md:text-base leading-6">{member.experience}</p>
                         </div>
 
                         <div>
-                          <h4 className="text-blue-400 font-semibold mb-2">
+                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
                             Educación
                           </h4>
-                          <p className="text-slate-300">{member.education}</p>
+                          <p className="text-slate-300 text-sm md:text-base leading-6">{member.education}</p>
                         </div>
 
                         <div>
-                          <h4 className="text-blue-400 font-semibold mb-2">
+                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
                             Tecnologías
                           </h4>
                           <div className="flex flex-wrap gap-2">
@@ -857,7 +857,7 @@ export default function LandingPage() {
                               <Badge
                                 key={techIndex}
                                 variant="outline"
-                                className="border-blue-500 text-blue-400 bg-slate-600 text-xs"
+                                className="border-blue-500 text-blue-400 bg-slate-600 text-[11px] md:text-xs"
                               >
                                 {tech}
                               </Badge>
@@ -866,10 +866,10 @@ export default function LandingPage() {
                         </div>
 
                         <div>
-                          <h4 className="text-blue-400 font-semibold mb-2">
+                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
                             Logros
                           </h4>
-                          <ul className="text-slate-300 text-sm space-y-1">
+                          <ul className="text-slate-300 text-xs md:text-sm space-y-1.5">
                             {member.achievements.map(
                               (achievement, achievementIndex) => (
                                 <li
@@ -884,7 +884,7 @@ export default function LandingPage() {
                           </ul>
                         </div>
 
-                        <div className="pt-4 border-t border-slate-600">
+                        <div className="pt-3 border-t border-slate-600/70">
                           <div className="flex justify-center space-x-4">
                             <Button
                               size="sm"
