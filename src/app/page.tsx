@@ -711,15 +711,26 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 px-4 sm:px-6">
             {team.map((member, index) => (
-              <div key={index} className="group perspective-1000">
-                <div className="relative w-full h-auto md:min-h-[600px] lg:min-h-[660px] md:h-auto transition-all duration-700 transform-style-preserve-3d md:group-hover:rotate-x-180">
+              <div 
+                key={index} 
+                className="group perspective-1000 w-full h-full"
+                onMouseMove={(e) => {
+                  // Actualizar la posición del brillo basado en la posición del mouse
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.setProperty('--x', `${x}px`);
+                  e.currentTarget.style.setProperty('--y', `${y}px`);
+                }}
+              >
+                <div className="relative w-full h-full min-h-[500px] md:min-h-[600px] transition-all duration-700 preserve-3d group-hover:rotate-y-180">
                   {/* Frente de la tarjeta */}
-                  <div className="md:absolute md:inset-0 backface-hidden">
+                  <div className="absolute inset-0 backface-hidden w-full h-full">
                     <Card
                       tabIndex={0}
-                      className="relative overflow-hidden text-center md:h-full border-0 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.01]"
+                      className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 transition-all-600 card-glow"
                     >
                       <span
                         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -728,13 +739,13 @@ export default function LandingPage() {
                             "linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)",
                         }}
                       />
-                      <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center square-avatar">
+                      <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-full transform transition-transform-600 group-hover:scale-110">
                         <Image
                           src={member.avatar || "/placeholder.svg"}
                           alt={member.name}
                           width={200}
                           height={200}
-                          className="w-full h-full object-cover rounded-xl"
+                          className="w-full h-full object-cover rounded-full"
                           loading="lazy"
                           decoding="async"
                           style={{ imageRendering: "auto" }}
@@ -749,8 +760,20 @@ export default function LandingPage() {
                       <CardDescription className="text-slate-300 text-base sm:text-lg leading-snug">
                         {member.description}
                       </CardDescription>
-                      <div className="mt-6 text-slate-400 text-sm hidden md:block">
-                        <p>Pasa el mouse para ver más información</p>
+                      <div className="mt-6 text-slate-400 text-sm hidden md:flex flex-col items-center">
+                        <p className="mb-2">Pasa el mouse para ver más información</p>
+                        <div className="flex space-x-2">
+                          {[1, 2, 3].map((i) => (
+                            <div 
+                              key={i} 
+                              className="w-2 h-2 rounded-full bg-blue-500 opacity-20 group-hover:opacity-100 transition-all duration-300"
+                              style={{
+                                transitionDelay: `${i * 0.1}s`,
+                                transform: 'translateY(0)'
+                              }}
+                            />
+                          ))}
+                        </div>
                       </div>
 
                       {/* Detalles en móvil: colapsable */}
@@ -815,8 +838,8 @@ export default function LandingPage() {
                   </div>
 
                   {/* Parte trasera de la tarjeta */}
-                  <div className="hidden md:block md:absolute md:inset-0 backface-hidden rotate-x-180">
-                    <Card className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-6 flex flex-col justify-start rounded-xl ring-1 ring-slate-600/40 group-hover:ring-blue-500/40 transition-transform duration-300">
+                  <div className="absolute inset-0 backface-hidden w-full h-full rotate-y-180">
+                    <Card className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-6 flex flex-col justify-start rounded-xl ring-1 ring-slate-600/40 group-hover:ring-blue-500/40 transition-all-600 card-glow">
                       <span
                         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{
