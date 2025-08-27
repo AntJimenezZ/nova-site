@@ -1306,8 +1306,8 @@ export default function LandingPage() {
 
             <Card className="shadow-xl border-0 bg-slate-700">
               <CardHeader>
-                <CardTitle>Envíanos un Mensaje</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-white">Envíanos un Mensaje</CardTitle>
+                <CardDescription className="text-white"> 
                   Cuéntanos sobre tu proyecto y te contactaremos pronto
                 </CardDescription>
               </CardHeader>
