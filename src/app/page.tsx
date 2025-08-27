@@ -89,6 +89,24 @@ const team = [
     email: "gabriel@novasite.dev",
     linkedin: "linkedin.com/in/gabriel-novasite",
   },
+    {
+    name: "Steven",
+    role: "Software Developer",
+    description:
+      "Experiencia en la implementación y desarrollo de software y aplicaciones personalizadas",
+    avatar: "/logos/FotoSteven.jpg",
+    // Información profesional para la parte trasera
+    experience: "Experiencia en Desarrollo de Software",
+    technologies: ["React", "Node.js", "Python", "Supabase", "C#"],
+    education: "Ingeniería en Computación",
+    achievements: [
+      "20+ proyectos completados",
+      "Experiencia en desarrollo web",
+      "Desarrollador Full Stack",
+    ],
+    email: "steven@novasite.dev",
+    linkedin: "linkedin.com/in/steven-novasite",
+  },
   {
     name: "Anthony (Noni)",
     role: "Full Stack Developer",
@@ -711,7 +729,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-4 sm:px-6">
             {team.map((member, index) => (
               <div 
                 key={index} 
@@ -913,6 +931,15 @@ export default function LandingPage() {
                               size="sm"
                               variant="outline"
                               className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
+                              onClick={() => {
+                                const contactSection = document.getElementById('contact');
+                                if (contactSection) {
+                                  contactSection.scrollIntoView({ 
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                  });
+                                }
+                              }}
                             >
                               <Mail className="w-4 h-4 mr-2" />
                               Email
