@@ -24,7 +24,6 @@ import {
   Phone,
   MapPin,
   Github,
-  Linkedin,
   Twitter,
   Instagram,
   ArrowRight,
@@ -147,24 +146,36 @@ const team = [
 
 // projects imported from @/lib/projects
 
-// Hook para animar aparición al hacer scroll y resetear cuando sale del viewport
-function useScrollReveal<T extends HTMLElement = HTMLElement>() {
+// Hook mejorado para animaciones de scroll más sutiles y profesionales
+function useScrollReveal<T extends HTMLElement = HTMLElement>(
+  threshold: number = 0.15,
+  rootMargin: string = "0px 0px -10% 0px"
+) {
   const ref = useRef<T | null>(null);
   const [visible, setVisible] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
   useEffect(() => {
-    const handleScroll = () => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 100 && rect.bottom > 100) {
-        setVisible(true);
-      } else {
-        setVisible(false);
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setVisible(true);
+          setHasAnimated(true);
+        }
+      },
+      {
+        threshold,
+        rootMargin,
       }
-    };
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [threshold, rootMargin, hasAnimated]);
+
   return [ref, visible] as const;
 }
 
@@ -202,7 +213,7 @@ export default function LandingPage() {
   >("idle");
 
   useEffect(() => {
-    setTimeout(() => setHeroVisible(true), 200);
+    setTimeout(() => setHeroVisible(true), 100);
   }, []);
 
   // (Botón volver arriba ahora está en el footer)
@@ -225,7 +236,7 @@ export default function LandingPage() {
     setTimeout(() => {
       setCurrentProject((prev) => (prev + 1) % projects.length);
       setProjectTransition(false);
-    }, 400);
+    }, 600);
   };
 
   const prevProject = () => {
@@ -236,7 +247,7 @@ export default function LandingPage() {
         (prev) => (prev - 1 + projects.length) % projects.length
       );
       setProjectTransition(false);
-    }, 400);
+    }, 600);
   };
 
   // Observar si el carrusel está en viewport
@@ -387,8 +398,8 @@ export default function LandingPage() {
           )
         );
         setTechFade(Array(techIcons.length).fill(true));
-      }, 350);
-    }, 2200);
+      }, 500);
+    }, 4000);
     return () => clearInterval(interval);
     //eslint-disable-next-line
   }, []);
@@ -512,13 +523,13 @@ export default function LandingPage() {
                 />
               </svg>
             </button>
-            <a
-              href="#services"
-              className="block text-lg text-slate-300 hover:text-blue-400 transition-colors mt-12"
-              onClick={() => setMenuOpen(false)}
-            >
-              Servicios
-            </a>
+                         <Link
+               href="/servicios"
+               className="block text-lg text-slate-300 hover:text-blue-400 transition-colors mt-12"
+               onClick={() => setMenuOpen(false)}
+             >
+               Servicios
+             </Link>
             <a
               href="#about"
               className="block text-lg text-slate-300 hover:text-blue-400 transition-colors"
@@ -526,13 +537,13 @@ export default function LandingPage() {
             >
               Equipo
             </a>
-            <a
-              href="#portafolio"
-              className="block text-lg text-slate-300 hover:text-blue-400 transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Portafolio
-            </a>
+                         <Link
+               href="/proyectos"
+               className="block text-lg text-slate-300 hover:text-blue-400 transition-colors"
+               onClick={() => setMenuOpen(false)}
+             >
+               Portafolio
+             </Link>
             <a
               href="#contact"
               className="block text-lg text-slate-300 hover:text-blue-400 transition-colors"
@@ -559,13 +570,13 @@ export default function LandingPage() {
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
         />
         <div className="container mx-auto text-center relative z-10 flex flex-col items-center justify-center h-full pt-20 pb-16 md:pt-0 md:pb-0">
-          <div
-            className={`transition-all duration-1000 ${
-              heroVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-16"
-            }`}
-          >
+                      <div
+              className={`transition-all duration-1500 ease-out ${
+                heroVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-8"
+              }`}
+            >
             <div className="mb-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-slate-600/60 bg-slate-800/60 px-3 py-1 text-xs text-slate-300 mb-6">
                 <span className="inline-block h-2 w-2 rounded-full bg-blue-400 animate-pulse" />
@@ -589,10 +600,10 @@ export default function LandingPage() {
               </p>
             </div>
             <div
-              className={`flex flex-wrap justify-center gap-4 sm:gap-6 mb-12 sm:mb-16 transition-all duration-1000 ${
+              className={`flex flex-wrap justify-center gap-4 sm:gap-6 mb-12 sm:mb-16 transition-all duration-1500 ease-out delay-300 ${
                 heroVisible
                   ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
+                  : "opacity-0 translate-y-6"
               }`}
             >
               {techIcons.map((tech, index) => (
@@ -615,67 +626,82 @@ export default function LandingPage() {
                 </Badge>
               ))}
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
-              <Button
-                asChild
-                size="xl"
-                variant="gradient"
-                className="hero-btn group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-              >
-                <Link
-                  href="/guia-proyecto"
-                  aria-label="Guía para comenzar un proyecto en NovaSite"
-                >
-                  Comenzar Proyecto
-                  <ArrowRight className="ml-3 w-6 h-6 transition-transform duration-200 group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="xl"
-                variant="outlineGlow"
-                className="hero-btn hero-btn-outline group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-              >
-                <Link
-                  href="/proyectos"
-                  aria-label="Ver todos los proyectos de NovaSite"
-                >
-                  Ver Portafolio
-                </Link>
-              </Button>
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center transition-all duration-1500 ease-out delay-500">
+                             <Button
+                 asChild
+                 size="xl"
+                 variant="gradient"
+                 className="group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+               >
+                 <Link
+                   href="/guia-proyecto"
+                   aria-label="Guía para comenzar un proyecto en NovaSite"
+                 >
+                   Comenzar Proyecto
+                   <ArrowRight className="ml-3 w-6 h-6 transition-transform duration-200 group-hover:translate-x-1" />
+                 </Link>
+               </Button>
+               <Button
+                 asChild
+                 size="xl"
+                 variant="outlineGlow"
+                 className="group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+               >
+                 <Link
+                   href="/proyectos"
+                   aria-label="Ver todos los proyectos de NovaSite"
+                 >
+                   Ver Portafolio
+                 </Link>
+               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section
-        id="services"
-        ref={servicesRef}
-        className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ${
-          servicesVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-16"
-        }`}
-      >
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-              Nuestros Servicios
-            </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Ofrecemos soluciones completas de desarrollo web adaptadas a las
-              necesidades de tu negocio
-            </p>
-          </div>
+             {/* Services Section */}
+       <section
+         id="services"
+         ref={servicesRef}
+         className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ease-out ${
+           servicesVisible
+             ? "opacity-100 translate-y-0"
+             : "opacity-0 translate-y-8"
+         }`}
+       >
+                 <div className="container mx-auto">
+           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+             servicesVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-6"
+           }`}>
+             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+               Nuestros Servicios
+             </h2>
+             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+               Ofrecemos soluciones completas de desarrollo web adaptadas a las
+               necesidades de tu negocio
+             </p>
+           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service, index) => (
-              <Card
-                key={index}
-                tabIndex={0}
-                className="relative overflow-hidden group cursor-pointer transition-all duration-300 border-0 shadow-lg bg-slate-700 hover:bg-slate-600 hover:-translate-y-2 hover:scale-[1.02] ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 rounded-xl"
-              >
+                     <div className={`grid md:grid-cols-2 lg:grid-cols-4 gap-8 transition-all duration-1000 ease-out delay-300 ${
+             servicesVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-8"
+           }`}>
+             {services.map((service, index) => (
+                               <Card
+                  key={index}
+                  tabIndex={0}
+                  className={`relative overflow-hidden group cursor-pointer transition-all duration-500 border-2 border-blue-500/30 shadow-lg bg-slate-700 hover:bg-slate-600 hover:-translate-y-2 hover:scale-[1.02] hover:border-blue-400/60 focus-within:border-blue-400/80 rounded-xl ${
+                    servicesVisible
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-6"
+                  }`}
+                  style={{
+                    transitionDelay: `${400 + index * 100}ms`
+                  }}
+                >
                 <span
                   className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{
@@ -702,14 +728,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* About Team Section */}
-      <section
-        id="about"
-        ref={teamRef}
-        className={`py-16 px-4 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden transition-all duration-1000 ${
-          teamVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-16"
-        }`}
-      >
+             {/* About Team Section */}
+       <section
+         id="about"
+         ref={teamRef}
+         className={`py-16 px-4 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden transition-all duration-1000 ease-out ${
+           teamVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+         }`}
+       >
         <Image
           src="/logos/ciudad-ciencia-ficcion-arte-digital_1280x720_xtrafondos.com.jpg"
           alt="Ciudad ciencia ficción"
@@ -718,19 +744,27 @@ export default function LandingPage() {
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
           style={{ objectPosition: "center" }}
         />
-        <div className="container mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-              Nuestro Equipo
-            </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Profesionales apasionados por la tecnología y comprometidos con la
-              excelencia
-            </p>
-          </div>
+                 <div className="container mx-auto relative z-10">
+           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+             teamVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-6"
+           }`}>
+             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+               Nuestro Equipo
+             </h2>
+             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+               Profesionales apasionados por la tecnología y comprometidos con la
+               excelencia
+             </p>
+           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-4 sm:px-6">
-            {team.map((member, index) => (
+                     <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-4 sm:px-6 transition-all duration-1000 ease-out delay-300 ${
+             teamVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-8"
+           }`}>
+             {team.map((member, index) => (
               <div 
                 key={index} 
                 className="group perspective-1000 w-full h-full"
@@ -746,10 +780,10 @@ export default function LandingPage() {
                 <div className="relative w-full h-full min-h-[500px] md:min-h-[600px] transition-all duration-700 preserve-3d group-hover:rotate-y-180">
                   {/* Frente de la tarjeta */}
                   <div className="absolute inset-0 backface-hidden w-full h-full">
-                    <Card
-                      tabIndex={0}
-                      className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50 transition-all-600 card-glow"
-                    >
+                                         <Card
+                       tabIndex={0}
+                       className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 transition-all-600 card-glow"
+                     >
                       <span
                         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{
@@ -809,10 +843,10 @@ export default function LandingPage() {
                             : "Ver más"}
                         </button>
                         {openMember === index && (
-                          <div
-                            id={`member-details-${index}`}
-                            className="mt-4 rounded-lg bg-slate-800/70 ring-1 ring-slate-600/40 p-4 transition-all duration-300 text-left"
-                          >
+                                                     <div
+                             id={`member-details-${index}`}
+                             className="mt-4 rounded-lg bg-slate-800/70 border-2 border-blue-500/30 p-4 transition-all duration-300 text-left"
+                           >
                             <div className="space-y-4">
                               <div>
                                 <h4 className="text-blue-400 font-semibold mb-1 text-sm">
@@ -856,8 +890,8 @@ export default function LandingPage() {
                   </div>
 
                   {/* Parte trasera de la tarjeta */}
-                  <div className="absolute inset-0 backface-hidden w-full h-full rotate-y-180">
-                    <Card className="relative overflow-hidden text-center h-full border-0 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-6 flex flex-col justify-start rounded-xl ring-1 ring-slate-600/40 group-hover:ring-blue-500/40 transition-all-600 card-glow">
+                                     <div className="absolute inset-0 backface-hidden w-full h-full rotate-y-180">
+                     <Card className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-6 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 transition-all-600 card-glow">
                       <span
                         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{
@@ -956,26 +990,30 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Portafolio Section */}
-      <section
-        id="portafolio"
-        ref={portfolioRef}
-        className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ${
-          portfolioVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-16"
-        }`}
-      >
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-              Proyectos Destacados
-            </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Algunos de nuestros trabajos más recientes que demuestran nuestra
-              experiencia
-            </p>
-          </div>
+             {/* Portafolio Section */}
+       <section
+         id="portafolio"
+         ref={portfolioRef}
+         className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ease-out ${
+           portfolioVisible
+             ? "opacity-100 translate-y-0"
+             : "opacity-0 translate-y-8"
+         }`}
+       >
+                 <div className="container mx-auto">
+           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+             portfolioVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-6"
+           }`}>
+             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+               Proyectos Destacados
+             </h2>
+             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+               Algunos de nuestros trabajos más recientes que demuestran nuestra
+               experiencia
+             </p>
+           </div>
 
           <div
             ref={portfolioAutoRef}
@@ -1009,14 +1047,14 @@ export default function LandingPage() {
               setTouchStartX(null);
             }}
           >
-            <Card
-              className={`group relative overflow-hidden shadow-xl border-0 bg-slate-700 transition-all duration-500 ring-1 ring-white/5 hover:-translate-y-1 hover:ring-blue-400/40 hover:shadow-[0_10px_40px_-10px_rgba(37,99,235,0.35)] ${
-                projectTransition
-                  ? transitionDir === "next"
-                    ? "opacity-0 translate-x-10"
-                    : "opacity-0 -translate-x-10"
-                  : "opacity-100 translate-x-0"
-              } `}
+                         <Card
+               className={`group relative overflow-hidden shadow-xl border-2 border-blue-500/30 bg-slate-700 transition-all duration-700 ease-out hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-[0_10px_40px_-10px_rgba(37,99,235,0.35)] ${
+                 projectTransition
+                   ? transitionDir === "next"
+                     ? "opacity-0 translate-x-6 scale-95"
+                     : "opacity-0 -translate-x-6 scale-95"
+                   : "opacity-100 translate-x-0 scale-100"
+               } `}
               onMouseMove={(e) => {
                 const el = e.currentTarget as HTMLElement;
                 const r = el.getBoundingClientRect();
@@ -1070,13 +1108,19 @@ export default function LandingPage() {
                       </Badge>
                     ))}
                   </div>
-                  <Button
-                    variant="gradient"
-                    className="group relative overflow-hidden rounded-full px-5 py-3 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-                  >
-                    Ver Proyecto
-                    <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  </Button>
+                                     <Button
+                     asChild
+                     variant="gradient"
+                     className="group relative overflow-hidden rounded-full px-5 py-3 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+                   >
+                     <Link
+                       href="/proyectos"
+                       aria-label={`Ver proyecto ${projects[currentProject].title}`}
+                     >
+                       Ver Proyecto
+                       <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                     </Link>
+                   </Button>
                 </div>
               </div>
             </Card>
@@ -1142,32 +1186,55 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section
-        ref={testimonialsRef}
-        className={`py-16 px-4 bg-gradient-to-r from-slate-900 to-slate-800 transition-all duration-1000 ${
-          testimonialsVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-16"
-        }`}
-      >
-        <div className="container mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-              Qué Dicen Nuestros Clientes
-            </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Valoraciones reales de clientes satisfechos con nuestros proyectos
-            </p>
-          </div>
+                           {/* Testimonials Section */}
+        <section
+          ref={testimonialsRef}
+          className={`py-16 px-4 relative overflow-hidden transition-all duration-1000 ease-out ${
+            testimonialsVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-8"
+          }`}
+        >
+         <Image
+           src="/logos/chica-sola-en-la-ciudad-ilustracion_1280x720_xtrafondos.com.jpg"
+           alt="Chica sola en la ciudad"
+           fill
+           sizes="100vw"
+           className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none select-none z-0"
+           style={{ objectPosition: "center" }}
+         />
+                   <div className="container mx-auto relative z-10">
+           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+             testimonialsVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-6"
+           }`}>
+             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+               Qué Dicen Nuestros Clientes
+             </h2>
+             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+               Valoraciones reales de clientes satisfechos con nuestros proyectos
+             </p>
+           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
-              <Card
-                key={testimonial.id}
-                tabIndex={0}
-                className="relative overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] border-0 shadow-lg bg-slate-700/90 backdrop-blur-sm rounded-xl ring-1 ring-slate-600/40 hover:ring-blue-500/40 focus-within:ring-blue-500/50"
-              >
+                     <div className={`grid md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-1000 ease-out delay-300 ${
+             testimonialsVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-8"
+           }`}>
+             {testimonials.map((testimonial, index) => (
+                                                                                                                         <Card
+                    key={testimonial.id}
+                    tabIndex={0}
+                    className={`relative overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] border-2 border-blue-500/30 shadow-lg bg-slate-800/95 backdrop-blur-md rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 ${
+                      testimonialsVisible
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-6"
+                    }`}
+                    style={{
+                      transitionDelay: `${400 + index * 150}ms`
+                    }}
+                  >
                 <span
                   className="pointer-events-none absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300"
                   style={{
@@ -1222,25 +1289,29 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section
-        id="contact"
-        ref={contactRef}
-        className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ${
-          contactVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-16"
-        }`}
-      >
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-              ¿Listo para Comenzar?
-            </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              Contáctanos hoy y convirtamos tu idea en realidad digital
-            </p>
-          </div>
+             {/* Contact Section */}
+       <section
+         id="contact"
+         ref={contactRef}
+         className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ease-out ${
+           contactVisible
+             ? "opacity-100 translate-y-0"
+             : "opacity-0 translate-y-8"
+         }`}
+       >
+                 <div className="container mx-auto">
+           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+             contactVisible
+               ? "opacity-100 translate-y-0"
+               : "opacity-0 translate-y-6"
+           }`}>
+             <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+               ¿Listo para Comenzar?
+             </h2>
+             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+               Contáctanos hoy y convirtamos tu idea en realidad digital
+             </p>
+           </div>
 
           <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
             <div>
@@ -1289,7 +1360,7 @@ export default function LandingPage() {
                     className="hover:bg-slate-700 hover:border-slate-500 bg-slate-600 text-white border-slate-500"
                   >
                     <a
-                      href="https://github.com/AlejandroBlanco13"
+                      href="https://github.com/novasitesc"
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Visitar nuestro GitHub"
@@ -1331,7 +1402,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <Card className="shadow-xl border-0 bg-slate-700">
+                         <Card className="shadow-xl border-2 border-blue-500/30 bg-slate-700 hover:border-blue-400/60">
               <CardHeader>
                 <CardTitle className="text-white">Envíanos un Mensaje</CardTitle>
                 <CardDescription className="text-white"> 
@@ -1447,55 +1518,64 @@ export default function LandingPage() {
               <p className="text-slate-400 mb-4">
                 Transformando ideas en soluciones digitales innovadoras.
               </p>
-              <div className="flex space-x-4">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-slate-400 hover:text-white hover:bg-slate-800"
-                >
-                  <Github className="w-5 h-5" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-slate-400 hover:text-white hover:bg-slate-800"
-                >
-                  <Linkedin className="w-5 h-5" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-slate-400 hover:text-white hover:bg-slate-800"
-                >
-                  <Twitter className="w-5 h-5" />
-                </Button>
-              </div>
+                             <div className="flex space-x-4">
+                 <Button
+                   asChild
+                   size="icon"
+                   variant="ghost"
+                   className="text-slate-400 hover:text-white hover:bg-slate-800"
+                 >
+                   <a
+                     href="https://github.com/novasitesc"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     aria-label="Visitar nuestro GitHub"
+                   >
+                     <Github className="w-5 h-5" />
+                   </a>
+                 </Button>
+                 <Button
+                   asChild
+                   size="icon"
+                   variant="ghost"
+                   className="text-slate-400 hover:text-white hover:bg-slate-800"
+                 >
+                   <a
+                     href="https://x.com/nova_sitesc"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     aria-label="Visitar nuestro X (Twitter)"
+                   >
+                     <Twitter className="w-5 h-5" />
+                   </a>
+                 </Button>
+               </div>
             </div>
 
             <div>
               <h4 className="font-semibold mb-4">Servicios</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Desarrollo Web
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    E-commerce
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Mantenimiento
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Backend
-                  </a>
-                </li>
-              </ul>
+                             <ul className="space-y-2 text-slate-400">
+                 <li>
+                   <Link href="/servicios" className="hover:text-white transition-colors">
+                     Desarrollo Web
+                   </Link>
+                 </li>
+                 <li>
+                   <Link href="/servicios" className="hover:text-white transition-colors">
+                     E-commerce
+                   </Link>
+                 </li>
+                 <li>
+                   <Link href="/servicios" className="hover:text-white transition-colors">
+                     Mantenimiento
+                   </Link>
+                 </li>
+                 <li>
+                   <Link href="/servicios" className="hover:text-white transition-colors">
+                     Backend
+                   </Link>
+                 </li>
+               </ul>
             </div>
 
             <div>
@@ -1597,108 +1677,40 @@ export default function LandingPage() {
         .animate-slide-fade-in {
           animation: slideFadeIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
-      `}</style>
-      {/* Estilos globales para los botones del hero */}
-      <style jsx global>{`
-        .hero-btn {
-          cursor: pointer !important;
-          transition: transform 0.18s cubic-bezier(0.4, 2, 0.6, 1),
-            box-shadow 0.18s cubic-bezier(0.4, 2, 0.6, 1),
-            background 0.25s cubic-bezier(0.4, 2, 0.6, 1), color 0.18s,
-            border-color 0.18s;
-          will-change: transform, box-shadow, background, color, border-color;
-          box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1),
-            0 1.5px 6px 0 rgba(0, 123, 255, 0.1);
-        }
-        .hero-btn:hover {
-          transform: scale(1.07) translateY(-2px);
-          box-shadow: 0 8px 32px 0 rgba(0, 123, 255, 0.18),
-            0 2px 8px 0 rgba(0, 0, 0, 0.12);
-          background: linear-gradient(
-            90deg,
-            #2563eb 0%,
-            #1e40af 100%
-          ) !important;
-          color: #fff !important;
-          border-color: #2563eb !important;
-        }
-        .hero-btn:active {
-          animation: hero-btn-bounce 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)
-            both;
-          box-shadow: 0 16px 48px 0 rgba(0, 123, 255, 0.32),
-            0 6px 20px 0 rgba(0, 0, 0, 0.14);
-          background: linear-gradient(
-            90deg,
-            #2563eb 0%,
-            #1e40af 100%
-          ) !important;
-          color: #fff !important;
-          border-color: #2563eb !important;
-        }
-        .hero-btn-outline:hover {
-          background: rgba(30, 64, 175, 0.16) !important;
-          color: #fff !important;
-          border-color: #2563eb !important;
-        }
-        .hero-btn-outline:active {
-          animation: hero-btn-bounce 0.32s cubic-bezier(0.34, 1.56, 0.64, 1)
-            both;
-          background: rgba(30, 64, 175, 0.22) !important;
-          color: #fff !important;
-          border-color: #2563eb !important;
-          box-shadow: 0 16px 48px 0 rgba(0, 123, 255, 0.22),
-            0 6px 20px 0 rgba(0, 0, 0, 0.12);
-        }
-        @keyframes hero-btn-bounce {
-          0% {
-            transform: scale(1) translateY(0);
-          }
-          40% {
-            transform: scale(1.18, 0.92) translateY(-6px);
-          }
-          60% {
-            transform: scale(0.96, 1.08) translateY(2px);
-          }
-          80% {
-            transform: scale(1.04, 0.98) translateY(-2px);
-          }
-          100% {
-            transform: scale(1.1) translateY(-4px);
-          }
-        }
+              `}</style>
+       {/* Estilos para el efecto 3D de las tarjetas del equipo */}
+       <style jsx global>{`
+         .perspective-1000 {
+           perspective: 1000px;
+         }
 
-        /* Estilos para el efecto 3D de las tarjetas del equipo */
-        .perspective-1000 {
-          perspective: 1000px;
-        }
+         .transform-style-preserve-3d {
+           transform-style: preserve-3d;
+         }
 
-        .transform-style-preserve-3d {
-          transform-style: preserve-3d;
-        }
+         .backface-hidden {
+           backface-visibility: hidden;
+         }
 
-        .backface-hidden {
-          backface-visibility: hidden;
-        }
+         .rotate-x-180 {
+           transform: rotateX(180deg);
+         }
 
-        .rotate-x-180 {
-          transform: rotateX(180deg);
-        }
+         /* Animación suave para el hover vertical */
+         .group:hover .group-hover\\:rotate-x-180 {
+           transform: rotateX(180deg);
+         }
 
-        /* Animación suave para el hover vertical */
-        .group:hover .group-hover\\:rotate-x-180 {
-          transform: rotateX(180deg);
-        }
-
-        /* Efecto de sombra mejorado para las tarjetas */
-        .group:hover .shadow-xl {
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        /* Avatar cuadrado para el equipo */
-        .square-avatar {
-          border-radius: 1rem;
-          background: linear-gradient(135deg, #1e293b 60%, #2563eb 100%);
-        }
-      `}</style>
+         /* Efecto de sombra mejorado para las tarjetas */
+         .group:hover .shadow-xl {
+           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+         }
+         /* Avatar cuadrado para el equipo */
+         .square-avatar {
+           border-radius: 1rem;
+           background: linear-gradient(135deg, #1e293b 60%, #2563eb 100%);
+         }
+       `}</style>
     </div>
   );
 }
