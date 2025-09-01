@@ -146,7 +146,7 @@ const team = [
     name: "Kevin",
     role: "Software Developer",
     description: "Desarrollador de software entusiasta y dedicado, apasionado por la tecnología.",
-    avatar: "/logos/fotoKevin.jpg",
+    avatar: "/logos/FotoKevin.jpg",
     // Información profesional para la parte trasera
     experience: "Desarrollo de páginas web, aplicaciones, bases de datos.",
     technologies: ["Python", "PostgreSQL", "C++", "Supabase", "JavaScript"],
