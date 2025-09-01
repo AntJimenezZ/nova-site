@@ -74,7 +74,7 @@ const team = [
     name: "Gabriel",
     role: "Software Developer",
     description:
-      "Experiencia en desarrolo de software y desarrollo de aplicaciones",
+      "Experiencia en desarrollo de software y desarrollo de aplicaciones",
     avatar: "/logos/FotoGabriel.jpg",
     // Información profesional para la parte trasera
     experience: "Experiencia en Desarrollo de Software",
@@ -142,6 +142,23 @@ const team = [
     email: "alejandro@novasite.dev",
     linkedin: "linkedin.com/in/alejandro-novasite",
   },
+  {
+    name: "Kevin",
+    role: "Software Developer",
+    description: "Desarrollador de software entusiasta y dedicado, apasionado por la tecnología.",
+    avatar: "/logos/fotoKevin.jpg",
+    // Información profesional para la parte trasera
+    experience: "Desarrollo de páginas web, aplicaciones, bases de datos.",
+    technologies: ["Python", "PostgreSQL", "C++", "Supabase", "JavaScript"],
+    education: "Ingeniería en Computación",
+    achievements: [
+      "10+ proyectos completados",
+      "Especialista en UI/UX",
+      "Diseñador web",
+    ],
+    email: "kevin03varela@gmail.com",
+    linkedin: "linkedin.com/in/kevin03varela",
+  }
 ];
 
 // projects imported from @/lib/projects
@@ -844,8 +861,8 @@ export default function LandingPage() {
                         </button>
                         {openMember === index && (
                                                      <div
+                                                     className="mt-4 rounded-lg bg-slate-800/70 border-2 border-blue-500/30 p-4 transition-all duration-300 text-left"
                              id={`member-details-${index}`}
-                             className="mt-4 rounded-lg bg-slate-800/70 border-2 border-blue-500/30 p-4 transition-all duration-300 text-left"
                            >
                             <div className="space-y-4">
                               <div>
