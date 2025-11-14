@@ -77,7 +77,7 @@ const team = [
     name: "Gabriel",
     role: "Software Developer",
     description:
-      "Experiencia en desarrolo de software y desarrollo de aplicaciones",
+      "Experiencia en desarrollo de software y desarrollo de aplicaciones",
     avatar: "/logos/FotoGabriel.jpg",
     // Información profesional para la parte trasera
     experience: "Experiencia en Desarrollo de Software",
@@ -145,6 +145,23 @@ const team = [
     email: "alejandro@novasite.dev",
     linkedin: "linkedin.com/in/alejandro-novasite",
   },
+  {
+    name: "Kevin",
+    role: "Software Developer",
+    description: "Desarrollador de software entusiasta y dedicado, apasionado por la tecnología.",
+    avatar: "/logos/FotoKevin.jpg",
+    // Información profesional para la parte trasera
+    experience: "Desarrollo de páginas web, aplicaciones, bases de datos.",
+    technologies: ["Python", "PostgreSQL", "C++", "Supabase", "JavaScript"],
+    education: "Ingeniería en Computación",
+    achievements: [
+      "10+ proyectos completados",
+      "Especialista en UI/UX",
+      "Diseñador web",
+    ],
+    email: "kevin03varela@gmail.com",
+    linkedin: "linkedin.com/in/kevin03varela",
+  }
 ];
 
 // projects imported from @/lib/projects
@@ -944,6 +961,24 @@ export default function LandingPage() {
                                           )
                                         )}
                                       </div>
+                                    </div>
+                                    <div className="border-t border-slate-700/60 pt-3">
+                                      <h4 className="text-blue-400 font-semibold mb-2 text-sm">
+                                        Logros
+                                      </h4>
+                                      <ul className="text-slate-300 text-xs space-y-1.5">
+                                        {member.achievements.map(
+                                          (achievement, achievementIndex) => (
+                                            <li
+                                              key={achievementIndex}
+                                              className="flex items-center"
+                                            >
+                                              <Star className="w-3 h-3 text-yellow-400 mr-2 flex-shrink-0" />
+                                              {achievement}
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
                                     </div>
                                   </div>
                                 </div>
