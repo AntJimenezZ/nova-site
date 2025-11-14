@@ -30,6 +30,9 @@ import {
   ArrowUp,
   CheckCircle2,
   XCircle,
+  Folder,
+  FolderOpen,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { projects } from "@/lib/projects";
@@ -188,6 +191,8 @@ export default function LandingPage() {
   const [projectTransition, setProjectTransition] = useState(false);
   // Estado: controla qué miembro está abierto en móvil (detalles)
   const [openMember, setOpenMember] = useState<number | null>(null);
+  // Estado: controla si la carpeta de integrantes está abierta
+  const [isFolderOpen, setIsFolderOpen] = useState(false);
   // Dirección de transición del carrusel
   const [transitionDir, setTransitionDir] = useState<"next" | "prev">("next");
   // Autoplay pausa/activo
@@ -759,233 +764,294 @@ export default function LandingPage() {
              </p>
            </div>
 
-                     <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 px-4 sm:px-6 transition-all duration-1000 ease-out delay-300 ${
-             teamVisible
-               ? "opacity-100 translate-y-0"
-               : "opacity-0 translate-y-8"
-           }`}>
-             {team.map((member, index) => (
-              <div 
-                key={index} 
-                className="group perspective-1000 w-full h-full"
-                onMouseMove={(e) => {
-                  // Actualizar la posición del brillo basado en la posición del mouse
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = e.clientX - rect.left;
-                  const y = e.clientY - rect.top;
-                  e.currentTarget.style.setProperty('--x', `${x}px`);
-                  e.currentTarget.style.setProperty('--y', `${y}px`);
-                }}
-              >
-                <div className="relative w-full h-full min-h-[500px] md:min-h-[600px] transition-all duration-700 preserve-3d group-hover:rotate-y-180">
-                  {/* Frente de la tarjeta */}
-                  <div className="absolute inset-0 backface-hidden w-full h-full">
-                                         <Card
-                       tabIndex={0}
-                       className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 transition-all-600 card-glow"
-                     >
-                      <span
-                        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)",
-                        }}
-                      />
-                      <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-full transform transition-transform-600 group-hover:scale-110">
-                        <Image
-                          src={member.avatar || "/placeholder.svg"}
-                          alt={member.name}
-                          width={200}
-                          height={200}
-                          className="w-full h-full object-cover rounded-full"
-                          loading="lazy"
-                          decoding="async"
-                          style={{ imageRendering: "auto" }}
-                        />
-                      </div>
-                      <CardTitle className="text-2xl text-slate-100 mb-2 text-balance break-words leading-tight">
-                        {member.name}
-                      </CardTitle>
-                      <Badge className="bg-gradient-to-r from-slate-600 to-blue-500 text-white text-sm md:text-base py-1.5 md:py-2 px-3 md:px-4 mb-4 whitespace-normal break-words">
-                        {member.role}
-                      </Badge>
-                      <CardDescription className="text-slate-300 text-base sm:text-lg leading-snug">
-                        {member.description}
-                      </CardDescription>
-                      <div className="mt-6 text-slate-400 text-sm hidden md:flex flex-col items-center">
-                        <p className="mb-2">Pasa el mouse para ver más información</p>
-                        <div className="flex space-x-2">
-                          {[1, 2, 3].map((i) => (
-                            <div 
-                              key={i} 
-                              className="w-2 h-2 rounded-full bg-blue-500 opacity-20 group-hover:opacity-100 transition-all duration-300"
+          {/* Carpeta de Integrantes - Diseño Innovador */}
+          <div className={`px-4 sm:px-6 transition-all duration-1000 ease-out delay-300 ${
+            teamVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-8"
+          }`}>
+            {/* Card de Carpeta - Estado Cerrado */}
+            {!isFolderOpen && (
+              <div className="max-w-2xl mx-auto">
+                <Card
+                  onClick={() => setIsFolderOpen(true)}
+                  className="group relative overflow-hidden border-2 border-blue-500/30 shadow-2xl bg-gradient-to-br from-slate-700 to-slate-800 cursor-pointer hover:border-blue-400/60 hover:shadow-blue-500/20 transition-all duration-500 hover:scale-[1.02]"
+                >
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-blue-500/10 to-transparent" />
+                  
+                  {/* Diseño de carpeta cerrada */}
+                  <div className="relative p-12 sm:p-16 text-center">
+                    {/* Icono de carpeta grande */}
+                    <div className="relative mx-auto mb-6 w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-blue-400/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                      <Folder className="w-32 h-32 sm:w-40 sm:h-40 text-blue-400 group-hover:text-blue-300 transition-all duration-500 group-hover:scale-110" />
+                    </div>
+                    
+                    {/* Título y descripción */}
+                    <CardTitle className="text-3xl sm:text-4xl font-bold text-slate-100 mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+                      Nuestro Equipo
+                    </CardTitle>
+                    <CardDescription className="text-lg sm:text-xl text-slate-300 mb-6">
+                      Haz clic para conocer a los profesionales detrás de NovaSite
+                    </CardDescription>
+                    
+                    {/* Indicador de click */}
+                    <div className="flex items-center justify-center gap-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">
+                      <Users className="w-5 h-5" />
+                      <span className="text-sm font-medium">{team.length} integrantes</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
+
+            {/* Cards de Integrantes - Estado Abierto con animación tipo abanico */}
+            {isFolderOpen && (
+              <div className="relative">
+                {/* Botón para cerrar */}
+                <div className="flex justify-center mb-8">
+                  <Button
+                    onClick={() => setIsFolderOpen(false)}
+                    variant="outlineGlow"
+                    className="group relative overflow-hidden rounded-full border-blue-500/30 text-blue-400 hover:border-blue-400/60 hover:text-blue-300"
+                  >
+                    <FolderOpen className="w-4 h-4 mr-2" />
+                    Cerrar carpeta
+                    <ArrowUp className="ml-2 w-4 h-4 group-hover:-translate-y-1 transition-transform duration-200" />
+                  </Button>
+                </div>
+
+                {/* Grid de cards con animación en cascada */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
+                  {team.map((member, index) => (
+                    <div
+                      key={index}
+                      className="group perspective-1000 w-full h-full animate-folder-reveal"
+                      style={{
+                        animationDelay: `${index * 150}ms`,
+                        animationFillMode: "both",
+                      }}
+                      onMouseMove={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        e.currentTarget.style.setProperty('--x', `${x}px`);
+                        e.currentTarget.style.setProperty('--y', `${y}px`);
+                      }}
+                    >
+                      <div className="relative w-full h-full min-h-[500px] md:min-h-[600px] transition-all duration-700 preserve-3d group-hover:rotate-y-180">
+                        {/* Frente de la tarjeta */}
+                        <div className="absolute inset-0 backface-hidden w-full h-full">
+                          <Card
+                            tabIndex={0}
+                            className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 p-6 sm:p-8 flex flex-col justify-center rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 transition-all-600 card-glow"
+                          >
+                            <span
+                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                               style={{
-                                transitionDelay: `${i * 0.1}s`,
-                                transform: 'translateY(0)'
+                                background:
+                                  "linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)",
                               }}
                             />
-                          ))}
-                        </div>
-                      </div>
+                            <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 mx-auto mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-full transform transition-transform-600 group-hover:scale-110">
+                              <Image
+                                src={member.avatar || "/placeholder.svg"}
+                                alt={member.name}
+                                width={200}
+                                height={200}
+                                className="w-full h-full object-cover rounded-full"
+                                loading="lazy"
+                                decoding="async"
+                                style={{ imageRendering: "auto" }}
+                              />
+                            </div>
+                            <CardTitle className="text-2xl text-slate-100 mb-2 text-balance break-words leading-tight">
+                              {member.name}
+                            </CardTitle>
+                            <Badge className="bg-gradient-to-r from-slate-600 to-blue-500 text-white text-sm md:text-base py-1.5 md:py-2 px-3 md:px-4 mb-4 whitespace-normal break-words">
+                              {member.role}
+                            </Badge>
+                            <CardDescription className="text-slate-300 text-base sm:text-lg leading-snug">
+                              {member.description}
+                            </CardDescription>
+                            <div className="mt-6 text-slate-400 text-sm hidden md:flex flex-col items-center">
+                              <p className="mb-2">Pasa el mouse para ver más información</p>
+                              <div className="flex space-x-2">
+                                {[1, 2, 3].map((i) => (
+                                  <div
+                                    key={i}
+                                    className="w-2 h-2 rounded-full bg-blue-500 opacity-20 group-hover:opacity-100 transition-all duration-300"
+                                    style={{
+                                      transitionDelay: `${i * 0.1}s`,
+                                      transform: 'translateY(0)'
+                                    }}
+                                  />
+                                ))}
+                              </div>
+                            </div>
 
-                      {/* Detalles en móvil: colapsable */}
-                      <div className="md:hidden mt-4">
-                        <button
-                          className="inline-flex items-center text-sm font-medium text-blue-400 underline underline-offset-4 hover:text-blue-300 active:scale-[0.98] transition"
-                          onClick={() =>
-                            setOpenMember(openMember === index ? null : index)
-                          }
-                          aria-expanded={openMember === index}
-                          aria-controls={`member-details-${index}`}
-                        >
-                          {openMember === index
-                            ? "Ocultar detalles"
-                            : "Ver más"}
-                        </button>
-                        {openMember === index && (
-                                                     <div
-                             id={`member-details-${index}`}
-                             className="mt-4 rounded-lg bg-slate-800/70 border-2 border-blue-500/30 p-4 transition-all duration-300 text-left"
-                           >
-                            <div className="space-y-4">
+                            {/* Detalles en móvil: colapsable */}
+                            <div className="md:hidden mt-4">
+                              <button
+                                className="inline-flex items-center text-sm font-medium text-blue-400 underline underline-offset-4 hover:text-blue-300 active:scale-[0.98] transition"
+                                onClick={() =>
+                                  setOpenMember(openMember === index ? null : index)
+                                }
+                                aria-expanded={openMember === index}
+                                aria-controls={`member-details-${index}`}
+                              >
+                                {openMember === index
+                                  ? "Ocultar detalles"
+                                  : "Ver más"}
+                              </button>
+                              {openMember === index && (
+                                <div
+                                  id={`member-details-${index}`}
+                                  className="mt-4 rounded-lg bg-slate-800/70 border-2 border-blue-500/30 p-4 transition-all duration-300 text-left"
+                                >
+                                  <div className="space-y-4">
+                                    <div>
+                                      <h4 className="text-blue-400 font-semibold mb-1 text-sm">
+                                        Experiencia
+                                      </h4>
+                                      <p className="text-slate-300 text-sm leading-6">
+                                        {member.experience}
+                                      </p>
+                                    </div>
+                                    <div className="border-t border-slate-700/60 pt-3">
+                                      <h4 className="text-blue-400 font-semibold mb-1 text-sm">
+                                        Educación
+                                      </h4>
+                                      <p className="text-slate-300 text-sm leading-6">
+                                        {member.education}
+                                      </p>
+                                    </div>
+                                    <div className="border-t border-slate-700/60 pt-3">
+                                      <h4 className="text-blue-400 font-semibold mb-2 text-sm">
+                                        Tecnologías
+                                      </h4>
+                                      <div className="flex flex-wrap gap-2">
+                                        {member.technologies.map(
+                                          (tech, techIndex) => (
+                                            <Badge
+                                              key={techIndex}
+                                              variant="outline"
+                                              className="border-blue-500 text-blue-400 bg-slate-600/80 text-[11px] px-2 py-1"
+                                            >
+                                              {tech}
+                                            </Badge>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        </div>
+
+                        {/* Parte trasera de la tarjeta */}
+                        <div className="absolute inset-0 backface-hidden w-full h-full rotate-y-180">
+                          <Card className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-6 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 transition-all-600 card-glow">
+                            <span
+                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)",
+                              }}
+                            />
+                            <div className="mb-4">
+                              <h3 className="text-xl md:text-2xl font-bold text-slate-100 mb-2 leading-tight">
+                                {member.name}
+                              </h3>
+                              <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm md:text-base py-1.5 md:py-2 px-3 md:px-4 mb-2 whitespace-normal break-words">
+                                {member.role}
+                              </Badge>
+                            </div>
+
+                            <div className="space-y-3 text-left">
                               <div>
-                                <h4 className="text-blue-400 font-semibold mb-1 text-sm">
+                                <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
                                   Experiencia
                                 </h4>
-                                <p className="text-slate-300 text-sm leading-6">
-                                  {member.experience}
-                                </p>
+                                <p className="text-slate-300 text-sm md:text-base leading-6">{member.experience}</p>
                               </div>
-                              <div className="border-t border-slate-700/60 pt-3">
-                                <h4 className="text-blue-400 font-semibold mb-1 text-sm">
+
+                              <div>
+                                <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
                                   Educación
                                 </h4>
-                                <p className="text-slate-300 text-sm leading-6">
-                                  {member.education}
-                                </p>
+                                <p className="text-slate-300 text-sm md:text-base leading-6">{member.education}</p>
                               </div>
-                              <div className="border-t border-slate-700/60 pt-3">
-                                <h4 className="text-blue-400 font-semibold mb-2 text-sm">
+
+                              <div>
+                                <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
                                   Tecnologías
                                 </h4>
                                 <div className="flex flex-wrap gap-2">
-                                  {member.technologies.map(
-                                    (tech, techIndex) => (
-                                      <Badge
-                                        key={techIndex}
-                                        variant="outline"
-                                        className="border-blue-500 text-blue-400 bg-slate-600/80 text-[11px] px-2 py-1"
+                                  {member.technologies.map((tech, techIndex) => (
+                                    <Badge
+                                      key={techIndex}
+                                      variant="outline"
+                                      className="border-blue-500 text-blue-400 bg-slate-600 text-[11px] md:text-xs"
+                                    >
+                                      {tech}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div>
+                                <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
+                                  Logros
+                                </h4>
+                                <ul className="text-slate-300 text-xs md:text-sm space-y-1.5">
+                                  {member.achievements.map(
+                                    (achievement, achievementIndex) => (
+                                      <li
+                                        key={achievementIndex}
+                                        className="flex items-center"
                                       >
-                                        {tech}
-                                      </Badge>
+                                        <Star className="w-3 h-3 text-yellow-400 mr-2 flex-shrink-0" />
+                                        {achievement}
+                                      </li>
                                     )
                                   )}
+                                </ul>
+                              </div>
+
+                              <div className="pt-3 border-t border-slate-600/70">
+                                <div className="flex justify-center space-x-4">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
+                                    onClick={() => {
+                                      const contactSection = document.getElementById('contact');
+                                      if (contactSection) {
+                                        contactSection.scrollIntoView({
+                                          behavior: 'smooth',
+                                          block: 'start'
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    <Mail className="w-4 h-4 mr-2" />
+                                    Email
+                                  </Button>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    </Card>
-                  </div>
-
-                  {/* Parte trasera de la tarjeta */}
-                                     <div className="absolute inset-0 backface-hidden w-full h-full rotate-y-180">
-                     <Card className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-6 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 transition-all-600 card-glow">
-                      <span
-                        className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, rgba(255,255,255,0.06), transparent 60%)",
-                        }}
-                      />
-                      <div className="mb-4">
-                        <h3 className="text-xl md:text-2xl font-bold text-slate-100 mb-2 leading-tight">
-                          {member.name}
-                        </h3>
-                        <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm md:text-base py-1.5 md:py-2 px-3 md:px-4 mb-2 whitespace-normal break-words">
-                          {member.role}
-                        </Badge>
-                      </div>
-
-                      <div className="space-y-3 text-left">
-                        <div>
-                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
-                            Experiencia
-                          </h4>
-                          <p className="text-slate-300 text-sm md:text-base leading-6">{member.experience}</p>
-                        </div>
-
-                        <div>
-                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
-                            Educación
-                          </h4>
-                          <p className="text-slate-300 text-sm md:text-base leading-6">{member.education}</p>
-                        </div>
-
-                        <div>
-                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
-                            Tecnologías
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {member.technologies.map((tech, techIndex) => (
-                              <Badge
-                                key={techIndex}
-                                variant="outline"
-                                className="border-blue-500 text-blue-400 bg-slate-600 text-[11px] md:text-xs"
-                              >
-                                {tech}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <h4 className="text-blue-400 font-semibold mb-1 text-base md:text-lg leading-snug">
-                            Logros
-                          </h4>
-                          <ul className="text-slate-300 text-xs md:text-sm space-y-1.5">
-                            {member.achievements.map(
-                              (achievement, achievementIndex) => (
-                                <li
-                                  key={achievementIndex}
-                                  className="flex items-center"
-                                >
-                                  <Star className="w-3 h-3 text-yellow-400 mr-2 flex-shrink-0" />
-                                  {achievement}
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        </div>
-
-                        <div className="pt-3 border-t border-slate-600/70">
-                          <div className="flex justify-center space-x-4">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white"
-                              onClick={() => {
-                                const contactSection = document.getElementById('contact');
-                                if (contactSection) {
-                                  contactSection.scrollIntoView({ 
-                                    behavior: 'smooth',
-                                    block: 'start'
-                                  });
-                                }
-                              }}
-                            >
-                              <Mail className="w-4 h-4 mr-2" />
-                              Email
-                            </Button>
-                          </div>
+                          </Card>
                         </div>
                       </div>
-                    </Card>
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>

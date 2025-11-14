@@ -1,14 +1,16 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, Users, Target, Sparkles, Rocket, HeartHandshake, ArrowRight } from "lucide-react"
+import { CheckCircle2, Users, Target, Sparkles, Rocket, HeartHandshake, ArrowRight, Folder, FolderOpen, ArrowUp } from "lucide-react"
 import { testimonials } from "@/lib/testimonials"
 
 export default function SobreNosotrosPage() {
+  const [isFolderOpen, setIsFolderOpen] = useState(false)
   const valores = [
     { icon: Target, title: "Enfoque en resultados", desc: "Diseñamos y desarrollamos con objetivos claros de negocio." },
     { icon: Sparkles, title: "Calidad y detalle", desc: "Código limpio, diseño consistente y experiencias pulidas." },
@@ -132,52 +134,112 @@ export default function SobreNosotrosPage() {
           </div>
         </section>
 
-        {/* Equipo */}
+        {/* Equipo - Carpeta Interactiva */}
         <section className="mb-14">
           <div className="flex items-center gap-3 mb-6">
             <CheckCircle2 className="w-6 h-6 text-blue-400" />
             <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">Nuestro equipo</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {equipo.map(m => (
+          
+          {/* Carpeta de Integrantes - Diseño Innovador */}
+          {!isFolderOpen && (
+            <div className="max-w-2xl mx-auto">
               <Card
-                key={m.name}
-                className="group relative overflow-hidden border-0 bg-slate-800/70 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-800/90 hover:shadow-[0_10px_40px_-10px_rgba(59,130,246,0.35)] ring-1 ring-white/5 hover:ring-blue-400/40"
-                onMouseMove={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  const r = el.getBoundingClientRect();
-                  const x = ((e.clientX - r.left) / r.width) * 100;
-                  const y = ((e.clientY - r.top) / r.height) * 100;
-                  el.style.setProperty('--x', `${x}%`);
-                  el.style.setProperty('--y', `${y}%`);
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.removeProperty('--x');
-                  el.style.removeProperty('--y');
-                }}
+                onClick={() => setIsFolderOpen(true)}
+                className="group relative overflow-hidden border-2 border-blue-500/30 shadow-2xl bg-gradient-to-br from-slate-700 to-slate-800 cursor-pointer hover:border-blue-400/60 hover:shadow-blue-500/20 transition-all duration-500 hover:scale-[1.02]"
               >
-                {/* Accent gradient */}
-                <div className="pointer-events-none absolute -inset-24 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20" style={{background:"radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(14,165,233,0.25), transparent 40%)"}} />
-                <CardContent className="p-0">
-                  <div className="relative h-48 bg-slate-900 overflow-hidden">
-                    <Image src={m.avatar} alt={m.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.06]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-blue-500/10 to-transparent" />
+                
+                {/* Diseño de carpeta cerrada */}
+                <div className="relative p-12 sm:p-16 text-center">
+                  {/* Icono de carpeta grande */}
+                  <div className="relative mx-auto mb-6 w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-blue-400/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                    <Folder className="w-32 h-32 sm:w-40 sm:h-40 text-blue-400 group-hover:text-blue-300 transition-all duration-500 group-hover:scale-110" />
                   </div>
-                  <div className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-slate-100 font-semibold tracking-tight">{m.name}</div>
-                        <div className="text-slate-400 text-sm">{m.role}</div>
-                      </div>
-                      <Badge variant="secondary" className="bg-blue-600/20 text-blue-300 border-0">Activos</Badge>
-                    </div>
-                    <p className="text-slate-300 text-sm mt-3">{m.bio}</p>
+                  
+                  {/* Título y descripción */}
+                  <CardTitle className="text-3xl sm:text-4xl font-bold text-slate-100 mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+                    Nuestro Equipo
+                  </CardTitle>
+                  <CardDescription className="text-lg sm:text-xl text-slate-300 mb-6">
+                    Haz clic para conocer a los profesionales detrás de NovaSite
+                  </CardDescription>
+                  
+                  {/* Indicador de click */}
+                  <div className="flex items-center justify-center gap-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">
+                    <Users className="w-5 h-5" />
+                    <span className="text-sm font-medium">{equipo.length} integrantes</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </div>
-                </CardContent>
+                </div>
               </Card>
-            ))}
-          </div>
+            </div>
+          )}
+
+          {/* Cards de Integrantes - Estado Abierto con animación tipo abanico */}
+          {isFolderOpen && (
+            <div className="relative">
+              {/* Botón para cerrar */}
+              <div className="flex justify-center mb-8">
+                <Button
+                  onClick={() => setIsFolderOpen(false)}
+                  variant="outlineGlow"
+                  className="group relative overflow-hidden rounded-full border-blue-500/30 text-blue-400 hover:border-blue-400/60 hover:text-blue-300"
+                >
+                  <FolderOpen className="w-4 h-4 mr-2" />
+                  Cerrar carpeta
+                  <ArrowUp className="ml-2 w-4 h-4 group-hover:-translate-y-1 transition-transform duration-200" />
+                </Button>
+              </div>
+
+              {/* Grid de cards con animación en cascada */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {equipo.map((m, index) => (
+                  <Card
+                    key={m.name}
+                    className="group relative overflow-hidden border-0 bg-slate-800/70 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-800/90 hover:shadow-[0_10px_40px_-10px_rgba(59,130,246,0.35)] ring-1 ring-white/5 hover:ring-blue-400/40 animate-folder-reveal"
+                    style={{
+                      animationDelay: `${index * 150}ms`,
+                      animationFillMode: "both",
+                    }}
+                    onMouseMove={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      const r = el.getBoundingClientRect();
+                      const x = ((e.clientX - r.left) / r.width) * 100;
+                      const y = ((e.clientY - r.top) / r.height) * 100;
+                      el.style.setProperty('--x', `${x}%`);
+                      el.style.setProperty('--y', `${y}%`);
+                    }}
+                    onMouseLeave={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.removeProperty('--x');
+                      el.style.removeProperty('--y');
+                    }}
+                  >
+                    {/* Accent gradient */}
+                    <div className="pointer-events-none absolute -inset-24 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20" style={{background:"radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(14,165,233,0.25), transparent 40%)"}} />
+                    <CardContent className="p-0">
+                      <div className="relative h-48 bg-slate-900 overflow-hidden">
+                        <Image src={m.avatar} alt={m.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-[1.06]" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                      </div>
+                      <div className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-slate-100 font-semibold tracking-tight">{m.name}</div>
+                            <div className="text-slate-400 text-sm">{m.role}</div>
+                          </div>
+                          <Badge variant="secondary" className="bg-blue-600/20 text-blue-300 border-0">Activos</Badge>
+                        </div>
+                        <p className="text-slate-300 text-sm mt-3">{m.bio}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Testimonios (reutiliza data existente) */}
