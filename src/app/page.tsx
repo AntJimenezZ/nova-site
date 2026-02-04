@@ -542,27 +542,27 @@ export default function LandingPage() {
       </div>
       {/* Botón flotante de menú en la parte superior derecha */}
       <button
-        className={`fixed top-8 right-8 z-50 shadow-lg focus:outline-none transition-all duration-200 cursor-pointer bg-transparent p-0 border-0 ${
+        className={`fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 z-50 shadow-lg focus:outline-none transition-all duration-200 cursor-pointer bg-transparent p-0 border-0 ${
           menuOpen ? "scale-110 ring-4 ring-blue-400/40 shadow-2xl" : ""
         }`}
         onClick={() => setMenuOpen(true)}
         aria-label="Abrir menú"
         style={{ outline: "none" }}
       >
-        <span className={`block w-7 h-7 relative`}>
+        <span className={`block w-6 h-6 sm:w-7 sm:h-7 relative`}>
           <span
-            className={`absolute left-0 top-2 w-7 h-1 bg-white rounded transition-all duration-300 ${
-              menuOpen ? "rotate-45 top-3" : ""
+            className={`absolute left-0 top-1.5 sm:top-2 w-6 h-0.5 sm:w-7 sm:h-1 bg-white rounded transition-all duration-300 ${
+              menuOpen ? "rotate-45 top-2.5 sm:top-3" : ""
             }`}
           ></span>
           <span
-            className={`absolute left-0 top-5 w-7 h-1 bg-white rounded transition-all duration-300 ${
+            className={`absolute left-0 top-3 sm:top-5 w-6 h-0.5 sm:w-7 sm:h-1 bg-white rounded transition-all duration-300 ${
               menuOpen ? "opacity-0 scale-x-0" : ""
             }`}
           ></span>
           <span
-            className={`absolute left-0 top-8 w-7 h-1 bg-white rounded transition-all duration-300 ${
-              menuOpen ? "-rotate-45 top-3" : ""
+            className={`absolute left-0 top-4.5 sm:top-8 w-6 h-0.5 sm:w-7 sm:h-1 bg-white rounded transition-all duration-300 ${
+              menuOpen ? "-rotate-45 top-2.5 sm:top-3" : ""
             }`}
           ></span>
         </span>
@@ -574,13 +574,13 @@ export default function LandingPage() {
             className="bg-black/40 w-full h-full absolute inset-0"
             onClick={() => setMenuOpen(false)}
           />
-          <div className="w-72 h-full bg-slate-900 shadow-2xl flex flex-col p-8 space-y-6 relative animate-slide-in-right rounded-l-2xl">
+          <div className="w-full sm:w-80 md:w-72 h-full bg-slate-900 shadow-2xl flex flex-col p-6 sm:p-8 space-y-4 sm:space-y-6 relative animate-slide-in-right rounded-l-2xl">
             <button
-              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 text-slate-400 hover:text-white"
               onClick={() => setMenuOpen(false)}
             >
               <svg
-                className="w-7 h-7"
+                className="w-6 h-6 sm:w-7 sm:h-7"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -595,33 +595,33 @@ export default function LandingPage() {
             </button>
                          <Link
                href="/servicios"
-               className="block text-lg text-slate-300 hover:text-blue-400 transition-colors mt-12"
+               className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors mt-10 sm:mt-12"
                onClick={() => setMenuOpen(false)}
              >
                Servicios
              </Link>
             <a
               href="#about"
-              className="block text-lg text-slate-300 hover:text-blue-400 transition-colors"
+              className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors"
               onClick={() => setMenuOpen(false)}
             >
               Equipo
             </a>
                          <Link
                href="/proyectos"
-               className="block text-lg text-slate-300 hover:text-blue-400 transition-colors"
+               className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors"
                onClick={() => setMenuOpen(false)}
              >
                Portafolio
              </Link>
             <a
               href="#contact"
-              className="block text-lg text-slate-300 hover:text-blue-400 transition-colors"
+              className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors"
               onClick={() => setMenuOpen(false)}
             >
               Contacto
             </a>
-            <Button asChild variant="gradient" className="mt-4 w-full">
+            <Button asChild variant="gradient" className="mt-2 sm:mt-4 w-full text-sm sm:text-base">
               <Link href="/guia-proyecto" onClick={() => setMenuOpen(false)}>
                 Comenzar
               </Link>
@@ -631,7 +631,7 @@ export default function LandingPage() {
       )}
 
       {/* Hero Section */}
-      <section className="w-full h-auto md:h-screen min-h-[520px] sm:min-h-[600px] px-4 bg-slate-900 relative overflow-hidden flex items-center justify-center">
+      <section className="w-full h-auto md:h-screen min-h-[400px] sm:min-h-[500px] md:min-h-[600px] px-3 sm:px-4 bg-slate-900 relative overflow-hidden flex items-center justify-center">
         <Image
           src="/logos/edificios-ciudad-de-noche_1280x720_xtrafondos.com.jpg"
           alt="Edificios ciudad de noche"
@@ -639,7 +639,7 @@ export default function LandingPage() {
           sizes="100vw"
           className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0 animate-background-move"
         />
-        <div className="container mx-auto text-center relative z-10 flex flex-col items-center justify-center h-full pt-20 pb-16 md:pt-0 md:pb-0">
+        <div className="container mx-auto text-center relative z-10 flex flex-col items-center justify-center h-full pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-0 md:pb-0">
                       <div
               className={`transition-all duration-1500 ease-out ${
                 heroVisible
@@ -647,9 +647,9 @@ export default function LandingPage() {
                   : "opacity-0 translate-y-8"
               }`}
             >
-            <div className="mb-10">
+            <div className="mb-6 sm:mb-8 md:mb-10">
               <div 
-                className="w-28 h-28 sm:w-32 sm:h-32 bg-gradient-to-r from-slate-700 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl p-2"
+                className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gradient-to-r from-slate-700 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 md:mb-8 shadow-2xl p-2"
                 style={{
                   opacity: logoOpacity,
                   transition: 'opacity 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -664,21 +664,21 @@ export default function LandingPage() {
                   priority
                 />
               </div>
-              <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-6 sm:mb-8 drop-shadow-lg min-h-[4rem] sm:min-h-[5rem] md:min-h-[6rem]">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-extrabold mb-3 sm:mb-6 md:mb-8 drop-shadow-lg min-h-[2.5rem] sm:min-h-[4rem] md:min-h-[5rem] lg:min-h-[6rem]">
                 <TypingText 
                   typingData={heroTitleTyping} 
                   className="bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent italic"
                 />
               </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl text-slate-100 mb-3 sm:mb-4 font-semibold min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-slate-100 mb-2 sm:mb-3 md:mb-4 font-semibold min-h-[1.5rem] sm:min-h-[2rem] md:min-h-[2.5rem] lg:min-h-[3rem]">
                 <TypingText typingData={heroSubtitleTyping} />
               </p>
-              <p className="text-base sm:text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto mb-8 sm:mb-10 px-2 min-h-[3rem] sm:min-h-[4rem] md:min-h-[5rem]">
+              <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-slate-200 max-w-3xl mx-auto mb-6 sm:mb-8 md:mb-10 px-2 min-h-[2.5rem] sm:min-h-[3rem] md:min-h-[4rem] lg:min-h-[5rem]">
                 <TypingText typingData={heroDescTyping} />
               </p>
             </div>
             <div 
-              className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center w-full sm:w-auto"
               style={{
                 opacity: buttonsOpacity,
                 transition: 'opacity 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -686,23 +686,23 @@ export default function LandingPage() {
             >
               <Button
                 asChild
-                size="xl"
+                size="lg"
                 variant="gradient"
-                className="group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+                className="group relative overflow-hidden rounded-full cursor-pointer text-sm sm:text-base md:text-xl lg:text-2xl px-6 sm:px-8 md:px-12 py-2.5 sm:py-3 md:py-4 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
               >
                 <Link
                   href="/guia-proyecto"
                   aria-label="Guía para comenzar un proyecto en NovaSite"
                 >
                   Comenzar Proyecto
-                  <ArrowRight className="ml-3 w-6 h-6 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ArrowRight className="ml-2 sm:ml-3 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
               </Button>
               <Button
                 asChild
-                size="xl"
+                size="lg"
                 variant="outlineGlow"
-                className="group relative overflow-hidden rounded-full cursor-pointer text-base sm:text-xl md:text-2xl px-8 sm:px-12 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+                className="group relative overflow-hidden rounded-full cursor-pointer text-sm sm:text-base md:text-xl lg:text-2xl px-6 sm:px-8 md:px-12 py-2.5 sm:py-3 md:py-4 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
               >
                 <Link
                   href="/proyectos"
@@ -720,27 +720,27 @@ export default function LandingPage() {
        <section
          id="services"
          ref={servicesRef}
-         className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ease-out ${
+         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-slate-800 transition-all duration-1000 ease-out ${
            servicesVisible
              ? "opacity-100 translate-y-0"
              : "opacity-0 translate-y-8"
          }`}
        >
                  <div className="container mx-auto">
-           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
              servicesVisible
                ? "opacity-100 translate-y-0"
                : "opacity-0 translate-y-6"
            }`}>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[3rem]">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
               <TypingText typingData={servicesTitleTyping} />
             </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto min-h-[3rem]">
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
               <TypingText typingData={servicesDescTyping} />
             </p>
            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 py-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-2 sm:py-4">
             {services.map((service, index) => (
               <Card
                 key={index}
@@ -791,7 +791,7 @@ export default function LandingPage() {
        <section
          id="about"
          ref={teamRef}
-         className={`py-16 px-4 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden transition-all duration-1000 ease-out ${
+         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden transition-all duration-1000 ease-out ${
            teamVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
          }`}
        >
@@ -804,21 +804,21 @@ export default function LandingPage() {
           style={{ objectPosition: "center" }}
         />
                  <div className="container mx-auto relative z-10">
-           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
              teamVisible
                ? "opacity-100 translate-y-0"
                : "opacity-0 translate-y-6"
            }`}>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[3rem]">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
               <TypingText typingData={teamTitleTyping} />
             </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto min-h-[3rem]">
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
               <TypingText typingData={teamDescTyping} />
             </p>
            </div>
 
           {/* Carpeta de Integrantes - Diseño Innovador */}
-          <div className={`px-4 sm:px-6 transition-all duration-1000 ease-out delay-300 ${
+          <div className={`px-2 sm:px-4 md:px-6 transition-all duration-1000 ease-out delay-300 ${
             teamVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-8"
@@ -841,7 +841,7 @@ export default function LandingPage() {
                     </div>
                     
                     {/* Título y descripción */}
-                    <CardTitle className="text-2xl sm:text-3xl font-bold text-slate-100 mb-3 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+                    <CardTitle className="text-2xl sm:text-3xl font-bold mb-3 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
                       Nuestro Equipo
                     </CardTitle>
                     <CardDescription className="text-base sm:text-lg text-slate-300 mb-4">
@@ -876,7 +876,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* Grid de cards con animación en cascada */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
                   {team.map((member, index) => {
                     const isFlipped = flippedCards.has(index);
                     return (
@@ -927,12 +927,12 @@ export default function LandingPage() {
                         }
                       }}
                     >
-                      <div className="relative w-full h-full min-h-[500px] sm:min-h-[550px] md:min-h-[580px] overflow-hidden">
+                      <div className="relative w-full h-full min-h-[380px] sm:min-h-[450px] md:min-h-[520px] lg:min-h-[580px] overflow-hidden">
                         {/* Frente de la tarjeta */}
                         <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] ${isFlipped ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'}`}>
                             <Card
                             tabIndex={0}
-                            className="team-card-front relative overflow-visible text-center w-full h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow transition-all duration-700 ease-out"
+                            className="team-card-front relative overflow-visible text-center w-full h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8 lg:py-10 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow transition-all duration-700 ease-out"
                           >
                             <span
                               className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]"
@@ -942,7 +942,7 @@ export default function LandingPage() {
                               }}
                             />
                             <div 
-                              className="team-avatar-container w-32 sm:w-36 md:w-44 lg:w-52 mx-auto mb-4 sm:mb-5 md:mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-xl transform transition-all duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] md:group-hover:scale-105 flex-shrink-0"
+                              className="team-avatar-container w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-44 lg:h-44 xl:w-52 xl:h-52 mx-auto mb-3 sm:mb-4 md:mb-5 lg:mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-xl transform transition-all duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] md:group-hover:scale-105 flex-shrink-0"
                             >
                               <Image
                                 src={member.avatar || "/placeholder.svg"}
@@ -1101,22 +1101,22 @@ export default function LandingPage() {
        <section
          id="portafolio"
          ref={portfolioRef}
-         className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ease-out ${
+         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-slate-800 transition-all duration-1000 ease-out ${
            portfolioVisible
              ? "opacity-100 translate-y-0"
              : "opacity-0 translate-y-8"
          }`}
        >
                  <div className="container mx-auto">
-           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
              portfolioVisible
                ? "opacity-100 translate-y-0"
                : "opacity-0 translate-y-6"
            }`}>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[3rem]">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
               <TypingText typingData={portfolioTitleTyping} />
             </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto min-h-[3rem]">
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
               <TypingText typingData={portfolioDescTyping} />
             </p>
            </div>
@@ -1185,7 +1185,7 @@ export default function LandingPage() {
               />
               <div className="md:flex">
                 <div className="md:w-1/2">
-                  <div className="relative w-full h-64 md:h-full min-h-[260px] rounded-xl overflow-hidden ring-1 ring-slate-600/50 shadow-lg bg-slate-900">
+                  <div className="relative w-full h-48 sm:h-56 md:h-full min-h-[200px] sm:min-h-[240px] md:min-h-[260px] rounded-xl overflow-hidden ring-1 ring-slate-600/50 shadow-lg bg-slate-900">
                     <Image
                       src={projects[currentProject].image}
                       alt={projects[currentProject].title}
@@ -1196,14 +1196,14 @@ export default function LandingPage() {
                     />
                   </div>
                 </div>
-                <div className="md:w-1/2 p-8">
-                  <h3 className="text-2xl font-bold mb-4 text-slate-100">
+                <div className="md:w-1/2 p-4 sm:p-6 md:p-8">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-slate-100">
                     {projects[currentProject].title}
                   </h3>
-                  <p className="text-slate-300 mb-6">
+                  <p className="text-sm sm:text-base text-slate-300 mb-4 sm:mb-6">
                     {projects[currentProject].description}
                   </p>
-                  <div className="flex flex-wrap gap-2 mb-6">
+                  <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
                     {projects[currentProject].tech.map((tech, index) => (
                       <Badge
                         key={index}
@@ -1295,7 +1295,7 @@ export default function LandingPage() {
                            {/* Testimonials Section */}
         <section
           ref={testimonialsRef}
-          className={`py-12 sm:py-16 md:py-20 px-4 sm:px-6 relative overflow-hidden transition-all duration-1000 ease-out ${
+          className={`py-10 sm:py-12 md:py-16 lg:py-20 px-3 sm:px-4 md:px-6 relative overflow-hidden transition-all duration-1000 ease-out ${
             testimonialsVisible
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-8"
@@ -1314,15 +1314,15 @@ export default function LandingPage() {
          {/* Difuminado de abajo hacia arriba */}
          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent pointer-events-none z-[1]" />
                    <div className="container mx-auto relative z-10 max-w-7xl">
-           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
+           <div className={`text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16 transition-all duration-1000 ease-out delay-200 ${
              testimonialsVisible
                ? "opacity-100 translate-y-0"
                : "opacity-0 translate-y-6"
            }`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 md:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
               <TypingText typingData={testimonialsTitleTyping} />
             </h2>
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-4">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2 sm:px-4">
               <TypingText typingData={testimonialsDescTyping} />
             </p>
            </div>
@@ -1484,32 +1484,32 @@ export default function LandingPage() {
        <section
          id="contact"
          ref={contactRef}
-         className={`py-16 px-4 bg-slate-800 transition-all duration-1000 ease-out ${
+         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-slate-800 transition-all duration-1000 ease-out ${
            contactVisible
              ? "opacity-100 translate-y-0"
              : "opacity-0 translate-y-8"
          }`}
        >
                  <div className="container mx-auto">
-           <div className={`text-center mb-16 transition-all duration-1000 ease-out delay-200 ${
+           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
              contactVisible
                ? "opacity-100 translate-y-0"
                : "opacity-0 translate-y-6"
            }`}>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[3rem]">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
               <TypingText typingData={contactTitleTyping} />
             </h2>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto min-h-[3rem]">
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
               <TypingText typingData={contactDescTyping} />
             </p>
            </div>
 
-          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 max-w-6xl mx-auto">
             <div>
-              <h3 className="text-2xl font-bold mb-6 text-slate-100">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-slate-100">
                 Información de Contacto
               </h3>
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-r from-slate-600 to-blue-500 rounded-lg flex items-center justify-center">
                     <Mail className="w-6 h-6 text-white" />
@@ -1924,33 +1924,41 @@ export default function LandingPage() {
 
          /* Contenedor del avatar del equipo - altura proporcional */
          .team-avatar-container {
-           height: 180px !important;
-           min-height: 180px !important;
-           max-height: 180px !important;
+           height: 96px !important;
+           min-height: 96px !important;
+           max-height: 96px !important;
            flex-shrink: 0 !important;
          }
 
          @media (min-width: 640px) {
            .team-avatar-container {
-             height: 200px !important;
-             min-height: 200px !important;
-             max-height: 200px !important;
+             height: 128px !important;
+             min-height: 128px !important;
+             max-height: 128px !important;
            }
          }
 
          @media (min-width: 768px) {
            .team-avatar-container {
-             height: 240px !important;
-             min-height: 240px !important;
-             max-height: 240px !important;
+             height: 144px !important;
+             min-height: 144px !important;
+             max-height: 144px !important;
            }
          }
 
          @media (min-width: 1024px) {
            .team-avatar-container {
-             height: 280px !important;
-             min-height: 280px !important;
-             max-height: 280px !important;
+             height: 176px !important;
+             min-height: 176px !important;
+             max-height: 176px !important;
+           }
+         }
+
+         @media (min-width: 1280px) {
+           .team-avatar-container {
+             height: 208px !important;
+             min-height: 208px !important;
+             max-height: 208px !important;
            }
          }
 
@@ -1962,18 +1970,25 @@ export default function LandingPage() {
          /* Ajustar el contenedor de la card del equipo */
          .team-card-front {
            overflow: visible !important;
-           padding-top: 1.5rem !important;
-           padding-bottom: 1.5rem !important;
+           padding-top: 1rem !important;
+           padding-bottom: 1rem !important;
          }
 
          @media (min-width: 640px) {
+           .team-card-front {
+             padding-top: 1.5rem !important;
+             padding-bottom: 1.5rem !important;
+           }
+         }
+
+         @media (min-width: 768px) {
            .team-card-front {
              padding-top: 2rem !important;
              padding-bottom: 2rem !important;
            }
          }
 
-         @media (min-width: 768px) {
+         @media (min-width: 1024px) {
            .team-card-front {
              padding-top: 2.5rem !important;
              padding-bottom: 2.5rem !important;
