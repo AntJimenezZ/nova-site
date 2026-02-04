@@ -136,23 +136,6 @@ const team = [
     ],
     email: "alejandro@novasite.dev",
     linkedin: "linkedin.com/in/alejandro-novasite",
-  },
-  {
-    name: "Kevin",
-    role: "Software Developer",
-    description: "Desarrollador de software entusiasta y dedicado, apasionado por la tecnología.",
-    avatar: "/logos/FotoKevin.jpg",
-    // Información profesional para la parte trasera
-    experience: "Desarrollo de páginas web, aplicaciones, bases de datos.",
-    technologies: ["Python", "PostgreSQL", "C++", "Supabase", "JavaScript"],
-    education: "Ingeniería en Computación",
-    achievements: [
-      "10+ proyectos completados",
-      "Especialista en UI/UX",
-      "Diseñador web",
-    ],
-    email: "kevin03varela@gmail.com",
-    linkedin: "linkedin.com/in/kevin03varela",
   }
 ];
 
@@ -684,13 +667,13 @@ export default function LandingPage() {
               <h1 className="text-5xl sm:text-6xl md:text-8xl font-extrabold mb-6 sm:mb-8 drop-shadow-lg min-h-[4rem] sm:min-h-[5rem] md:min-h-[6rem]">
                 <TypingText 
                   typingData={heroTitleTyping} 
-                  className="bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent"
+                  className="bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent italic"
                 />
               </h1>
-              <p className="text-xl sm:text-2xl md:text-3xl text-slate-100 mb-3 sm:mb-4 font-semibold drop-shadow min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
+              <p className="text-xl sm:text-2xl md:text-3xl text-slate-100 mb-3 sm:mb-4 font-semibold min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
                 <TypingText typingData={heroSubtitleTyping} />
               </p>
-              <p className="text-base sm:text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto mb-8 sm:mb-10 drop-shadow px-2 min-h-[3rem] sm:min-h-[4rem] md:min-h-[5rem]">
+              <p className="text-base sm:text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto mb-8 sm:mb-10 px-2 min-h-[3rem] sm:min-h-[4rem] md:min-h-[5rem]">
                 <TypingText typingData={heroDescTyping} />
               </p>
             </div>
@@ -762,18 +745,32 @@ export default function LandingPage() {
               <Card
                 key={index}
                 tabIndex={0}
-                className="relative overflow-hidden group cursor-pointer transition-[transform,box-shadow,border-color] duration-300 ease-in-out hover:-translate-y-2 hover:scale-[1.02] border-2 border-blue-500/30 shadow-lg bg-slate-700 hover:bg-slate-600 hover:border-blue-400/60 focus-within:border-blue-400/80 rounded-xl"
+                className="relative overflow-hidden group cursor-pointer transition-all duration-700 ease-out hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-[0_10px_40px_-10px_rgba(37,99,235,0.35)] border-2 border-blue-500/30 shadow-xl bg-slate-700 focus-within:border-blue-400/80 rounded-xl"
+                onMouseMove={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  const r = el.getBoundingClientRect();
+                  const x = ((e.clientX - r.left) / r.width) * 100;
+                  const y = ((e.clientY - r.top) / r.height) * 100;
+                  el.style.setProperty("--x", `${x}%`);
+                  el.style.setProperty("--y", `${y}%`);
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.removeProperty("--x");
+                  el.style.removeProperty("--y");
+                }}
               >
-                <span
-                  className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out"
+                {/* Glow radial that follows mouse */}
+                <div
+                  className="pointer-events-none absolute -inset-24 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20"
                   style={{
                     background:
-                      "linear-gradient(135deg, rgba(255,255,255,0.03), transparent 70%)",
+                      "radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(59,130,246,0.25), transparent 40%)",
                   }}
                 />
                 <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-slate-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:from-slate-500 group-hover:to-blue-400 transition-all duration-300">
-                    <service.icon className="w-8 h-8 text-white transition-transform duration-300 group-hover:scale-110" />
+                  <div className="w-16 h-16 bg-gradient-to-r from-slate-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:from-slate-500 group-hover:to-blue-400 transition-all duration-500">
+                    <service.icon className="w-8 h-8 text-white transition-transform duration-500 group-hover:scale-110" />
                   </div>
                   <CardTitle className="text-xl mb-2 text-slate-100">
                     {service.title}
@@ -930,30 +927,36 @@ export default function LandingPage() {
                         }
                       }}
                     >
-                      <div className="relative w-full h-full min-h-[500px] sm:min-h-[550px] md:min-h-[600px] overflow-hidden">
+                      <div className="relative w-full h-full min-h-[500px] sm:min-h-[550px] md:min-h-[580px] overflow-hidden">
                         {/* Frente de la tarjeta */}
-                        <div className={`absolute inset-0 w-full h-full transition-all duration-700 md:duration-800 ease-[cubic-bezier(0.4,0,0.2,1)] ${isFlipped ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'}`}>
+                        <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] ${isFlipped ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'}`}>
                             <Card
                             tabIndex={0}
-                            className="relative overflow-hidden text-center w-full h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 p-4 sm:p-6 md:p-8 flex flex-col justify-center rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow"
+                            className="team-card-front relative overflow-visible text-center w-full h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 px-4 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow transition-all duration-700 ease-out"
                           >
                             <span
-                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"
+                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]"
                               style={{
                                 background:
                                   "linear-gradient(135deg, rgba(255,255,255,0.05), transparent 60%)",
                               }}
                             />
-                            <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 mx-auto mb-4 sm:mb-5 md:mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-full transform transition-all duration-500 ease-out md:group-hover:scale-105">
+                            <div 
+                              className="team-avatar-container w-32 sm:w-36 md:w-44 lg:w-52 mx-auto mb-4 sm:mb-5 md:mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-xl transform transition-all duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] md:group-hover:scale-105 flex-shrink-0"
+                            >
                               <Image
                                 src={member.avatar || "/placeholder.svg"}
                                 alt={member.name}
-                                width={200}
-                                height={200}
-                                className="w-full h-full object-cover rounded-full"
+                                width={300}
+                                height={500}
+                                className="w-full h-full object-cover rounded-xl"
                                 loading="lazy"
                                 decoding="async"
-                                style={{ imageRendering: "auto" }}
+                                style={{ 
+                                  imageRendering: "auto",
+                                  width: '100%',
+                                  height: '100%'
+                                }}
                               />
                             </div>
                             <CardTitle className="text-xl sm:text-2xl text-slate-100 mb-2 text-balance break-words leading-tight px-2">
@@ -962,9 +965,6 @@ export default function LandingPage() {
                             <Badge className="bg-gradient-to-r from-slate-600 to-blue-500 text-white text-xs sm:text-sm md:text-base py-1 sm:py-1.5 md:py-2 px-2 sm:px-3 md:px-4 mb-3 sm:mb-4 whitespace-normal break-words">
                               {member.role}
                             </Badge>
-                            <CardDescription className="text-slate-300 text-sm sm:text-base md:text-lg leading-snug px-2 sm:px-4 mb-2">
-                              {member.description}
-                            </CardDescription>
                             <div className="mt-6 text-slate-400 text-sm hidden md:flex flex-col items-center">
                               <p className="mb-2">Pasa el mouse para ver más información</p>
                               <div className="flex space-x-2">
@@ -991,49 +991,52 @@ export default function LandingPage() {
                         </div>
 
                         {/* Parte trasera de la tarjeta */}
-                        <div className={`absolute inset-0 w-full h-full transition-all duration-700 md:duration-800 ease-[cubic-bezier(0.4,0,0.2,1)] ${isFlipped ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'} overflow-y-auto overscroll-contain`}>
-                          <Card className="relative overflow-visible md:overflow-hidden text-center min-h-full border-2 border-blue-500/30 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-4 sm:p-5 md:p-6 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow">
+                        <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] ${isFlipped ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'} overflow-hidden`}>
+                          <Card className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-4 sm:p-5 flex flex-col justify-between rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow transition-all duration-700 ease-out">
                             <span
-                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"
+                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]"
                               style={{
                                 background:
                                   "linear-gradient(135deg, rgba(255,255,255,0.05), transparent 60%)",
                               }}
                             />
-                            <div className="mb-3 sm:mb-4">
-                              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-100 mb-2 leading-tight px-2">
+                            
+                            {/* Header compacto */}
+                            <div className="mb-3">
+                              <h3 className="text-lg sm:text-xl font-bold text-slate-100 mb-1.5 leading-tight">
                                 {member.name}
                               </h3>
-                              <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs sm:text-sm md:text-base py-1 sm:py-1.5 md:py-2 px-2 sm:px-3 md:px-4 mb-2 whitespace-normal break-words">
+                              <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs sm:text-sm py-1 px-3">
                                 {member.role}
                               </Badge>
                             </div>
 
-                            <div className="space-y-2 sm:space-y-3 text-left px-2 sm:px-4">
+                            {/* Contenido organizado en grid compacto */}
+                            <div className="flex-1 grid grid-cols-2 gap-3 sm:gap-3.5 text-left">
                               <div>
-                                <h4 className="text-blue-400 font-semibold mb-1 text-sm sm:text-base md:text-lg leading-snug">
+                                <h4 className="text-blue-400 font-semibold mb-1 text-xs sm:text-sm">
                                   Experiencia
                                 </h4>
-                                <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-5 sm:leading-6">{member.experience}</p>
+                                <p className="text-slate-300 text-xs sm:text-sm leading-snug line-clamp-2">{member.experience}</p>
                               </div>
 
                               <div>
-                                <h4 className="text-blue-400 font-semibold mb-1 text-sm sm:text-base md:text-lg leading-snug">
+                                <h4 className="text-blue-400 font-semibold mb-1 text-xs sm:text-sm">
                                   Educación
                                 </h4>
-                                <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-5 sm:leading-6">{member.education}</p>
+                                <p className="text-slate-300 text-xs sm:text-sm leading-snug">{member.education}</p>
                               </div>
 
-                              <div>
-                                <h4 className="text-blue-400 font-semibold mb-1 text-sm sm:text-base md:text-lg leading-snug">
+                              <div className="col-span-2">
+                                <h4 className="text-blue-400 font-semibold mb-1.5 text-xs sm:text-sm">
                                   Tecnologías
                                 </h4>
-                                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                                <div className="flex flex-wrap gap-1.5">
                                   {member.technologies.map((tech, techIndex) => (
                                     <Badge
                                       key={techIndex}
                                       variant="outline"
-                                      className="border-blue-500 text-blue-400 bg-slate-600 text-[10px] sm:text-[11px] md:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1"
+                                      className="border-blue-500 text-blue-400 bg-slate-600 text-xs px-2 py-0.5"
                                     >
                                       {tech}
                                     </Badge>
@@ -1041,46 +1044,45 @@ export default function LandingPage() {
                                 </div>
                               </div>
 
-                              <div>
-                                <h4 className="text-blue-400 font-semibold mb-1 text-sm sm:text-base md:text-lg leading-snug">
+                              <div className="col-span-2">
+                                <h4 className="text-blue-400 font-semibold mb-1.5 text-xs sm:text-sm">
                                   Logros
                                 </h4>
-                                <ul className="text-slate-300 text-xs sm:text-sm space-y-1 sm:space-y-1.5">
+                                <ul className="text-slate-300 space-y-1">
                                   {member.achievements.map(
                                     (achievement, achievementIndex) => (
                                       <li
                                         key={achievementIndex}
-                                        className="flex items-start sm:items-center"
+                                        className="flex items-start leading-snug"
                                       >
-                                        <Star className="w-3 h-3 text-yellow-400 mr-2 flex-shrink-0 mt-0.5 sm:mt-0" />
-                                        <span className="leading-relaxed">{achievement}</span>
+                                        <Star className="w-3 h-3 text-yellow-400 mr-1.5 flex-shrink-0 mt-0.5" />
+                                        <span className="text-xs sm:text-sm line-clamp-1">{achievement}</span>
                                       </li>
                                     )
                                   )}
                                 </ul>
                               </div>
+                            </div>
 
-                              <div className="pt-2 sm:pt-3 border-t border-slate-600/70 mt-3 sm:mt-4">
-                                <div className="flex justify-center space-x-3 sm:space-x-4">
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2"
-                                    onClick={() => {
-                                      const contactSection = document.getElementById('contact');
-                                      if (contactSection) {
-                                        contactSection.scrollIntoView({
-                                          behavior: 'smooth',
-                                          block: 'start'
-                                        });
-                                      }
-                                    }}
-                                  >
-                                    <Mail className="w-3 h-3 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                                    Email
-                                  </Button>
-                                </div>
-                              </div>
+                            {/* Botón compacto */}
+                            <div className="pt-2.5 border-t border-slate-600/70 mt-2.5">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 h-auto"
+                                onClick={() => {
+                                  const contactSection = document.getElementById('contact');
+                                  if (contactSection) {
+                                    contactSection.scrollIntoView({
+                                      behavior: 'smooth',
+                                      block: 'start'
+                                    });
+                                  }
+                                }}
+                              >
+                                <Mail className="w-3 h-3 mr-1.5" />
+                                Email
+                              </Button>
                             </div>
                           </Card>
                         </div>
@@ -1876,14 +1878,14 @@ export default function LandingPage() {
          /* Animación suave de deslizamiento vertical */
          .group:hover .card-glow {
            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.2);
-           transition: box-shadow 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+           transition: box-shadow 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
          }
          
          /* Efecto de profundidad sutil durante el deslizamiento - solo en desktop */
          @media (min-width: 768px) {
            .group:hover {
              transform: translateY(-2px);
-             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+             transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
            }
          }
          
@@ -1902,7 +1904,80 @@ export default function LandingPage() {
 
          /* Mejora de la transición del gradiente en hover */
          .card-glow span {
-           transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+           transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+         }
+
+         /* Ocultar scrollbar pero mantener funcionalidad */
+         .team-card-scroll {
+           scrollbar-width: none; /* Firefox */
+           -ms-overflow-style: none; /* IE y Edge */
+         }
+
+         .team-card-scroll::-webkit-scrollbar {
+           display: none; /* Chrome, Safari y Opera */
+         }
+
+         /* Suavizar el movimiento de las cards del equipo */
+         .group {
+           transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+         }
+
+         /* Contenedor del avatar del equipo - altura proporcional */
+         .team-avatar-container {
+           height: 180px !important;
+           min-height: 180px !important;
+           max-height: 180px !important;
+           flex-shrink: 0 !important;
+         }
+
+         @media (min-width: 640px) {
+           .team-avatar-container {
+             height: 200px !important;
+             min-height: 200px !important;
+             max-height: 200px !important;
+           }
+         }
+
+         @media (min-width: 768px) {
+           .team-avatar-container {
+             height: 240px !important;
+             min-height: 240px !important;
+             max-height: 240px !important;
+           }
+         }
+
+         @media (min-width: 1024px) {
+           .team-avatar-container {
+             height: 280px !important;
+             min-height: 280px !important;
+             max-height: 280px !important;
+           }
+         }
+
+         /* Asegurar que el card tenga suficiente espacio para el avatar */
+         .card-glow {
+           overflow: visible !important;
+         }
+
+         /* Ajustar el contenedor de la card del equipo */
+         .team-card-front {
+           overflow: visible !important;
+           padding-top: 1.5rem !important;
+           padding-bottom: 1.5rem !important;
+         }
+
+         @media (min-width: 640px) {
+           .team-card-front {
+             padding-top: 2rem !important;
+             padding-bottom: 2rem !important;
+           }
+         }
+
+         @media (min-width: 768px) {
+           .team-card-front {
+             padding-top: 2.5rem !important;
+             padding-bottom: 2.5rem !important;
+           }
          }
        `}</style>
     </div>
