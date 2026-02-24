@@ -255,9 +255,18 @@ export default function LandingPage() {
     "idle" | "success" | "error"
   >("idle");
 
-  // Estados para fade-in del logo y botones del hero
+  // Estado para fade-in del logo del hero
   const [logoOpacity, setLogoOpacity] = useState(0);
-  const [buttonsOpacity, setButtonsOpacity] = useState(0);
+  // Animación título: primero dígitos, luego cada dígito se convierte en su letra
+  const [heroTitlePhase, setHeroTitlePhase] = useState<"digits" | "letters">("digits");
+  const [heroDigits, setHeroDigits] = useState("00000000");
+  const [frozenDigits, setFrozenDigits] = useState("00000000");
+  const [lettersRevealed, setLettersRevealed] = useState(0);
+  const heroDigitsRef = useRef(heroDigits);
+
+  useEffect(() => {
+    heroDigitsRef.current = heroDigits;
+  }, [heroDigits]);
 
   useEffect(() => {
     setTimeout(() => setHeroVisible(true), 100);
@@ -270,17 +279,47 @@ export default function LandingPage() {
     }
   }, [heroVisible]);
 
-  // Efecto para fade-in de los botones
+  // Fase de dígitos: ciclan rápido; al terminar congelamos y pasamos a revelar letras una a una (se repite cada vez que volvemos a dígitos)
   useEffect(() => {
-    if (heroVisible) {
-      setTimeout(() => setButtonsOpacity(1), 800);
-    }
-  }, [heroVisible]);
+    if (!heroVisible || heroTitlePhase !== "digits") return;
+    const digits = "0123456789";
+    const len = 8;
+    const digitInterval = setInterval(() => {
+      const next = Array.from({ length: len }, () => digits[Math.floor(Math.random() * digits.length)]).join("");
+      setHeroDigits(next);
+    }, 90);
+    const switchToLetters = setTimeout(() => {
+      clearInterval(digitInterval);
+      setFrozenDigits(heroDigitsRef.current);
+      setLettersRevealed(0);
+      setHeroTitlePhase("letters");
+    }, 2200);
+    return () => {
+      clearInterval(digitInterval);
+      clearTimeout(switchToLetters);
+    };
+  }, [heroVisible, heroTitlePhase]);
 
-  // Animación de typing para el hero
-  const heroTitleTyping = useTypingAnimation("NovaSite", heroVisible, 100);
-  const heroSubtitleTyping = useTypingAnimation("Desarrollo de Software", heroVisible, 200);
-  const heroDescTyping = useTypingAnimation("Transformamos tus ideas en soluciones digitales innovadoras. Desarrollo web profesional, e-commerce y aplicaciones personalizadas.", heroVisible, 300);
+  // Revelar letras una por una: cada número cambia a su letra con pausa entre sí (no todo a la vez)
+  const TITLE_WORD = "NOVASITE";
+  useEffect(() => {
+    if (heroTitlePhase !== "letters" || lettersRevealed >= TITLE_WORD.length) return;
+    // Pausa más larga entre cada cambio (1 → N, 2 → O, …) para que se note bien uno por uno
+    const delay = lettersRevealed === 0 ? 320 : 280;
+    const t = setTimeout(() => setLettersRevealed((c) => c + 1), delay);
+    return () => clearTimeout(t);
+  }, [heroTitlePhase, lettersRevealed]);
+
+  // Tras la calcinación (cuando el texto ya se fue por completo), volver a dígitos antes de que empiece a reaparecer
+  useEffect(() => {
+    if (heroTitlePhase !== "letters" || lettersRevealed < TITLE_WORD.length) return;
+    // La calcinación llega a "gone" ~14s después de que todas las letras están reveladas. Cambiamos justo entonces para no ver el reaparecer
+    const backToDigits = setTimeout(() => {
+      setHeroTitlePhase("digits");
+      setLettersRevealed(0);
+    }, 14000);
+    return () => clearTimeout(backToDigits);
+  }, [heroTitlePhase, lettersRevealed]);
 
   // (Botón volver arriba ahora está en el footer)
 
@@ -632,87 +671,119 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="w-full h-auto md:h-screen min-h-[400px] sm:min-h-[500px] md:min-h-[600px] px-3 sm:px-4 bg-slate-900 relative overflow-hidden flex items-center justify-center">
-        <Image
-          src="/logos/edificios-ciudad-de-noche_1280x720_xtrafondos.com.jpg"
-          alt="Edificios ciudad de noche"
-          fill
-          sizes="100vw"
-          className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0 animate-background-move"
-        />
-        <div className="container mx-auto text-center relative z-10 flex flex-col items-center justify-center h-full pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-0 md:pb-0">
-                      <div
-              className={`transition-all duration-1500 ease-out ${
-                heroVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-            >
-            <div className="mb-6 sm:mb-8 md:mb-10">
-              <div 
-                className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 bg-gradient-to-r from-slate-700 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 md:mb-8 shadow-2xl p-2"
-                style={{
-                  opacity: logoOpacity,
-                  transition: 'opacity 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                }}
-              >
-                <Image
-                  src="/android-chrome-192x192.png"
-                  alt="NovaSite Logo"
-                  width={192}
-                  height={192}
-                  className="w-full h-full object-contain"
-                  priority
-                />
-              </div>
-              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-8xl font-extrabold mb-3 sm:mb-6 md:mb-8 drop-shadow-lg min-h-[2.5rem] sm:min-h-[4rem] md:min-h-[5rem] lg:min-h-[6rem]">
-                <TypingText 
-                  typingData={heroTitleTyping} 
-                  className="bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent italic"
-                />
-              </h1>
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-slate-100 mb-2 sm:mb-3 md:mb-4 font-semibold min-h-[1.5rem] sm:min-h-[2rem] md:min-h-[2.5rem] lg:min-h-[3rem]">
-                <TypingText typingData={heroSubtitleTyping} />
-              </p>
-              <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-slate-200 max-w-3xl mx-auto mb-6 sm:mb-8 md:mb-10 px-2 min-h-[2.5rem] sm:min-h-[3rem] md:min-h-[4rem] lg:min-h-[5rem]">
-                <TypingText typingData={heroDescTyping} />
-              </p>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none z-0"
+          aria-hidden
+        >
+          <source src="/33628-397860881_medium.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-slate-900/50 z-[1]" aria-hidden="true" />
+        {/* Texto central: dígitos → NOVASITE (creación tecnológica) */}
+        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+          <h1
+            className="font-nexa font-bold text-center text-white px-4 flex justify-center items-center min-h-[1.2em]"
+            style={{
+              opacity: logoOpacity,
+              transition: "opacity 0.6s ease-out",
+              fontSize: "clamp(1.5rem, min(32vh, 6.5vw), 32vh)",
+              textShadow: "0 0 24px rgba(37, 99, 235, 0.9), 0 0 48px rgba(59, 130, 246, 0.55), 0 2px 12px rgba(0,0,0,0.5)",
+            }}
+            aria-label={heroTitlePhase === "letters" ? "NOVASITE" : "Cargando"}
+          >
+            <span className="inline-flex tracking-[0.2em] gap-[0.45em] sm:gap-[0.55em] md:gap-[0.65em] items-center justify-center">
+              {heroTitlePhase === "digits" ? (
+                <span className="inline-flex tracking-[0.2em] gap-[0.45em] sm:gap-[0.55em] md:gap-[0.65em] items-center justify-center digits-revive-from-ashes">
+                  {heroDigits.split("").map((digit, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center justify-center tabular-nums font-mono animate-pulse-subtle bg-clip-text text-transparent"
+                      style={{ width: "1em", minWidth: "1em", height: "1em", backgroundImage: "linear-gradient(to right, #57534e, #78716c, #a8a29e, #fef3c7)" }}
+                    >
+                      {digit}
+                    </span>
+                  ))}
+                </span>
+              ) : (
+                TITLE_WORD.split("").map((_, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center justify-center"
+                    style={{ width: "1em", minWidth: "1em", height: "1em" }}
+                  >
+                    {i < lettersRevealed ? (
+                      <span
+                        className="animate-title-letter inline-block overflow-hidden flex-shrink-0"
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(6, 1fr)",
+                          gridTemplateRows: "repeat(6, 1fr)",
+                          width: "1em",
+                          height: "1em",
+                        }}
+                      >
+                        {[0, 1, 2, 3, 4, 5].flatMap((row) =>
+                          [0, 1, 2, 3, 4, 5].map((col) => (
+                            <span
+                              key={`${row}-${col}`}
+                              className="tetris-block overflow-hidden relative"
+                              style={{
+                                // Arriba primero (row 0), luego el resto: desvanece por partes como calcinación
+                                animationDelay: `${5.5 - i * 0.26 + row * 0.42}s`,
+                              }}
+                            >
+                              <span
+                                className="absolute flex items-center justify-center bg-clip-text text-transparent"
+                                style={{
+                                  width: "600%",
+                                  height: "600%",
+                                  left: `-${col * 100}%`,
+                                  top: `-${row * 100}%`,
+                                  backgroundImage: "linear-gradient(to top, #44403c 0%, #78716c 28%, #a8a29e 50%, #fef3c7 78%, #fefce8 100%)",
+                                  WebkitBackgroundClip: "text",
+                                  fontSize: "1em",
+                                }}
+                              >
+                                {TITLE_WORD[i]}
+                              </span>
+                            </span>
+                          ))
+                        )}
+                      </span>
+                    ) : (
+                      <span className="tabular-nums font-mono bg-clip-text text-transparent inline-block" style={{ backgroundImage: "linear-gradient(to right, #57534e, #78716c, #a8a29e, #fef3c7)" }}>
+                        {frozenDigits[i] ?? ""}
+                      </span>
+                    )}
+                  </span>
+                ))
+              )}
+            </span>
+          </h1>
+        </div>
+        {/* Logo NovaSite - esquina superior izquierda */}
+        <div
+          className="absolute top-4 left-4 sm:top-6 sm:left-6 md:top-8 md:left-8 z-10"
+          style={{
+            opacity: logoOpacity,
+            transition: 'opacity 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          }}
+        >
+          <Link href="/" className="block" aria-label="NovaSite - Inicio">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-r from-slate-700 to-blue-600 rounded-xl flex items-center justify-center shadow-xl p-1.5">
+              <Image
+                src="/android-chrome-192x192.png"
+                alt="NovaSite Logo"
+                width={192}
+                height={192}
+                className="w-full h-full object-contain"
+                priority
+              />
             </div>
-            <div 
-              className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center w-full sm:w-auto"
-              style={{
-                opacity: buttonsOpacity,
-                transition: 'opacity 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              }}
-            >
-              <Button
-                asChild
-                size="lg"
-                variant="gradient"
-                className="group relative overflow-hidden rounded-full cursor-pointer text-sm sm:text-base md:text-xl lg:text-2xl px-6 sm:px-8 md:px-12 py-2.5 sm:py-3 md:py-4 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-              >
-                <Link
-                  href="/guia-proyecto"
-                  aria-label="Guía para comenzar un proyecto en NovaSite"
-                >
-                  Comenzar Proyecto
-                  <ArrowRight className="ml-2 sm:ml-3 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transition-transform duration-200 group-hover:translate-x-1" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outlineGlow"
-                className="group relative overflow-hidden rounded-full cursor-pointer text-sm sm:text-base md:text-xl lg:text-2xl px-6 sm:px-8 md:px-12 py-2.5 sm:py-3 md:py-4 font-bold focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-              >
-                <Link
-                  href="/proyectos"
-                  aria-label="Ver todos los proyectos de NovaSite"
-                >
-                  Ver Portafolio
-                </Link>
-              </Button>
-            </div>
-          </div>
+          </Link>
         </div>
       </section>
 
