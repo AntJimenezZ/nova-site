@@ -1,66 +1,65 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
+
 import {
-  Code2,
-  ShoppingCart,
-  Wrench,
-  Database,
-  ChevronLeft,
-  ChevronRight,
-  Star,
-  Mail,
-  Phone,
-  MapPin,
-  Github,
-  Twitter,
-  Instagram,
-  ArrowRight,
-  ArrowUp,
-  CheckCircle2,
-  XCircle,
-  Folder,
-  FolderOpen,
-  Users,
-} from "lucide-react";
+  Code, ShoppingCart, Wrench, Database, Star,
+  Phone, Envelope, Crosshair, ArrowRight,
+  CheckCircle, XCircle, X, InstagramLogo, CaretRight, XLogo, WhatsappLogo
+} from "@phosphor-icons/react";
+
 import Link from "next/link";
-import { projects } from "@/lib/projects";
-import { testimonials } from "@/lib/testimonials";
+import { projects, Project } from "@/lib/projects";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Stars, Float, Sparkles } from "@react-three/drei";
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import Lenis from "lenis";
+import { Howl } from "howler";
+import { Turnstile } from '@marsidev/react-turnstile';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const services = [
   {
-    icon: Code2,
+    icon: Code,
     title: "Desarrollo Web",
-    description:
-      "Aplicaciones web modernas y responsivas con las últimas tecnologías",
+    description: "Aplicaciones web modernas y responsivas con las últimas tecnologías",
+    longDescription: "Construimos interfaces de alto rendimiento corporativo utilizando frameworks de vanguardia. La experiencia de usuario es tratada como una ciencia de conversión exacta, integrando WebGL y micro-interacciones fluidas.",
+    features: ["Single Page Applications (SPA)", "Server Side Rendering (SSR)", "Despliegue de Animaciones Avanzadas (WebGL / GSAP)", "Optimización SEO Extrema"],
+    tech: ["Next.js", "React", "TypeScript", "TailwindCSS", "Framer Motion"]
   },
   {
     icon: ShoppingCart,
     title: "E-commerce",
-    description:
-      "Tiendas online completas con sistemas de pago y gestión de inventario",
+    description: "Tiendas online completas con sistemas de pago y gestión de inventario",
+    longDescription: "Desarrollamos motores de ventas digitales escalables. Listos para altos volúmenes de transacciones, enfocándonos radicalmente en minimizar la fricción cognitiva en el proceso de pago.",
+    features: ["Pasarelas de Pago Globaladas e Inteligentes", "Dashboards y Analíticas Integradas", "Inventario Automatizado Multinivel", "Protección Activa contra Fraude"],
+    tech: ["Shopify Plus", "Stripe API", "PostgreSQL", "Next.js Commerce"]
   },
   {
     icon: Wrench,
     title: "Mantenimiento",
     description: "Soporte técnico continuo y actualizaciones para tu sitio web",
+    longDescription: "Nuestro equipo de respuesta asegura que tu infraestructura tecnológica esté siempre en un 99.9% de uptime, aplicando parches de seguridad y balanceo de carga en la nube sin ralentizar operaciones.",
+    features: ["Monitoreo Constante 24/7", "Auditoría de Seguridad Periódica", "Escalabilidad Dinámica en Nubes", "Refactorización de Código Base Obsoleto"],
+    tech: ["AWS / GCP", "Docker", "Sentry", "Vercel Analytics"]
   },
   {
     icon: Database,
     title: "Backend Personalizado",
     description: "APIs robustas y bases de datos optimizadas para tu negocio",
+    longDescription: "Diseñamos la lógica de negocio detrás de escena. Arquitecturas de microservicios, bases de datos relacionales o NoSQL con la más alta disponibilidad y baja latencia.",
+    features: ["Estructuras de APIs RESTful y GraphQL", "Arquitectura de Microservicios", "Sistemas de Caché de Alto Rendimiento", "Integraciones Corporativas a medida"],
+    tech: ["Node.js", "Python FastApi", "Redis", "MongoDB", "PostgreSQL"]
   },
 ];
 
@@ -68,2004 +67,814 @@ const team = [
   {
     name: "Gabriel",
     role: "Software Developer",
-    description:
-      "Experiencia en desarrollo de software y desarrollo de aplicaciones",
+    description: "Experiencia en desarrollo de software y desarrollo de aplicaciones",
     avatar: "/logos/FotoGabriel.jpg",
-    // Información profesional para la parte trasera
-    experience: "Experiencia en Desarrollo de Software",
     technologies: ["React", "Node.js", "Python", "MongoDB", "AWS"],
-    education: "Ingeniería en Sistemas",
-    achievements: [
-      "20+ proyectos completados",
-      "Especialista en Web Development",
-      "Desarrollador Full Stack",
-    ],
-    email: "gabriel@novasite.dev",
-    linkedin: "linkedin.com/in/gabriel-novasite",
   },
-    {
+  {
     name: "Steven",
     role: "Software Developer",
-    description:
-      "Experiencia en la implementación y desarrollo de software y aplicaciones personalizadas",
+    description: "Experiencia en la implementación y desarrollo de software y aplicaciones personalizadas",
     avatar: "/logos/FotoSteven.jpg",
-    // Información profesional para la parte trasera
-    experience: "Experiencia en Desarrollo de Software",
     technologies: ["React", "Node.js", "Python", "Supabase", "C#"],
-    education: "Ingeniería en Computación",
-    achievements: [
-      "20+ proyectos completados",
-      "Experiencia en desarrollo web",
-      "Desarrollador Full Stack",
-    ],
-    email: "steven@novasite.dev",
-    linkedin: "linkedin.com/in/steven-novasite",
   },
   {
     name: "Anthony (Noni)",
     role: "Full Stack Developer",
-    description:
-      "Desarrollador full stack con experiencia en desarrollo de aplicaciones web y móviles",
+    description: "Desarrollador full stack con experiencia en desarrollo web y móvil",
     avatar: "/logos/FotoAnthony .jpg",
-    // Información profesional para la parte trasera
-    experience: "Experiencia en Desarrollo de Software",
-    technologies: ["React", "Vue.js", "React Native", "Firebase", "TypeScript"],
-    education: "Ingeniería Computación",
-    achievements: [
-      "20+ aplicaciones móviles y web",
-      "Especialista en Backend Development",
-      "Líder técnico",
-    ],
-    email: "anthony@novasite.dev",
-    linkedin: "linkedin.com/in/anthony-novasite",
+    technologies: ["React", "Vue", "React Native", "Firebase", "TypeScript"],
   },
   {
     name: "Alejandro (Pecho)",
     role: "Backend Engineer",
-    description:
-      "Ingeniero backend enfocado en arquitecturas escalables y seguras",
+    description: "Ingeniero backend enfocado en arquitecturas escalables y seguras",
     avatar: "/logos/FotoAlejandro.jpg",
-    // Información profesional para la parte trasera
-    experience: "Experiencia en Desarrollo de Software",
-    technologies: ["Python", "Django", "PostgreSQL", "Docker", "Kubernetes"],
-    education: "Ingeniería en Computación",
-    achievements: [
-      "Arquitecto de sistemas",
-      "Web Developer",
-      "Backend Developer",
-    ],
-    email: "alejandro@novasite.dev",
-    linkedin: "linkedin.com/in/alejandro-novasite",
+    technologies: ["Python", "Django", "PostgreSQL", "Docker", "K8s"],
+  },
+  {
+    name: "Paulo",
+    role: "Frontend UI Developer",
+    description: "Experiencia en diseño frontend UI y desarrollo de aplicaciones web y móviles.",
+    avatar: "/logos/FotoPaulo.jpeg",
+    technologies: ["React", "UI/UX", "GSAP", "Three.js", "TailwindCSS"],
   }
 ];
 
-// projects imported from @/lib/projects
-
-// Hook mejorado para animaciones de scroll más sutiles y profesionales
-function useScrollReveal<T extends HTMLElement = HTMLElement>(
-  threshold: number = 0.15,
-  rootMargin: string = "0px 0px -10% 0px"
-) {
-  const ref = useRef<T | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-        } else {
-          // Resetear cuando sale de vista para que se reactive al volver
-          setVisible(false);
-        }
-      },
-      {
-        threshold,
-        rootMargin,
-      }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [threshold, rootMargin]);
-
-  return [ref, visible] as const;
-}
-
-// Hook para animación de texto con fade-in sutil y lento
-function useTypingAnimation(text: string, isVisible: boolean, delay: number = 0) {
-  const [opacity, setOpacity] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    if (!isVisible) {
-      setOpacity(0);
-      setIsAnimating(false);
-      return;
+// Reusable 3D Particle Element
+function AbstractNLogo() {
+  const groupRef = useRef<any>(null);
+  useFrame((state) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+      groupRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
+      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 1.5) * 0.1;
     }
+  });
 
-    setIsAnimating(true);
-    setOpacity(0);
-    
-    // Delay antes de comenzar el fade-in
-    const delayTimeout = setTimeout(() => {
-      // Fade-in muy sutil y lento
-      setOpacity(1);
-    }, delay);
-
-    return () => clearTimeout(delayTimeout);
-  }, [text, isVisible, delay]);
-
-  return { text, opacity, isAnimating };
-}
-
-// Componente helper para renderizar texto con fade-in sutil
-function TypingText({ typingData, className = "" }: { typingData: ReturnType<typeof useTypingAnimation>, className?: string }) {
   return (
-    <span 
-      className={className}
-      style={{
-        opacity: typingData.opacity,
-        transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-      }}
-    >
-      {typingData.text}
-    </span>
+    <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
+      <group ref={groupRef} position={[2, 0, -4]} scale={0.8}>
+        {/* Pilar Izquierdo */}
+        <mesh position={[-1.3, 0, 0]}>
+          <boxGeometry args={[0.7, 4.5, 0.7]} />
+          <meshStandardMaterial color="#0083EA" metalness={0.6} roughness={0.2} transparent opacity={0.85} />
+        </mesh>
+        {/* Pilar Derecho */}
+        <mesh position={[1.3, 0, 0]}>
+          <boxGeometry args={[0.7, 4.5, 0.7]} />
+          <meshStandardMaterial color="#0083EA" metalness={0.6} roughness={0.2} transparent opacity={0.85} />
+        </mesh>
+        {/* Diagonal */}
+        <mesh position={[0, 0, 0]} rotation={[0, 0, -0.52]}>
+          <boxGeometry args={[0.7, 5.2, 0.7]} />
+          <meshStandardMaterial color="#007CE8" metalness={0.8} roughness={0.1} />
+        </mesh>
+      </group>
+    </Float>
   );
 }
 
-export default function LandingPage() {
-  const [currentProject, setCurrentProject] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
-  // Estado para animar la aparición del hero al cargar la página
-  const [heroVisible, setHeroVisible] = useState(false);
-  // Nuevo: Estado para animación de transición de proyectos
-  const [projectTransition, setProjectTransition] = useState(false);
-  // Estado: controla si la carpeta de integrantes está abierta
-  const [isFolderOpen, setIsFolderOpen] = useState(false);
-  // Estado: controla qué cards están "flipped" (mostrando la parte trasera)
-  const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
-  // Dirección de transición del carrusel
-  const [transitionDir, setTransitionDir] = useState<"next" | "prev">("next");
-  // Autoplay pausa/activo
-  const [isPaused, setIsPaused] = useState(false);
-  // Visibilidad del carrusel en viewport
-  const portfolioAutoRef = useRef<HTMLDivElement | null>(null);
-  const [inView, setInView] = useState(true);
-  // Visibilidad de la pestaña
-  const [docVisible, setDocVisible] = useState(true);
-  // Soporte de swipe para carrusel en móvil
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  // Estado para el carrusel de testimonios
-  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
-  const [testimonialTouchStartX, setTestimonialTouchStartX] = useState<number | null>(null);
-
-  // Estados para el formulario de contacto
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
-
-  // Estado para fade-in del logo del hero
-  const [logoOpacity, setLogoOpacity] = useState(0);
-  // Animación título: primero dígitos, luego cada dígito se convierte en su letra
-  const [heroTitlePhase, setHeroTitlePhase] = useState<"digits" | "letters">("digits");
-  const [heroDigits, setHeroDigits] = useState("00000000");
-  const [frozenDigits, setFrozenDigits] = useState("00000000");
-  const [lettersRevealed, setLettersRevealed] = useState(0);
-  const heroDigitsRef = useRef(heroDigits);
+// Magnetic Button Wrapper
+const MagneticButton = ({ children, className }: { children: React.ReactNode, className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    heroDigitsRef.current = heroDigits;
-  }, [heroDigits]);
+    const el = ref.current;
+    if (!el) return;
 
-  useEffect(() => {
-    setTimeout(() => setHeroVisible(true), 100);
-  }, []);
+    const xTo = gsap.quickTo(el, "x", { duration: 1, ease: "elastic.out(1, 0.3)" });
+    const yTo = gsap.quickTo(el, "y", { duration: 1, ease: "elastic.out(1, 0.3)" });
 
-  // Efecto para fade-in del logo
-  useEffect(() => {
-    if (heroVisible) {
-      setTimeout(() => setLogoOpacity(1), 100);
-    }
-  }, [heroVisible]);
-
-  // Fase de dígitos: ciclan rápido; al terminar congelamos y pasamos a revelar letras una a una (se repite cada vez que volvemos a dígitos)
-  useEffect(() => {
-    if (!heroVisible || heroTitlePhase !== "digits") return;
-    const digits = "0123456789";
-    const len = 8;
-    const digitInterval = setInterval(() => {
-      const next = Array.from({ length: len }, () => digits[Math.floor(Math.random() * digits.length)]).join("");
-      setHeroDigits(next);
-    }, 90);
-    const switchToLetters = setTimeout(() => {
-      clearInterval(digitInterval);
-      setFrozenDigits(heroDigitsRef.current);
-      setLettersRevealed(0);
-      setHeroTitlePhase("letters");
-    }, 2200);
-    return () => {
-      clearInterval(digitInterval);
-      clearTimeout(switchToLetters);
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const { left, top, width, height } = el.getBoundingClientRect();
+      const hw = width / 2;
+      const hh = height / 2;
+      const x = clientX - (left + hw);
+      const y = clientY - (top + hh);
+      xTo(x * 0.4);
+      yTo(y * 0.4);
     };
-  }, [heroVisible, heroTitlePhase]);
 
-  // Revelar letras una por una: cada número cambia a su letra con pausa entre sí (no todo a la vez)
-  const TITLE_WORD = "NOVASITE";
-  useEffect(() => {
-    if (heroTitlePhase !== "letters" || lettersRevealed >= TITLE_WORD.length) return;
-    // Pausa más larga entre cada cambio (1 → N, 2 → O, …) para que se note bien uno por uno
-    const delay = lettersRevealed === 0 ? 320 : 280;
-    const t = setTimeout(() => setLettersRevealed((c) => c + 1), delay);
-    return () => clearTimeout(t);
-  }, [heroTitlePhase, lettersRevealed]);
+    const handleMouseLeave = () => {
+      xTo(0);
+      yTo(0);
+    };
 
-  // Tras la calcinación (cuando el texto ya se fue por completo), volver a dígitos antes de que empiece a reaparecer
-  useEffect(() => {
-    if (heroTitlePhase !== "letters" || lettersRevealed < TITLE_WORD.length) return;
-    // La calcinación llega a "gone" ~14s después de que todas las letras están reveladas. Cambiamos justo entonces para no ver el reaparecer
-    const backToDigits = setTimeout(() => {
-      setHeroTitlePhase("digits");
-      setLettersRevealed(0);
-    }, 14000);
-    return () => clearTimeout(backToDigits);
-  }, [heroTitlePhase, lettersRevealed]);
+    el.addEventListener("mousemove", handleMouseMove);
+    el.addEventListener("mouseleave", handleMouseLeave);
 
-  // (Botón volver arriba ahora está en el footer)
-
-  // Elimina el useEffect de avance automático
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setProjectTransition(true)
-  //     setTimeout(() => {
-  //       setCurrentProject((prev) => (prev + 1) % projects.length)
-  //       setProjectTransition(false)
-  //     }, 400) // Duración de la animación
-  //   }, 2000)
-  //   return () => clearInterval(interval)
-  // }, [])
-
-  const nextProject = () => {
-    setTransitionDir("next");
-    setProjectTransition(true);
-    setTimeout(() => {
-      setCurrentProject((prev) => (prev + 1) % projects.length);
-      setProjectTransition(false);
-    }, 600);
-  };
-
-  const prevProject = () => {
-    setTransitionDir("prev");
-    setProjectTransition(true);
-    setTimeout(() => {
-      setCurrentProject(
-        (prev) => (prev - 1 + projects.length) % projects.length
-      );
-      setProjectTransition(false);
-    }, 600);
-  };
-
-  // Observar si el carrusel está en viewport
-  useEffect(() => {
-    const el = portfolioAutoRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        setInView(entries[0]?.isIntersecting ?? true);
-      },
-      { threshold: 0.3 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    return () => {
+      el.removeEventListener("mousemove", handleMouseMove);
+      el.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
-  // Escuchar visibilidad del documento (pestaña activa)
+  return <div ref={ref} className={className}>{children}</div>;
+};
+
+// Custom Magnetic Cursor
+const CustomCursor = () => {
+  const cursorRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const handler = () => setDocVisible(document.visibilityState === "visible");
-    document.addEventListener("visibilitychange", handler);
-    handler();
-    return () => document.removeEventListener("visibilitychange", handler);
+    const el = cursorRef.current;
+    if (!el) return;
+
+    gsap.set(el, { xPercent: -50, yPercent: -50 });
+    const xTo = gsap.quickTo(el, "x", { duration: 0.3, ease: "power3" });
+    const yTo = gsap.quickTo(el, "y", { duration: 0.3, ease: "power3" });
+
+    const handleMouseMove = (e: MouseEvent) => {
+      xTo(e.clientX);
+      yTo(e.clientY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Autoavance del carrusel con pausa al hover, fuera de vista o pestaña oculta
+  return (
+    <div
+      ref={cursorRef}
+      className="fixed top-0 left-0 w-8 h-8 rounded-full border border-[#0083EA] pointer-events-none z-[9999] mix-blend-difference hidden md:block"
+      style={{
+        background: "radial-gradient(circle, rgba(0,131,234,0.3) 0%, transparent 80%)"
+      }}
+    />
+  );
+};
+
+export default function LandingPage() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedService, setSelectedService] = useState<any | null>(null);
+
+  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState<null | { type: "success" | "error" | "info"; message: string }>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+
+  const [bootProgress, setBootProgress] = useState(0);
+  const [isBooting, setIsBooting] = useState(true);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+
+  // Sound Engine
+  const uiClick = useRef<Howl | null>(null);
+  const uiHover = useRef<Howl | null>(null);
+
   useEffect(() => {
-    if (isPaused || !inView || !docVisible) return;
-    const id = setInterval(() => {
-      nextProject();
-    }, 4000);
-    return () => clearInterval(id);
-  }, [isPaused, inView, docVisible, currentProject]);
+    uiClick.current = new Howl({ src: ['/sounds/click.mp3'], volume: 0.2 });
+    uiHover.current = new Howl({ src: ['/sounds/whoosh.mp3'], volume: 0.1 });
+  }, []);
 
-  // En cada sección principal:
-  // Servicios
-  const [servicesRef, servicesVisible] = useScrollReveal<HTMLElement>();
-  const servicesTitleTyping = useTypingAnimation("Nuestros Servicios", servicesVisible, 0);
-  const servicesDescTyping = useTypingAnimation("Ofrecemos soluciones completas de desarrollo web adaptadas a las necesidades de tu negocio", servicesVisible, 300);
-  
-  // Equipo
-  const [teamRef, teamVisible] = useScrollReveal<HTMLElement>();
-  const teamTitleTyping = useTypingAnimation("Nuestro Equipo", teamVisible, 0);
-  const teamDescTyping = useTypingAnimation("Profesionales apasionados por la tecnología y comprometidos con la excelencia", teamVisible, 300);
+  const playClick = () => { if (audioEnabled) uiClick.current?.play(); };
+  const playHover = () => { if (audioEnabled) uiHover.current?.play(); };
 
-  // Cerrar folder automáticamente cuando se hace scroll fuera de la sección del equipo
+  // Terminal Boot Sequence
   useEffect(() => {
-    const element = teamRef.current;
-    if (!element) return;
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.floor(Math.random() * 15) + 5;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        setTimeout(() => setIsBooting(false), 800);
+      }
+      setBootProgress(progress);
+    }, 150);
+    return () => clearInterval(interval);
+  }, []);
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Si la sección sale completamente de vista, cerrar el folder
-        if (!entry.isIntersecting && isFolderOpen) {
-          setIsFolderOpen(false);
-          // También resetear las cards flipped
-          setFlippedCards(new Set());
-        }
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  // Initialize Lenis
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      touchMultiplier: 2,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+    return () => lenis.destroy();
+  }, []);
+
+  useGSAP(() => {
+    if (isBooting) return;
+
+    // Advanced UI Animation Using GSAP
+    gsap.fromTo(".hero-char",
+      {
+        opacity: 0,
+        x: () => gsap.utils.random(-600, 600),
+        y: () => gsap.utils.random(-600, 600),
+        z: () => gsap.utils.random(-400, 400),
+        rotationX: () => gsap.utils.random(-360, 360),
+        rotationY: () => gsap.utils.random(-360, 360),
+        rotationZ: () => gsap.utils.random(-360, 360),
+        scale: () => gsap.utils.random(0.1, 4),
+        filter: "blur(20px)"
       },
       {
-        threshold: 0,
-        rootMargin: "-20% 0px -20% 0px", // Cerrar cuando sale del 20% superior e inferior
+        opacity: 1,
+        x: 0,
+        y: 0,
+        z: 0,
+        rotationX: 0,
+        rotationY: 0,
+        rotationZ: 0,
+        scale: 1,
+        filter: "blur(0px)",
+        stagger: {
+          each: 0.08,
+          from: "random"
+        },
+        duration: 2.5,
+        ease: "expo.out",
+        delay: 0.2,
       }
     );
 
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [isFolderOpen, teamRef]);
-  
-  // Portafolio
-  const [portfolioRef, portfolioVisible] = useScrollReveal<HTMLElement>();
-  const portfolioTitleTyping = useTypingAnimation("Proyectos Destacados", portfolioVisible, 0);
-  const portfolioDescTyping = useTypingAnimation("Algunos de nuestros trabajos más recientes que demuestran nuestra experiencia", portfolioVisible, 300);
-  
-  // Testimonios
-  const [testimonialsRef, testimonialsVisible] = useScrollReveal<HTMLElement>();
-  const testimonialsTitleTyping = useTypingAnimation("Qué Dicen Nuestros Clientes", testimonialsVisible, 0);
-  const testimonialsDescTyping = useTypingAnimation("Valoraciones reales de clientes satisfechos con nuestros proyectos", testimonialsVisible, 300);
+    gsap.from(".hero-sub", {
+      y: 30,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+      delay: 1.2,
+    });
 
-  // Funciones de navegación del carrusel de testimonios
-  const nextTestimonials = () => {
-    const maxIndex = Math.ceil(testimonials.length / 3) - 1;
-    setCurrentTestimonialIndex((prev) => (prev < maxIndex ? prev + 1 : prev));
-  };
+    gsap.to(".hero-bg-layer", {
+      yPercent: 30,
+      ease: "none",
+      scrollTrigger: {
+        trigger: heroRef.current,
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+  }, { scope: heroRef, dependencies: [isBooting] });
 
-  const prevTestimonials = () => {
-    setCurrentTestimonialIndex((prev) => (prev > 0 ? prev - 1 : 0));
-  };
-  
-  // Contacto
-  const [contactRef, contactVisible] = useScrollReveal<HTMLElement>();
-  const contactTitleTyping = useTypingAnimation("¿Listo para Comenzar?", contactVisible, 0);
-  const contactDescTyping = useTypingAnimation("Contáctanos hoy y convirtamos tu idea en realidad digital", contactVisible, 300);
+  const TitleText = "NOVASITE".split("");
 
-  // Función para manejar cambios en el formulario
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Función para enviar el formulario
+  const pushToast = (type: "success" | "error" | "info", message: string) => {
+    setToast({ type, message });
+    setTimeout(() => setToast(null), 4000);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validación básica
-    if (
-      !formData.name ||
-      !formData.email ||
-      !formData.subject ||
-      !formData.message
-    ) {
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       pushToast("error", "Por favor, completa todos los campos.");
       return;
     }
 
-    // Validación de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      pushToast("error", "Por favor, ingresa un email válido.");
+    // In local dev this will be skipped if you don't use real keys, but here is the logic ready:
+    if (!turnstileToken) {
+      pushToast("error", "Autenticación humana requerida (Captcha).");
       return;
     }
 
     setIsSubmitting(true);
-    setSubmitStatus("idle");
-
     try {
-      // Enviar el formulario a la API route
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      const result = await response.json();
-
       if (response.ok) {
-        setSubmitStatus("success");
         setFormData({ name: "", email: "", subject: "", message: "" });
-        pushToast("success", "¡Mensaje enviado! Te contactaremos pronto.");
+        pushToast("success", "¡Mensaje transferido a los servidores de NovaSite!");
       } else {
-        console.error("Error del servidor:", result.error);
-        setSubmitStatus("error");
-        pushToast("error", "No pudimos enviar tu mensaje. Intenta nuevamente.");
+        pushToast("error", "Hubo un error de transmisión.");
       }
-    } catch (error) {
-      console.error("Error al enviar el mensaje:", error);
-      setSubmitStatus("error");
-      pushToast("error", "Ocurrió un error de conexión. Intenta de nuevo.");
+    } catch {
+      pushToast("error", "Falla de conectividad local.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-
-  // Toast de feedback para el formulario de contacto
-  const [toast, setToast] = useState<null | {
-    type: "success" | "error" | "info";
-    message: string;
-  }>(null);
-  const pushToast = (type: "success" | "error" | "info", message: string) => {
-    setToast({ type, message });
-    // Ocultar automáticamente después de 4s
-    setTimeout(() => setToast(null), 4000);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 relative overflow-hidden">
-      {/* Toast flotante (feedback de formulario) */}
-      {toast && (
-        <div className="fixed top-6 right-6 z-[100] animate-slide-fade-in">
-          <div
-            className={`flex items-start gap-3 px-4 py-3 rounded-xl border shadow-xl backdrop-blur bg-slate-900/85 ${
-              toast.type === "success"
-                ? "border-emerald-500/40"
-                : toast.type === "error"
-                ? "border-rose-500/40"
-                : "border-slate-500/40"
-            }`}
-          >
-            <div
-              className={`mt-0.5 ${
-                toast.type === "success"
-                  ? "text-emerald-400"
-                  : toast.type === "error"
-                  ? "text-rose-400"
-                  : "text-slate-300"
-              }`}
-            >
-              {toast.type === "success" ? (
-                <CheckCircle2 className="w-5 h-5" />
-              ) : toast.type === "error" ? (
-                <XCircle className="w-5 h-5" />
-              ) : (
-                <Mail className="w-5 h-5" />
-              )}
-            </div>
-            <div className="text-sm text-slate-100 pr-1">{toast.message}</div>
-            <button
-              onClick={() => setToast(null)}
-              className="ml-1 text-slate-400 hover:text-slate-200 transition"
-              aria-label="Cerrar notificación"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
-      {/* Decoración de fondo: gradientes y patrón sutil */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-32 -right-24 h-80 w-80 rounded-full bg-blue-600/20 blur-3xl" />
-        <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-violet-600/20 blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, #fff 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-          }}
-        />
-      </div>
-      {/* Botón flotante de menú en la parte superior derecha */}
-      <button
-        className={`fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 z-50 shadow-lg focus:outline-none transition-all duration-200 cursor-pointer bg-transparent p-0 border-0 ${
-          menuOpen ? "scale-110 ring-4 ring-blue-400/40 shadow-2xl" : ""
-        }`}
-        onClick={() => setMenuOpen(true)}
-        aria-label="Abrir menú"
-        style={{ outline: "none" }}
-      >
-        <span className={`block w-6 h-6 sm:w-7 sm:h-7 relative`}>
-          <span
-            className={`absolute left-0 top-1.5 sm:top-2 w-6 h-0.5 sm:w-7 sm:h-1 bg-white rounded transition-all duration-300 ${
-              menuOpen ? "rotate-45 top-2.5 sm:top-3" : ""
-            }`}
-          ></span>
-          <span
-            className={`absolute left-0 top-3 sm:top-5 w-6 h-0.5 sm:w-7 sm:h-1 bg-white rounded transition-all duration-300 ${
-              menuOpen ? "opacity-0 scale-x-0" : ""
-            }`}
-          ></span>
-          <span
-            className={`absolute left-0 top-4.5 sm:top-8 w-6 h-0.5 sm:w-7 sm:h-1 bg-white rounded transition-all duration-300 ${
-              menuOpen ? "-rotate-45 top-2.5 sm:top-3" : ""
-            }`}
-          ></span>
-        </span>
-      </button>
-      {/* Menú desplegable tipo cascada desde la derecha */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div
-            className="bg-black/40 w-full h-full absolute inset-0"
-            onClick={() => setMenuOpen(false)}
-          />
-          <div className="w-full sm:w-80 md:w-72 h-full bg-slate-900 shadow-2xl flex flex-col p-6 sm:p-8 space-y-4 sm:space-y-6 relative animate-slide-in-right rounded-l-2xl">
-            <button
-              className="absolute top-3 right-3 sm:top-4 sm:right-4 text-slate-400 hover:text-white"
-              onClick={() => setMenuOpen(false)}
-            >
-              <svg
-                className="w-6 h-6 sm:w-7 sm:h-7"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-                         <Link
-               href="/servicios"
-               className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors mt-10 sm:mt-12"
-               onClick={() => setMenuOpen(false)}
-             >
-               Servicios
-             </Link>
-            <a
-              href="#about"
-              className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Equipo
-            </a>
-                         <Link
-               href="/proyectos"
-               className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors"
-               onClick={() => setMenuOpen(false)}
-             >
-               Portafolio
-             </Link>
-            <a
-              href="#contact"
-              className="block text-base sm:text-lg text-slate-300 hover:text-blue-400 transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Contacto
-            </a>
-            <Button asChild variant="gradient" className="mt-2 sm:mt-4 w-full text-sm sm:text-base">
-              <Link href="/guia-proyecto" onClick={() => setMenuOpen(false)}>
-                Comenzar
-              </Link>
-            </Button>
-          </div>
-        </div>
-      )}
+    <div className="font-outfit min-h-[100dvh] bg-[#070708] text-slate-100 relative overflow-x-hidden selection:bg-[#0083EA]/30 selection:text-[#007CE8]" onClick={() => { if (!audioEnabled) setAudioEnabled(true); }}>
+      <CustomCursor />
 
-      {/* Hero Section */}
-      <section className="w-full h-auto md:h-screen min-h-[400px] sm:min-h-[500px] md:min-h-[600px] px-3 sm:px-4 bg-slate-900 relative overflow-hidden flex items-center justify-center">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none select-none z-0"
-          aria-hidden
-        >
-          <source src="/33628-397860881_medium.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-slate-900/50 z-[1]" aria-hidden="true" />
-        {/* Texto central: dígitos → NOVASITE (creación tecnológica) */}
-        <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-          <h1
-            className="font-nexa font-bold text-center text-white px-4 flex justify-center items-center min-h-[1.2em]"
-            style={{
-              opacity: logoOpacity,
-              transition: "opacity 0.6s ease-out",
-              fontSize: "clamp(1.5rem, min(32vh, 6.5vw), 32vh)",
-              textShadow: "0 0 24px rgba(37, 99, 235, 0.9), 0 0 48px rgba(59, 130, 246, 0.55), 0 2px 12px rgba(0,0,0,0.5)",
-            }}
-            aria-label={heroTitlePhase === "letters" ? "NOVASITE" : "Cargando"}
+      {/* Boot Preloader Sequence */}
+      <AnimatePresence>
+        {isBooting && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: "-100%" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="fixed inset-0 z-[1000] bg-[#050F19] text-[#0083EA] flex flex-col items-center justify-center font-geist-mono"
           >
-            <span className="inline-flex tracking-[0.2em] gap-[0.45em] sm:gap-[0.55em] md:gap-[0.65em] items-center justify-center">
-              {heroTitlePhase === "digits" ? (
-                <span className="inline-flex tracking-[0.2em] gap-[0.45em] sm:gap-[0.55em] md:gap-[0.65em] items-center justify-center digits-revive-from-ashes">
-                  {heroDigits.split("").map((digit, i) => (
-                    <span
-                      key={i}
-                      className="inline-flex items-center justify-center tabular-nums font-mono animate-pulse-subtle bg-clip-text text-transparent"
-                      style={{ width: "1em", minWidth: "1em", height: "1em", backgroundImage: "linear-gradient(to right, #57534e, #78716c, #a8a29e, #fef3c7)" }}
-                    >
-                      {digit}
+            <div className="w-64">
+              <div className="text-xs mb-2 tracking-widest uppercase flex justify-between">
+                <span>Init_Sequence</span>
+                <span>{bootProgress}%</span>
+              </div>
+              <div className="w-full h-1 bg-[#0B3A5C]/50 rounded-full overflow-hidden">
+                <div className="h-full bg-[#0083EA] transition-all duration-150" style={{ width: `${bootProgress}%` }} />
+              </div>
+              <div className="mt-8 text-center text-xs text-slate-500 animate-pulse">
+                {bootProgress < 100 ? "Compilando shaders..." : "Desplegando Sistema Core"}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* WhatsApp Fixed Button */}
+      <a
+        href="https://wa.me/50683047436"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 flex items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl hover:scale-110 hover:shadow-[0_0_30px_rgba(37,211,102,0.5)] transition-all duration-300"
+        onMouseEnter={playHover}
+        onClick={playClick}
+      >
+        <WhatsappLogo weight="fill" className="w-8 h-8" />
+      </a>
+
+      {/* Toast Feedback */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed top-6 left-1/2 -translate-x-1/2 z-[100]"
+          >
+            <div className={`flex items-start gap-3 px-4 py-3 rounded-xl border backdrop-blur-xl bg-[#050F19]/90 shadow-2xl ${toast.type === "success" ? "border-[#0083EA]/40" : toast.type === "error" ? "border-rose-500/40" : "border-[#0B3A5C]/40"
+              }`}>
+              <div className="mt-0.5">
+                {toast.type === "success" ? <CheckCircle weight="fill" className="w-5 h-5 text-[#0083EA]" /> : <XCircle weight="fill" className="w-5 h-5 text-rose-400" />}
+              </div>
+              <div className="text-sm font-geist-sans tracking-tight pr-1">{toast.message}</div>
+              <button onClick={() => setToast(null)} className="ml-1 text-[#007CE8] hover:text-white">×</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Glassmorphic Magnetic Menu Toggle */}
+      <div className="fixed top-6 right-6 z-50">
+        <MagneticButton>
+          <button
+            className="w-14 h-14 flex flex-col justify-center items-center rounded-full bg-[#050F19]/50 border border-[#0B3A5C] backdrop-blur-md hover:bg-[#0B3A5C]/50 hover:border-[#0083EA] transition-all shadow-[0_0_20px_rgba(0,131,234,0.1)]"
+            onClick={() => { playClick(); setMenuOpen(!menuOpen); }}
+            onMouseEnter={playHover}
+          >
+            <span className={`w-6 h-px bg-[#007CE8] transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-[3px]" : "-translate-y-1"}`} />
+            <span className={`w-6 h-px bg-[#007CE8] transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-[2px]" : "translate-y-1"}`} />
+          </button>
+        </MagneticButton>
+      </div>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            className="fixed inset-y-0 right-0 w-full sm:w-96 bg-[#050F19]/95 backdrop-blur-3xl border-l border-[#0B3A5C] z-40 p-10 flex flex-col shadow-2xl"
+          >
+            <nav className="mt-20 flex flex-col gap-6 font-geist-sans text-xl tracking-tight">
+              {['Servicios', 'Equipo', 'Portafolio', 'Contacto'].map((item) => (
+                <Link key={item} href={`#${item.toLowerCase()}`} onClick={() => { playClick(); setMenuOpen(false); }} className="text-slate-400 hover:text-white transition-colors relative group w-fit">
+                  {item}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-[#0083EA] transition-all duration-300 group-hover:w-full" />
+                </Link>
+              ))}
+            </nav>
+            <div className="mt-auto pt-10 border-t border-[#0B3A5C]">
+              <a href="https://www.instagram.com/novasitesc/" target="_blank" rel="noopener noreferrer" onMouseEnter={playHover} onClick={playClick} className="flex items-center text-[#007CE8] hover:text-[#0083EA] transition-colors group">
+                <InstagramLogo className="w-6 h-6 mr-2" />
+                @novasitesc
+                <CaretRight className="w-4 h-4 ml-auto group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 3D Hero Section (GSAP driven) */}
+      <section ref={heroRef} className="relative w-full min-h-[100dvh] flex items-center mb-24 overflow-hidden border-b border-[#0B3A5C]">
+        <div className="hero-bg-layer absolute inset-0 z-0 h-[130%]">
+          <Canvas camera={{ position: [0, 0, 5] }}>
+            <ambientLight intensity={0.5} />
+            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} color="#0083EA" />
+            <AbstractNLogo />
+            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+            <Sparkles count={100} scale={10} size={2} speed={0.4} opacity={0.3} color="#007CE8" />
+          </Canvas>
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10 w-full pl-6 md:pl-20 pointer-events-none">
+          <div className="max-w-4xl">
+            <div className="flex items-center gap-3 mb-6 hero-sub">
+              <span className="h-px w-8 bg-[#0083EA]" />
+              <span className="text-[#007CE8] font-geist-mono text-sm tracking-widest uppercase">Estudio Digital</span>
+            </div>
+
+            <h1 className="text-5xl md:text-[7.5rem] font-black tracking-tighter leading-[0.8] text-white flex pointer-events-auto" style={{ perspective: "1200px" }}>
+              {TitleText.map((char, i) => (
+                <span key={i} className="hero-char transform-gpu inline-block text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-[#0B3A5C]" style={{ transformStyle: "preserve-3d" }}>
+                  {char}
+                </span>
+              ))}
+            </h1>
+
+            <p className="hero-sub mt-8 text-xl text-slate-400 max-w-xl font-geist-sans font-light leading-relaxed pointer-events-auto">
+              Ingeniería de software de alta gama. Desafiamos lo convencional con interfaces que respiran y sistemas empresariales que escalan a niveles absolutos.
+            </p>
+
+            <div className="mt-12 pointer-events-auto hero-sub">
+              <MagneticButton className="w-fit">
+                <a href="#contacto" onClick={playClick} className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[#0083EA] text-white font-bold hover:bg-[#007CE8] transition-colors shadow-[0_0_30px_rgba(0,131,234,0.3)] hover:shadow-[0_0_40px_rgba(0,131,234,0.5)]">
+                  Iniciar Convergencia
+                </a>
+              </MagneticButton>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Bento Grid */}
+      <section id="servicios" className="container mx-auto px-4 md:px-8 py-24">
+        <div className="mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">Módulos Logísticos de Software</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.map((service, idx) => (
+            <motion.div
+              key={idx}
+              layoutId={`service-card-${service.title}`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ delay: idx * 0.1, type: "spring", stiffness: 100, damping: 20 }}
+              onClick={() => { playClick(); setSelectedService(service); }}
+              className="group relative p-8 rounded-[2.5rem] bg-[#050F19] border border-[#0B3A5C] hover:border-[#0083EA] transition-all duration-500 overflow-hidden cursor-pointer flex flex-col shadow-[0_4px_30px_rgba(0,131,234,0.05)] hover:shadow-[0_4px_40px_rgba(0,131,234,0.15)]"
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-[#0083EA]/10 to-transparent pointer-events-none" />
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-[#0B3A5C]/30 border border-[#0B3A5C] mb-6 group-hover:scale-110 group-hover:bg-[#0083EA]/20 transition-all duration-500">
+                <service.icon weight="duotone" className="w-6 h-6 text-[#007CE8] group-hover:text-[#0083EA] transition-colors" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 tracking-tight">{service.title}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed font-geist-sans mb-8">{service.description}</p>
+
+              <div className="mt-auto inline-flex items-center text-xs font-semibold text-[#0083EA] group-hover:text-[#007CE8] transition-colors opacity-70 group-hover:opacity-100">
+                Explorar Arquitectura <ArrowRight className="ml-2 w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Morphing Modal for Services */}
+      <AnimatePresence>
+        {selectedService && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8 md:p-12"
+          >
+            <div className="absolute inset-0 bg-[#070708]/90 backdrop-blur-md" onClick={() => setSelectedService(null)} />
+
+            <motion.div
+              layoutId={`service-card-${selectedService.title}`}
+              className="relative w-full max-w-4xl max-h-[90vh] bg-[#050F19] border border-[#0B3A5C] rounded-[2.5rem] shadow-[0_0_80px_rgba(0,131,234,0.2)] overflow-y-auto hidden-scrollbar flex flex-col z-10"
+            >
+              <div className="absolute top-6 right-6 z-20">
+                <MagneticButton>
+                  <button
+                    onClick={() => { playClick(); setSelectedService(null); }}
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-[#070708]/80 border border-[#0083EA]/50 hover:bg-[#0083EA] transition-colors backdrop-blur-md shadow-lg group"
+                  >
+                    <X weight="bold" className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
+                  </button>
+                </MagneticButton>
+              </div>
+
+              <div className="w-full relative min-h-[160px] overflow-hidden border-b border-[#0B3A5C] p-8 md:p-12 flex items-center bg-gradient-to-tr from-[#050F19] to-[#0B3A5C]/40">
+                <div className="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+                  <selectedService.icon weight="duotone" className="w-64 h-64 text-[#0083EA]" />
+                </div>
+                <div className="relative z-10">
+                  <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0083EA]/20 border border-[#0083EA]/50 mb-6 shadow-[0_0_30px_rgba(0,131,234,0.3)]">
+                    <selectedService.icon weight="fill" className="w-8 h-8 text-[#0083EA]" />
+                  </div>
+                  <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">{selectedService.title}</h3>
+                </div>
+              </div>
+
+              <div className="w-full p-8 md:p-12 flex flex-col gap-8 text-slate-300">
+                <p className="text-xl font-geist-sans leading-relaxed text-white">
+                  {selectedService.longDescription}
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div>
+                    <h4 className="text-sm tracking-widest font-mono text-[#007CE8] mb-4 uppercase">Vector de Características</h4>
+                    <ul className="space-y-4">
+                      {selectedService.features.map((feature: string, i: number) => (
+                        <li key={i} className="flex items-start font-geist-sans">
+                          <CheckCircle weight="fill" className="w-5 h-5 text-[#0083EA] mr-3 shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm tracking-widest font-mono text-[#0083EA] mb-4 uppercase">Stack Tecnológico</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedService.tech.map((t: string) => (
+                        <span key={t} className="px-4 py-2 bg-[#0B3A5C]/30 text-white font-geist-mono text-sm rounded-lg border border-[#0B3A5C] hover:border-[#0083EA] hover:bg-[#0083EA]/20 transition-colors shadow-sm">{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Team Section */}
+      <section id="equipo" className="container mx-auto px-4 md:px-8 py-24 relative border-t border-[#0B3A5C]">
+        <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-16">El Escuadrón</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {team.map((member, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1, type: "spring" }}
+              className="relative group rounded-[2.5rem] bg-[#050F19] border border-[#0B3A5C] p-8 flex flex-col sm:flex-row gap-8 items-center sm:items-start transition-colors hover:border-[#0083EA]/50"
+            >
+              <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-[#0083EA]/30 shrink-0 group-hover:border-[#0083EA] transition-colors duration-500">
+                <Image src={member.avatar || "/placeholder.svg"} alt={member.name} width={128} height={128} className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700" />
+              </div>
+              <div className="flex-1 flex flex-col items-center sm:items-start">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 w-fit mb-2">
+                  <h3 className="text-2xl font-bold tracking-tight">{member.name}</h3>
+                  <Badge variant="outline" className="border-[#0B3A5C] text-[#007CE8] font-mono text-[10px] bg-[#070708]">{member.role}</Badge>
+                </div>
+                <p className="text-slate-400 text-sm font-geist-sans text-center sm:text-left mb-4">{member.description}</p>
+                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-auto">
+                  {member.technologies.slice(0, 3).map((tech, i) => (
+                    <span key={i} className="text-xs px-2 py-1 bg-[#0B3A5C]/20 text-[#007CE8] rounded border border-[#0B3A5C] font-geist-mono">
+                      {tech}
                     </span>
                   ))}
-                </span>
-              ) : (
-                TITLE_WORD.split("").map((_, i) => (
-                  <span
-                    key={i}
-                    className="inline-flex items-center justify-center"
-                    style={{ width: "1em", minWidth: "1em", height: "1em" }}
-                  >
-                    {i < lettersRevealed ? (
-                      <span
-                        className="animate-title-letter inline-block overflow-hidden flex-shrink-0"
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "repeat(6, 1fr)",
-                          gridTemplateRows: "repeat(6, 1fr)",
-                          width: "1em",
-                          height: "1em",
-                        }}
-                      >
-                        {[0, 1, 2, 3, 4, 5].flatMap((row) =>
-                          [0, 1, 2, 3, 4, 5].map((col) => (
-                            <span
-                              key={`${row}-${col}`}
-                              className="tetris-block overflow-hidden relative"
-                              style={{
-                                // Arriba primero (row 0), luego el resto: desvanece por partes como calcinación
-                                animationDelay: `${5.5 - i * 0.26 + row * 0.42}s`,
-                              }}
-                            >
-                              <span
-                                className="absolute flex items-center justify-center bg-clip-text text-transparent"
-                                style={{
-                                  width: "600%",
-                                  height: "600%",
-                                  left: `-${col * 100}%`,
-                                  top: `-${row * 100}%`,
-                                  backgroundImage: "linear-gradient(to top, #44403c 0%, #78716c 28%, #a8a29e 50%, #fef3c7 78%, #fefce8 100%)",
-                                  WebkitBackgroundClip: "text",
-                                  fontSize: "1em",
-                                }}
-                              >
-                                {TITLE_WORD[i]}
-                              </span>
-                            </span>
-                          ))
-                        )}
-                      </span>
-                    ) : (
-                      <span className="tabular-nums font-mono bg-clip-text text-transparent inline-block" style={{ backgroundImage: "linear-gradient(to right, #57534e, #78716c, #a8a29e, #fef3c7)" }}>
-                        {frozenDigits[i] ?? ""}
-                      </span>
-                    )}
-                  </span>
-                ))
-              )}
-            </span>
-          </h1>
-        </div>
-        {/* Logo NovaSite - esquina superior izquierda */}
-        <div
-          className="absolute top-4 left-4 sm:top-6 sm:left-6 md:top-8 md:left-8 z-10"
-          style={{
-            opacity: logoOpacity,
-            transition: 'opacity 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          }}
-        >
-          <Link href="/" className="block" aria-label="NovaSite - Inicio">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-gradient-to-r from-slate-700 to-blue-600 rounded-xl flex items-center justify-center shadow-xl p-1.5">
-              <Image
-                src="/android-chrome-192x192.png"
-                alt="NovaSite Logo"
-                width={192}
-                height={192}
-                className="w-full h-full object-contain"
-                priority
-              />
-            </div>
-          </Link>
+                  {member.technologies.length > 3 && <span className="text-xs px-2 py-1 text-[#007CE8] font-geist-mono">+{member.technologies.length - 3}</span>}
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-             {/* Services Section */}
-       <section
-         id="services"
-         ref={servicesRef}
-         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-slate-800 transition-all duration-1000 ease-out ${
-           servicesVisible
-             ? "opacity-100 translate-y-0"
-             : "opacity-0 translate-y-8"
-         }`}
-       >
-                 <div className="container mx-auto">
-           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
-             servicesVisible
-               ? "opacity-100 translate-y-0"
-               : "opacity-0 translate-y-6"
-           }`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
-              <TypingText typingData={servicesTitleTyping} />
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
-              <TypingText typingData={servicesDescTyping} />
-            </p>
-           </div>
+      {/* Portfolio Text-Only GSAP List */}
+      <section id="portafolio" className="py-32 bg-[#050F19] border-t border-[#0B3A5C] overflow-hidden">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="mb-16 max-w-2xl">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">Proyectos Destacados</h2>
+            <p className="text-slate-400 font-geist-sans">La estructura clásica es predecible. Rompemos las convenciones y redefinimos cómo el usuario explora nuestra arquitectura.</p>
+          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 py-2 sm:py-4">
-            {services.map((service, index) => (
-              <Card
-                key={index}
-                tabIndex={0}
-                className="relative overflow-hidden group cursor-pointer transition-all duration-700 ease-out hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-[0_10px_40px_-10px_rgba(37,99,235,0.35)] border-2 border-blue-500/30 shadow-xl bg-slate-700 focus-within:border-blue-400/80 rounded-xl"
-                onMouseMove={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  const r = el.getBoundingClientRect();
-                  const x = ((e.clientX - r.left) / r.width) * 100;
-                  const y = ((e.clientY - r.top) / r.height) * 100;
-                  el.style.setProperty("--x", `${x}%`);
-                  el.style.setProperty("--y", `${y}%`);
+          <div className="flex flex-col border-t border-[#0B3A5C]">
+            {projects.map((proj, idx) => (
+              <motion.div
+                key={proj.title}
+                layoutId={`project-card-${proj.title}`}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-10%" }}
+                transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
+                onClick={() => { playClick(); setSelectedProject(proj); }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget;
+                  gsap.to(el.querySelector('.proj-title'), { x: 30, color: "#ffffff", duration: 0.4, ease: "power3.out" });
+                  gsap.to(el.querySelector('.proj-desc'), { x: -20, opacity: 1, duration: 0.4, ease: "power3.out" });
                 }}
                 onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement;
-                  el.style.removeProperty("--x");
-                  el.style.removeProperty("--y");
+                  const el = e.currentTarget;
+                  gsap.to(el.querySelector('.proj-title'), { x: 0, color: "rgba(255,255,255,0.4)", duration: 0.4, ease: "power3.out" });
+                  gsap.to(el.querySelector('.proj-desc'), { x: 0, opacity: 0, duration: 0.4, ease: "power3.out" });
                 }}
+                className="group relative flex flex-col md:flex-row items-start md:items-center justify-between py-12 md:py-16 border-b border-[#0B3A5C] cursor-pointer"
               >
-                {/* Glow radial that follows mouse */}
-                <div
-                  className="pointer-events-none absolute -inset-24 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20"
-                  style={{
-                    background:
-                      "radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(59,130,246,0.25), transparent 40%)",
-                  }}
-                />
-                <CardHeader className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-r from-slate-600 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:from-slate-500 group-hover:to-blue-400 transition-all duration-500">
-                    <service.icon className="w-8 h-8 text-white transition-transform duration-500 group-hover:scale-110" />
+                {/* Background hover effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0083EA]/0 via-[#0083EA]/5 to-[#0083EA]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+
+                <div className="flex flex-col z-10 w-full md:w-auto relative">
+                  <div className="flex gap-3 mb-6 md:mb-4 opacity-70 group-hover:opacity-100 transition-opacity">
+                    {proj.tech.slice(0, 3).map((t, i) => (
+                      <span key={i} className="text-[10px] uppercase tracking-widest font-mono text-[#007CE8] border border-[#0B3A5C] px-3 py-1 rounded-full">{t}</span>
+                    ))}
                   </div>
-                  <CardTitle className="text-xl mb-2 text-slate-100">
-                    {service.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-center text-slate-300">
-                    {service.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+                  <h3 className="proj-title text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-white/40 will-change-transform">
+                    {proj.title}
+                  </h3>
+                </div>
+
+                <div className="proj-desc mt-8 md:mt-0 max-w-sm z-10 opacity-0 hidden md:block text-right will-change-transform">
+                  <p className="text-slate-400 font-geist-sans text-sm leading-relaxed mb-4">
+                    {proj.description}
+                  </p>
+                  <div className="inline-flex items-center text-xs font-bold tracking-widest uppercase text-[#0083EA]">
+                    Explorar Sistema <ArrowRight className="ml-2 w-4 h-4" />
+                  </div>
+                </div>
+
+                <div className="md:hidden mt-6 flex items-center text-sm font-semibold text-[#0083EA] group-hover:text-[#007CE8]">
+                  Explorar <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-             {/* About Team Section */}
-       <section
-         id="about"
-         ref={teamRef}
-         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-gradient-to-r from-slate-900 to-slate-800 relative overflow-hidden transition-all duration-1000 ease-out ${
-           teamVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-         }`}
-       >
-        <Image
-          src="/logos/ciudad-ciencia-ficcion-arte-digital_1280x720_xtrafondos.com.jpg"
-          alt="Ciudad ciencia ficción"
-          fill
-          sizes="100vw"
-          className="absolute inset-0 w-full h-full object-cover opacity-40 pointer-events-none select-none z-0"
-          style={{ objectPosition: "center" }}
-        />
-                 <div className="container mx-auto relative z-10">
-           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
-             teamVisible
-               ? "opacity-100 translate-y-0"
-               : "opacity-0 translate-y-6"
-           }`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
-              <TypingText typingData={teamTitleTyping} />
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
-              <TypingText typingData={teamDescTyping} />
-            </p>
-           </div>
+      {/* Full Screen Morphing Modal for Deep Dive Case Studies */}
+      <AnimatePresence>
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8 md:p-12"
+          >
+            <div className="absolute inset-0 bg-[#070708]/90 backdrop-blur-md" onClick={() => setSelectedProject(null)} />
 
-          {/* Carpeta de Integrantes - Diseño Innovador */}
-          <div className={`px-2 sm:px-4 md:px-6 transition-all duration-1000 ease-out delay-300 ${
-            teamVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-8"
-          }`}>
-            {/* Card de Carpeta - Estado Cerrado */}
-            {!isFolderOpen && (
-              <div className="max-w-xl mx-auto">
-                <Card
-                  onClick={() => setIsFolderOpen(true)}
-                  className="group relative overflow-hidden border-2 border-blue-500/30 shadow-2xl bg-gradient-to-br from-slate-700 to-slate-800 cursor-pointer hover:border-blue-400/60 hover:shadow-blue-500/20 transition-all duration-500 hover:scale-[1.02]"
-                >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-blue-500/10 to-transparent" />
-                  
-                  {/* Diseño de carpeta cerrada */}
-                  <div className="relative p-6 sm:p-8 text-center">
-                    {/* Icono de carpeta */}
-                    <div className="relative mx-auto mb-4 w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center">
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-blue-400/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <Folder className="w-20 h-20 sm:w-24 sm:h-24 text-blue-400 group-hover:text-blue-300 transition-all duration-500 group-hover:scale-110" />
-                    </div>
-                    
-                    {/* Título y descripción */}
-                    <CardTitle className="text-2xl sm:text-3xl font-bold mb-3 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-                      Nuestro Equipo
-                    </CardTitle>
-                    <CardDescription className="text-base sm:text-lg text-slate-300 mb-4">
-                      Haz clic para conocer a los profesionales detrás de NovaSite
-                    </CardDescription>
-                    
-                    {/* Indicador de click */}
-                    <div className="flex items-center justify-center gap-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">
-                      <Users className="w-4 h-4" />
-                      <span className="text-sm font-medium">{team.length} integrantes</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            )}
-
-            {/* Cards de Integrantes - Estado Abierto con animación tipo abanico */}
-            {isFolderOpen && (
-              <div className="relative">
-                {/* Botón para cerrar */}
-                <div className="flex justify-center mb-8">
-                  <Button
-                    onClick={() => setIsFolderOpen(false)}
-                    variant="outlineGlow"
-                    className="group relative overflow-hidden rounded-full border-blue-500/30 text-blue-400 hover:border-blue-400/60 hover:text-blue-300"
+            <motion.div
+              layoutId={`project-card-${selectedProject.title}`}
+              className="relative w-full max-w-5xl max-h-[90vh] bg-[#050F19] border border-[#0B3A5C] rounded-[2.5rem] shadow-[0_0_80px_rgba(0,131,234,0.2)] overflow-y-auto hidden-scrollbar flex flex-col z-10"
+            >
+              <div className="absolute top-6 right-6 z-20">
+                <MagneticButton>
+                  <button
+                    onClick={() => { playClick(); setSelectedProject(null); }}
+                    className="w-12 h-12 flex items-center justify-center rounded-full bg-[#070708]/80 border border-[#0083EA]/50 hover:bg-[#0083EA] transition-colors backdrop-blur-md shadow-lg"
                   >
-                    <FolderOpen className="w-4 h-4 mr-2" />
-                    Cerrar carpeta
-                    <ArrowUp className="ml-2 w-4 h-4 group-hover:-translate-y-1 transition-transform duration-200" />
-                  </Button>
-                </div>
+                    <X weight="bold" className="w-5 h-5 text-white" />
+                  </button>
+                </MagneticButton>
+              </div>
 
-                {/* Grid de cards con animación en cascada */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-                  {team.map((member, index) => {
-                    const isFlipped = flippedCards.has(index);
-                    return (
-                    <div
-                      key={index}
-                      className="group perspective-1000 w-full h-full animate-folder-reveal"
-                      style={{
-                        animationDelay: `${index * 150}ms`,
-                        animationFillMode: "both",
-                        cursor: typeof window !== 'undefined' && window.innerWidth < 768 ? 'pointer' : 'default',
-                      }}
-                      onMouseMove={(e) => {
-                        const rect = e.currentTarget.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        e.currentTarget.style.setProperty('--x', `${x}px`);
-                        e.currentTarget.style.setProperty('--y', `${y}px`);
-                      }}
-                      onMouseEnter={() => {
-                        // En desktop, activar con hover
-                        if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-                          setFlippedCards(prev => new Set(prev).add(index));
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        // En desktop, desactivar al salir
-                        if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-                          setFlippedCards(prev => {
-                            const newSet = new Set(prev);
-                            newSet.delete(index);
-                            return newSet;
-                          });
-                        }
-                      }}
-                      onClick={(e) => {
-                        // En móvil, toggle con click
-                        if (typeof window !== 'undefined' && window.innerWidth < 768) {
-                          e.stopPropagation();
-                          setFlippedCards(prev => {
-                            const newSet = new Set(prev);
-                            if (newSet.has(index)) {
-                              newSet.delete(index);
-                            } else {
-                              newSet.add(index);
-                            }
-                            return newSet;
-                          });
-                        }
-                      }}
-                    >
-                      <div className="relative w-full h-full min-h-[380px] sm:min-h-[450px] md:min-h-[520px] lg:min-h-[580px] overflow-hidden">
-                        {/* Frente de la tarjeta */}
-                        <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] ${isFlipped ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'}`}>
-                            <Card
-                            tabIndex={0}
-                            className="team-card-front relative overflow-visible text-center w-full h-full border-2 border-blue-500/30 shadow-xl bg-slate-700 px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8 lg:py-10 flex flex-col justify-start rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow transition-all duration-700 ease-out"
-                          >
-                            <span
-                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]"
-                              style={{
-                                background:
-                                  "linear-gradient(135deg, rgba(255,255,255,0.05), transparent 60%)",
-                              }}
-                            />
-                            <div 
-                              className="team-avatar-container w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-44 lg:h-44 xl:w-52 xl:h-52 mx-auto mb-3 sm:mb-4 md:mb-5 lg:mb-6 overflow-hidden border-2 border-gradient-to-r from-blue-600 to-violet-600 shadow-lg flex items-center justify-center rounded-xl transform transition-all duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] md:group-hover:scale-105 flex-shrink-0"
-                            >
-                              <Image
-                                src={member.avatar || "/placeholder.svg"}
-                                alt={member.name}
-                                width={300}
-                                height={500}
-                                className="w-full h-full object-cover rounded-xl"
-                                loading="lazy"
-                                decoding="async"
-                                style={{ 
-                                  imageRendering: "auto",
-                                  width: '100%',
-                                  height: '100%'
-                                }}
-                              />
-                            </div>
-                            <CardTitle className="text-xl sm:text-2xl text-slate-100 mb-2 text-balance break-words leading-tight px-2">
-                              {member.name}
-                            </CardTitle>
-                            <Badge className="bg-gradient-to-r from-slate-600 to-blue-500 text-white text-xs sm:text-sm md:text-base py-1 sm:py-1.5 md:py-2 px-2 sm:px-3 md:px-4 mb-3 sm:mb-4 whitespace-normal break-words">
-                              {member.role}
-                            </Badge>
-                            <div className="mt-6 text-slate-400 text-sm hidden md:flex flex-col items-center">
-                              <p className="mb-2">Pasa el mouse para ver más información</p>
-                              <div className="flex space-x-2">
-                                {[1, 2, 3].map((i) => (
-                                  <div
-                                    key={i}
-                                    className="w-2 h-2 rounded-full bg-blue-500 opacity-20 group-hover:opacity-100 transition-all duration-300"
-                                    style={{
-                                      transitionDelay: `${i * 0.1}s`,
-                                      transform: 'translateY(0)'
-                                    }}
-                                  />
-                                ))}
-                              </div>
-                            </div>
+              {/* Informative Header (No Image) */}
+              <div className="w-full relative min-h-[220px] overflow-hidden border-b border-[#0B3A5C] p-8 md:p-16 flex flex-col justify-end bg-gradient-to-tr from-[#050F19] to-[#0B3A5C]/40">
+                <Badge variant="outline" className="w-fit border-[#0083EA]/30 text-[#0083EA] bg-[#0083EA]/10 font-mono text-[10px] tracking-widest uppercase mb-6">{selectedProject.client || "Sector Empresarial"}</Badge>
+                <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">{selectedProject.title}</h3>
+              </div>
 
-                            {/* Indicador en móvil para tocar */}
-                            <div className="md:hidden mt-4">
-                              <p className="text-slate-400 text-xs text-center animate-pulse">
-                                👆 Toca para ver más información
-                              </p>
-                            </div>
-                          </Card>
-                        </div>
+              <div className="w-full p-8 md:p-16 flex flex-col gap-10">
+                <p className="text-xl md:text-2xl text-slate-300 font-geist-sans leading-relaxed">
+                  {selectedProject.longDescription || selectedProject.description}
+                </p>
 
-                        {/* Parte trasera de la tarjeta */}
-                        <div className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] ${isFlipped ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'} overflow-hidden`}>
-                          <Card className="relative overflow-hidden text-center h-full border-2 border-blue-500/30 shadow-xl bg-gradient-to-br from-slate-700 to-slate-800 p-4 sm:p-5 flex flex-col justify-between rounded-xl hover:border-blue-400/60 focus-within:border-blue-400/80 card-glow transition-all duration-700 ease-out">
-                            <span
-                              className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)]"
-                              style={{
-                                background:
-                                  "linear-gradient(135deg, rgba(255,255,255,0.05), transparent 60%)",
-                              }}
-                            />
-                            
-                            {/* Header compacto */}
-                            <div className="mb-3">
-                              <h3 className="text-lg sm:text-xl font-bold text-slate-100 mb-1.5 leading-tight">
-                                {member.name}
-                              </h3>
-                              <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs sm:text-sm py-1 px-3">
-                                {member.role}
-                              </Badge>
-                            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4">
+                  {selectedProject.features && (
+                    <div>
+                      <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-6 uppercase">Características Implementadas</h4>
+                      <ul className="space-y-4">
+                        {selectedProject.features.map((feature, i) => (
+                          <li key={i} className="flex items-start text-slate-300 font-geist-sans">
+                            <CheckCircle weight="fill" className="w-5 h-5 text-[#0083EA] mr-3 shrink-0 mt-0.5" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                            {/* Contenido organizado en grid compacto */}
-                            <div className="flex-1 grid grid-cols-2 gap-3 sm:gap-3.5 text-left">
-                              <div>
-                                <h4 className="text-blue-400 font-semibold mb-1 text-xs sm:text-sm">
-                                  Experiencia
-                                </h4>
-                                <p className="text-slate-300 text-xs sm:text-sm leading-snug line-clamp-2">{member.experience}</p>
-                              </div>
-
-                              <div>
-                                <h4 className="text-blue-400 font-semibold mb-1 text-xs sm:text-sm">
-                                  Educación
-                                </h4>
-                                <p className="text-slate-300 text-xs sm:text-sm leading-snug">{member.education}</p>
-                              </div>
-
-                              <div className="col-span-2">
-                                <h4 className="text-blue-400 font-semibold mb-1.5 text-xs sm:text-sm">
-                                  Tecnologías
-                                </h4>
-                                <div className="flex flex-wrap gap-1.5">
-                                  {member.technologies.map((tech, techIndex) => (
-                                    <Badge
-                                      key={techIndex}
-                                      variant="outline"
-                                      className="border-blue-500 text-blue-400 bg-slate-600 text-xs px-2 py-0.5"
-                                    >
-                                      {tech}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
-
-                              <div className="col-span-2">
-                                <h4 className="text-blue-400 font-semibold mb-1.5 text-xs sm:text-sm">
-                                  Logros
-                                </h4>
-                                <ul className="text-slate-300 space-y-1">
-                                  {member.achievements.map(
-                                    (achievement, achievementIndex) => (
-                                      <li
-                                        key={achievementIndex}
-                                        className="flex items-start leading-snug"
-                                      >
-                                        <Star className="w-3 h-3 text-yellow-400 mr-1.5 flex-shrink-0 mt-0.5" />
-                                        <span className="text-xs sm:text-sm line-clamp-1">{achievement}</span>
-                                      </li>
-                                    )
-                                  )}
-                                </ul>
-                              </div>
-                            </div>
-
-                            {/* Botón compacto */}
-                            <div className="pt-2.5 border-t border-slate-600/70 mt-2.5">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 h-auto"
-                                onClick={() => {
-                                  const contactSection = document.getElementById('contact');
-                                  if (contactSection) {
-                                    contactSection.scrollIntoView({
-                                      behavior: 'smooth',
-                                      block: 'start'
-                                    });
-                                  }
-                                }}
-                              >
-                                <Mail className="w-3 h-3 mr-1.5" />
-                                Email
-                              </Button>
-                            </div>
-                          </Card>
-                        </div>
+                  {(selectedProject.metrics || selectedProject.outcomes) && (
+                    <div className="p-8 rounded-[2rem] bg-[#070708] border border-[#0B3A5C] flex flex-col justify-center">
+                      <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-8 uppercase text-center">Impacto Operativo</h4>
+                      <div className="grid grid-cols-2 gap-6 text-center mb-8">
+                        {selectedProject.metrics?.map((m, i) => (
+                          <div key={i}>
+                            <p className="text-4xl font-black text-white mb-2">{m.value}</p>
+                            <p className="text-xs text-slate-500 font-geist-mono uppercase tracking-widest">{m.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="space-y-3 border-t border-[#0B3A5C] pt-6">
+                        {selectedProject.outcomes?.map((o, i) => (
+                          <div key={i} className="text-sm text-slate-400 font-geist-sans flex items-center justify-center">
+                            <Star weight="fill" className="w-4 h-4 text-[#007CE8] mr-2" />
+                            {o}
+                          </div>
+                        ))}
                       </div>
                     </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-             {/* Portafolio Section */}
-       <section
-         id="portafolio"
-         ref={portfolioRef}
-         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-slate-800 transition-all duration-1000 ease-out ${
-           portfolioVisible
-             ? "opacity-100 translate-y-0"
-             : "opacity-0 translate-y-8"
-         }`}
-       >
-                 <div className="container mx-auto">
-           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
-             portfolioVisible
-               ? "opacity-100 translate-y-0"
-               : "opacity-0 translate-y-6"
-           }`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
-              <TypingText typingData={portfolioTitleTyping} />
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
-              <TypingText typingData={portfolioDescTyping} />
-            </p>
-           </div>
-
-          <div
-            ref={portfolioAutoRef}
-            className="relative max-w-4xl mx-auto focus:outline-none"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            tabIndex={0}
-            role="region"
-            aria-roledescription="carrusel"
-            aria-label="Proyectos destacados"
-            onKeyDown={(e) => {
-              if (e.key === "ArrowLeft") {
-                e.preventDefault();
-                prevProject();
-              }
-              if (e.key === "ArrowRight") {
-                e.preventDefault();
-                nextProject();
-              }
-            }}
-            onTouchStart={(e) =>
-              setTouchStartX(e.changedTouches[0]?.clientX ?? null)
-            }
-            onTouchEnd={(e) => {
-              if (touchStartX == null) return;
-              const dx = e.changedTouches[0]?.clientX - touchStartX;
-              if (Math.abs(dx) > 40) {
-                if (dx > 0) prevProject();
-                else nextProject();
-              }
-              setTouchStartX(null);
-            }}
-          >
-                         <Card
-               className={`group relative overflow-hidden shadow-xl border-2 border-blue-500/30 bg-slate-700 transition-all duration-700 ease-out hover:-translate-y-1 hover:border-blue-400/60 hover:shadow-[0_10px_40px_-10px_rgba(37,99,235,0.35)] ${
-                 projectTransition
-                   ? transitionDir === "next"
-                     ? "opacity-0 translate-x-6 scale-95"
-                     : "opacity-0 -translate-x-6 scale-95"
-                   : "opacity-100 translate-x-0 scale-100"
-               } `}
-              onMouseMove={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                const r = el.getBoundingClientRect();
-                const x = ((e.clientX - r.left) / r.width) * 100;
-                const y = ((e.clientY - r.top) / r.height) * 100;
-                el.style.setProperty("--x", `${x}%`);
-                el.style.setProperty("--y", `${y}%`);
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.removeProperty("--x");
-                el.style.removeProperty("--y");
-              }}
-            >
-              {/* Glow radial that follows mouse */}
-              <div
-                className="pointer-events-none absolute -inset-24 opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-20"
-                style={{
-                  background:
-                    "radial-gradient(600px circle at var(--x,50%) var(--y,50%), rgba(59,130,246,0.25), transparent 40%)",
-                }}
-              />
-              <div className="md:flex">
-                <div className="md:w-1/2">
-                  <div className="relative w-full h-48 sm:h-56 md:h-full min-h-[200px] sm:min-h-[240px] md:min-h-[260px] rounded-xl overflow-hidden ring-1 ring-slate-600/50 shadow-lg bg-slate-900">
-                    <Image
-                      src={projects[currentProject].image}
-                      alt={projects[currentProject].title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      priority={currentProject === 0}
-                      className="object-contain object-center p-2 transition-transform duration-500 group-hover:scale-[1.03]"
-                    />
-                  </div>
-                </div>
-                <div className="md:w-1/2 p-4 sm:p-6 md:p-8">
-                  <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-slate-100">
-                    {projects[currentProject].title}
-                  </h3>
-                  <p className="text-sm sm:text-base text-slate-300 mb-4 sm:mb-6">
-                    {projects[currentProject].description}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
-                    {projects[currentProject].tech.map((tech, index) => (
-                      <Badge
-                        key={index}
-                        variant="outline"
-                        className="border-slate-500 text-blue-400 bg-slate-600"
-                      >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                                     <Button
-                     asChild
-                     variant="gradient"
-                     className="group relative overflow-hidden rounded-full px-5 py-3 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-                   >
-                     <Link
-                       href="/proyectos"
-                       aria-label={`Ver proyecto ${projects[currentProject].title}`}
-                     >
-                       Ver Proyecto
-                       <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                     </Link>
-                   </Button>
-                </div>
-              </div>
-            </Card>
-
-            <Button
-              variant="outline"
-              size="icon"
-              className="hidden sm:flex absolute left-4 top-1/2 transform -translate-y-1/2 bg-slate-600 shadow-lg hover:bg-slate-500 text-white border-slate-500"
-              onClick={prevProject}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="hidden sm:flex absolute right-4 top-1/2 transform -translate-y-1/2 bg-slate-600 shadow-lg hover:bg-slate-500 text-white border-slate-500"
-              onClick={nextProject}
-            >
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <div
-            className="flex justify-center mt-8 space-x-2"
-            role="tablist"
-            aria-label="Indicadores de carrusel"
-          >
-            {projects.map((_, index) => (
-              <button
-                key={index}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentProject
-                    ? "bg-gradient-to-r from-slate-600 to-blue-500"
-                    : "bg-slate-600 hover:bg-slate-500"
-                }`}
-                onClick={() => setCurrentProject(index)}
-                role="tab"
-                aria-selected={index === currentProject}
-                aria-current={index === currentProject ? "true" : undefined}
-                aria-label={`Ir al proyecto ${index + 1}`}
-              />
-            ))}
-          </div>
-
-          {/* Botón para ver todos los proyectos */}
-          <div className="flex justify-center mt-10">
-            <Button
-              asChild
-              size="xl"
-              variant="gradient"
-              className="relative overflow-hidden rounded-full px-8 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-            >
-              <Link
-                href="/proyectos"
-                aria-label="Ver todos los proyectos de NovaSite"
-                className="flex items-center"
-              >
-                Ver todos los proyectos
-                <ArrowRight className="ml-3 w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-                           {/* Testimonials Section */}
-        <section
-          ref={testimonialsRef}
-          className={`py-10 sm:py-12 md:py-16 lg:py-20 px-3 sm:px-4 md:px-6 relative overflow-hidden transition-all duration-1000 ease-out ${
-            testimonialsVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-8"
-          }`}
-        >
-         <Image
-           src="/logos/chica-sola-en-la-ciudad-ilustracion_1280x720_xtrafondos.com.jpg"
-           alt="Chica sola en la ciudad"
-           fill
-           sizes="100vw"
-           className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none select-none z-0"
-           style={{ objectPosition: "center" }}
-         />
-         {/* Difuminado de arriba hacia abajo */}
-         <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-transparent to-transparent pointer-events-none z-[1]" />
-         {/* Difuminado de abajo hacia arriba */}
-         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent pointer-events-none z-[1]" />
-                   <div className="container mx-auto relative z-10 max-w-7xl">
-           <div className={`text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16 transition-all duration-1000 ease-out delay-200 ${
-             testimonialsVisible
-               ? "opacity-100 translate-y-0"
-               : "opacity-0 translate-y-6"
-           }`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 md:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
-              <TypingText typingData={testimonialsTitleTyping} />
-            </h2>
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2 sm:px-4">
-              <TypingText typingData={testimonialsDescTyping} />
-            </p>
-           </div>
-
-          {/* Carrusel de Testimonios */}
-          <div className="relative">
-            {/* Contenedor del carrusel */}
-            <div className="overflow-hidden py-2 sm:py-4">
-              <div 
-                className="flex transition-transform duration-500 ease-in-out"
-                style={{
-                  transform: `translateX(-${currentTestimonialIndex * 100}%)`,
-                }}
-                onTouchStart={(e) => {
-                  setTestimonialTouchStartX(e.touches[0].clientX);
-                }}
-                onTouchEnd={(e) => {
-                  if (!testimonialTouchStartX) return;
-                  const touchEndX = e.changedTouches[0].clientX;
-                  const diff = testimonialTouchStartX - touchEndX;
-                  
-                  if (Math.abs(diff) > 50) {
-                    if (diff > 0) {
-                      // Swipe izquierda - siguiente
-                      nextTestimonials();
-                    } else {
-                      // Swipe derecha - anterior
-                      prevTestimonials();
-                    }
-                  }
-                  setTestimonialTouchStartX(null);
-                }}
-              >
-                {/* Agrupar testimonios de 3 en 3 */}
-                {Array.from({ length: Math.ceil(testimonials.length / 3) }).map((_, groupIndex) => (
-                  <div 
-                    key={groupIndex}
-                    className="w-full flex-shrink-0 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 px-1 sm:px-2 py-2"
-                  >
-                    {testimonials.slice(groupIndex * 3, groupIndex * 3 + 3).map((testimonial) => (
-                      <Card
-                        key={testimonial.id}
-                        tabIndex={0}
-                        className="group relative overflow-hidden cursor-pointer border-2 border-blue-500/30 shadow-lg bg-slate-800/95 backdrop-blur-md rounded-xl focus-within:border-blue-400/80 p-3 sm:p-4 md:p-5 lg:p-6 h-full flex flex-col"
-                        style={{
-                          transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-8px) scale(1.01)';
-                          e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2)';
-                          e.currentTarget.style.borderColor = 'rgba(96, 165, 250, 0.6)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                          e.currentTarget.style.boxShadow = '';
-                          e.currentTarget.style.borderColor = '';
-                        }}
-                      >
-                        <span
-                          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-in-out"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, rgba(255,255,255,0.02), transparent 70%)",
-                          }}
-                        />
-                        <CardHeader className="pb-2 sm:pb-3 md:pb-4 px-0 flex-shrink-0">
-                          {/* Proyecto relacionado */}
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-2 sm:mb-3">
-                            <Badge className="bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs px-2 sm:px-3 py-0.5 sm:py-1 w-fit break-words">
-                              {testimonial.projectTitle}
-                            </Badge>
-                            <div className="flex items-center space-x-0.5 sm:space-x-1 flex-shrink-0">
-                              {[...Array(testimonial.rating)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 fill-yellow-400 text-yellow-400"
-                                />
-                              ))}
-                            </div>
-                          </div>
-
-                          {/* Comentario */}
-                          <CardDescription className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed line-clamp-4 sm:line-clamp-5 md:line-clamp-none flex-grow">
-                            <q>{testimonial.comment}</q>
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="px-0 flex-shrink-0 mt-auto">
-                          <div className="border-t border-slate-600/50 pt-2 sm:pt-3 md:pt-4">
-                            <div className="flex items-center space-x-2 sm:space-x-3">
-                              <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-white font-semibold text-xs sm:text-sm flex-shrink-0">
-                                {testimonial.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <p className="font-semibold text-slate-100 text-xs sm:text-sm truncate">
-                                  {testimonial.name}
-                                </p>
-                                <p className="text-xs text-slate-400 line-clamp-2 break-words">
-                                  {testimonial.role} en {testimonial.company}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Botones de navegación */}
-            <div className="flex items-center justify-center gap-3 sm:gap-4 mt-6 sm:mt-8">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={prevTestimonials}
-                disabled={currentTestimonialIndex === 0}
-                className="rounded-full border-blue-500/30 hover:border-blue-400/60 hover:bg-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed h-9 w-9 sm:h-10 sm:w-10"
-                aria-label="Testimonios anteriores"
-              >
-                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-              </Button>
-
-              {/* Indicadores */}
-              <div className="flex gap-1.5 sm:gap-2">
-                {Array.from({ length: Math.ceil(testimonials.length / 3) }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentTestimonialIndex(index)}
-                    className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
-                      index === currentTestimonialIndex
-                        ? "w-6 sm:w-8 bg-blue-400"
-                        : "w-1.5 sm:w-2 bg-blue-400/30 hover:bg-blue-400/50"
-                    }`}
-                    aria-label={`Ir a página ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={nextTestimonials}
-                disabled={currentTestimonialIndex >= Math.ceil(testimonials.length / 3) - 1}
-                className="rounded-full border-blue-500/30 hover:border-blue-400/60 hover:bg-blue-500/10 disabled:opacity-50 disabled:cursor-not-allowed h-9 w-9 sm:h-10 sm:w-10"
-                aria-label="Siguientes testimonios"
-              >
-                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-             {/* Contact Section */}
-       <section
-         id="contact"
-         ref={contactRef}
-         className={`py-10 sm:py-12 md:py-16 px-3 sm:px-4 bg-slate-800 transition-all duration-1000 ease-out ${
-           contactVisible
-             ? "opacity-100 translate-y-0"
-             : "opacity-0 translate-y-8"
-         }`}
-       >
-                 <div className="container mx-auto">
-           <div className={`text-center mb-8 sm:mb-12 md:mb-16 transition-all duration-1000 ease-out delay-200 ${
-             contactVisible
-               ? "opacity-100 translate-y-0"
-               : "opacity-0 translate-y-6"
-           }`}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem]">
-              <TypingText typingData={contactTitleTyping} />
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto min-h-[2rem] sm:min-h-[2.5rem] md:min-h-[3rem] px-2">
-              <TypingText typingData={contactDescTyping} />
-            </p>
-           </div>
-
-          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 max-w-6xl mx-auto">
-            <div>
-              <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-slate-100">
-                Información de Contacto
-              </h3>
-              <div className="space-y-4 sm:space-y-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-slate-600 to-blue-500 rounded-lg flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-100">Email</p>
-                    <p className="text-slate-300">novasite@gmail.com</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-slate-600 to-blue-500 rounded-lg flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-100">Teléfono</p>
-                    <p className="text-slate-300">+506 8304-7436</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-slate-600 to-blue-500 rounded-lg flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-100">Ubicación</p>
-                    <p className="text-slate-300">Costa Rica, Alajuela</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <h4 className="text-lg font-semibold mb-4 text-slate-100">
-                  Síguenos
-                </h4>
-                <div className="flex space-x-4">
-                  <Button
-                    asChild
-                    size="icon"
-                    variant="outline"
-                    className="hover:bg-slate-700 hover:border-slate-500 bg-slate-600 text-white border-slate-500"
-                  >
-                    <a
-                      href="https://github.com/novasitesc"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Visitar nuestro GitHub"
-                    >
-                      <Github className="w-5 h-5" />
-                    </a>
-                  </Button>
-                  <Button
-                    asChild
-                    size="icon"
-                    variant="outline"
-                    className="hover:bg-slate-700 hover:border-slate-500 bg-slate-600 text-white border-slate-500"
-                  >
-                    <a
-                      href="https://www.instagram.com/novasitesc/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Visitar nuestro Instagram"
-                    >
-                      <Instagram className="w-5 h-5" />
-                    </a>
-                  </Button>
-                  <Button
-                    asChild
-                    size="icon"
-                    variant="outline"
-                    className="hover:bg-slate-700 hover:border-slate-500 bg-slate-600 text-white border-slate-500"
-                  >
-                    <a
-                      href="https://x.com/nova_sitesc"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Visitar nuestro X (Twitter)"
-                    >
-                      <Twitter className="w-5 h-5" />
-                    </a>
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-                         <Card className="shadow-xl border-2 border-blue-500/30 bg-slate-700 hover:border-blue-400/60">
-              <CardHeader>
-                <CardTitle className="text-white">Envíanos un Mensaje</CardTitle>
-                <CardDescription className="text-white"> 
-                  Cuéntanos sobre tu proyecto y te contactaremos pronto
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium mb-2 block text-slate-200">
-                        Nombre
-                      </label>
-                      <Input
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        placeholder="Tu nombre"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium mb-2 block text-slate-200">
-                        Email
-                      </label>
-                      <Input
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="tu@email.com"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-2 block text-slate-200">
-                      Asunto
-                    </label>
-                    <Input
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      placeholder="¿En qué podemos ayudarte?"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium mb-2 block text-slate-200">
-                      Mensaje
-                    </label>
-                    <Textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      placeholder="Cuéntanos sobre tu proyecto..."
-                      className="min-h-[120px]"
-                      required
-                    />
-                  </div>
-
-                  {/* Mensaje de estado */}
-                  {submitStatus === "success" && (
-                    <div className="p-3 bg-green-600/20 border border-green-500/30 rounded-lg text-green-400 text-sm">
-                      ¡Mensaje enviado! Se abrirá tu cliente de email para
-                      completar el envío.
-                    </div>
                   )}
-                  {submitStatus === "error" && (
-                    <div className="p-3 bg-red-600/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
-                      Hubo un error al enviar el mensaje. Por favor, intenta de
-                      nuevo.
-                    </div>
-                  )}
+                </div>
 
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="group relative overflow-hidden rounded-full w-full sm:w-auto px-6 py-3 cursor-pointer bg-gradient-to-r from-slate-700 to-blue-600 hover:from-slate-600 hover:to-blue-500 focus-visible:ring-[3px] focus-visible:ring-blue-400/50 disabled:opacity-50 disabled:cursor-not-allowed before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-                  >
-                    {isSubmitting ? "Enviando..." : "Enviar Mensaje"}
-                    <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                <div className="mt-8 pt-8 border-t border-[#0B3A5C] flex gap-3 flex-wrap">
+                  {selectedProject.tech.map(t => (
+                    <span key={t} className="px-5 py-2 bg-[#0B3A5C]/20 text-white hover:bg-[#0083EA]/20 hover:border-[#0083EA] transition-colors font-geist-mono text-xs rounded-xl border border-[#0B3A5C]">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Social Banner */}
+      <section className="bg-[#0083EA] py-16 relative overflow-hidden group">
+        <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(circle at center, #050F19 10%, transparent 80%)" }} />
+        <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-white mb-2">Construimos en público.</h2>
+            <p className="text-[#050F19] font-medium text-lg">Sigue nuestro proceso creativo y tecnológico en tiempo real.</p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <MagneticButton>
+              <a href="https://www.instagram.com/novasitesc/" target="_blank" rel="noopener noreferrer" onMouseEnter={playHover} onClick={playClick} className="inline-flex items-center justify-center px-6 py-4 rounded-full bg-white text-[#0083EA] font-bold hover:bg-[#070708] hover:text-white transition-colors shadow-lg">
+                <InstagramLogo className="w-6 h-6 mr-2" />
+                @novasitesc
+              </a>
+            </MagneticButton>
+            <MagneticButton>
+              <a href="https://x.com/nova_sitesc" target="_blank" rel="noopener noreferrer" onMouseEnter={playHover} onClick={playClick} className="inline-flex items-center justify-center px-6 py-4 rounded-full bg-black text-white font-bold hover:bg-white hover:text-black border border-white/20 transition-colors shadow-lg">
+                <XLogo weight="fill" className="w-6 h-6 mr-2" />
+                @nova_sitesc
+              </a>
+            </MagneticButton>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contacto" className="py-32 relative overflow-hidden bg-[#070708]">
+        <div className="absolute inset-0" style={{ background: "radial-gradient(circle at top right, #0B3A5C 0%, transparent 50%)" }} />
+        <div className="container mx-auto px-4 md:px-8 relative z-10">
+          <div className="max-w-3xl mx-auto">
+            <div className="mb-16 text-center">
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">Iniciar Convergencia</h2>
+              <p className="text-slate-400 font-geist-sans">Diseñamos el sistema que transformará radicalmente tus operaciones.</p>
+            </div>
+            <form onSubmit={handleSubmit} className="p-8 md:p-12 rounded-[2.5rem] bg-[#050F19] border border-[#0B3A5C] shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Identificación</label>
+                  <Input name="name" value={formData.name} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl h-14 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white" placeholder="Nombre de usuario o empresa" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Capa de Red (Email)</label>
+                  <Input name="email" value={formData.email} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl h-14 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white" placeholder="usuario@dominio.com" />
+                </div>
+              </div>
+              <div className="space-y-2 mb-6">
+                <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Vector de Negocio (Asunto)</label>
+                <Input name="subject" value={formData.subject} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl h-14 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white" placeholder="Propuesta de arquitectura" />
+              </div>
+              <div className="space-y-2 mb-8">
+                <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Parámetros Operativos (Mensaje)</label>
+                <Textarea name="message" value={formData.message} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl min-h-[140px] font-geist-sans focus-visible:ring-[#0083EA]/50 resize-y text-white" placeholder="Describe los requisitos del sistema..." />
+              </div>
+
+              <div className="mb-8 flex justify-center">
+                {/* Replace this siteKey with a real one from Cloudflare Dashboard later */}
+                <Turnstile siteKey="1x00000000000000000000AA" onSuccess={(token) => setTurnstileToken(token)} options={{ theme: 'dark' }} />
+              </div>
+
+              <MagneticButton>
+                <Button type="submit" disabled={isSubmitting} onClick={playClick} className="w-full h-14 rounded-xl bg-[#0083EA] text-white hover:bg-[#007CE8] font-bold transition-all duration-300 shadow-[0_0_20px_rgba(0,131,234,0.2)] hover:shadow-[0_0_30px_rgba(0,131,234,0.4)]">
+                  {isSubmitting ? "TRANSMITIENDO DATOS..." : "DESPLEGAR MENSAJE"} <Crosshair weight="bold" className="ml-2 w-5 h-5" />
+                </Button>
+              </MagneticButton>
+            </form>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 px-4">
-        <div className="container mx-auto">
-          <div className="flex justify-center mb-8">
-            <Button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              size="xl"
-              variant="glow"
-              className="rounded-full cursor-pointer"
-            >
-              Volver al inicio
-              <ArrowUp className="ml-2 w-5 h-5" />
-            </Button>
-          </div>
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-slate-600 to-blue-500 rounded-lg flex items-center justify-center">
-                  <Code2 className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold">NovaSite</span>
-              </div>
-              <p className="text-slate-400 mb-4">
-                Transformando ideas en soluciones digitales innovadoras.
-              </p>
-                             <div className="flex space-x-4">
-                 <Button
-                   asChild
-                   size="icon"
-                   variant="ghost"
-                   className="text-slate-400 hover:text-white hover:bg-slate-800"
-                 >
-                   <a
-                     href="https://github.com/novasitesc"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     aria-label="Visitar nuestro GitHub"
-                   >
-                     <Github className="w-5 h-5" />
-                   </a>
-                 </Button>
-                 <Button
-                   asChild
-                   size="icon"
-                   variant="ghost"
-                   className="text-slate-400 hover:text-white hover:bg-slate-800"
-                 >
-                   <a
-                     href="https://x.com/nova_sitesc"
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     aria-label="Visitar nuestro X (Twitter)"
-                   >
-                     <Twitter className="w-5 h-5" />
-                   </a>
-                 </Button>
-               </div>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Servicios</h4>
-                             <ul className="space-y-2 text-slate-400">
-                 <li>
-                   <Link href="/servicios" className="hover:text-white transition-colors">
-                     Desarrollo Web
-                   </Link>
-                 </li>
-                 <li>
-                   <Link href="/servicios" className="hover:text-white transition-colors">
-                     E-commerce
-                   </Link>
-                 </li>
-                 <li>
-                   <Link href="/servicios" className="hover:text-white transition-colors">
-                     Mantenimiento
-                   </Link>
-                 </li>
-                 <li>
-                   <Link href="/servicios" className="hover:text-white transition-colors">
-                     Backend
-                   </Link>
-                 </li>
-               </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Empresa</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li>
-                  <Link
-                    href="/sobre-nosotros"
-                    className="hover:text-white transition-colors"
-                  >
-                    Sobre Nosotros
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/proyectos"
-                    className="hover:text-white transition-colors"
-                  >
-                    Portafolio
-                  </Link>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors">
-                    Contacto
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Contacto</h4>
-              <ul className="space-y-2 text-slate-400">
-                <li>novasitesc@gmail.com</li>
-                <li>+(506) 8304-7436</li>
-                <li>Costa Rica, Alajuela</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2025 NovaSite. Todos los derechos reservados.</p>
-          </div>
-        </div>
+      <footer className="border-t border-[#0B3A5C] bg-[#070708] py-12 text-center text-[#0B3A5C] font-geist-sans text-sm pb-24">
+        <p>&copy; {new Date().getFullYear()} NovaSite Core Systems. Operaciones Activas en la Red.</p>
       </footer>
-
-      {/* Agrega la animación CSS para el menú lateral */}
-      <style jsx global>{`
-        @keyframes slideInRight {
-          0% {
-            transform: translateX(100%);
-            opacity: 0.5;
-            filter: blur(8px);
-          }
-          80% {
-            filter: blur(2px);
-            opacity: 1;
-          }
-          100% {
-            transform: translateX(0);
-            opacity: 1;
-            filter: blur(0);
-          }
-        }
-        .animate-slide-in-right {
-          animation: slideInRight 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .hamburger span {
-          position: absolute;
-          left: 0;
-          width: 100%;
-          height: 4px;
-          background: white;
-          border-radius: 2px;
-          transition: all 0.3s cubic-bezier(0.4, 2, 0.6, 1);
-        }
-        /* Animación para toasts (slide + fade in) */
-        @keyframes slideFadeIn {
-          0% {
-            transform: translateY(-8px);
-            opacity: 0;
-            filter: blur(6px);
-          }
-          60% {
-            transform: translateY(2px);
-            opacity: 1;
-            filter: blur(1px);
-          }
-          100% {
-            transform: translateY(0);
-            opacity: 1;
-            filter: blur(0);
-          }
-        }
-        .animate-slide-fade-in {
-          animation: slideFadeIn 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
-              `}</style>
-       {/* Estilos para el efecto de deslizamiento vertical suave de las tarjetas del equipo */}
-       <style jsx global>{`
-         .perspective-1000 {
-           perspective: none;
-         }
-
-         /* Animación suave de deslizamiento vertical */
-         .group:hover .card-glow {
-           box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.2);
-           transition: box-shadow 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-         }
-         
-         /* Efecto de profundidad sutil durante el deslizamiento - solo en desktop */
-         @media (min-width: 768px) {
-           .group:hover {
-             transform: translateY(-2px);
-             transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-           }
-         }
-         
-         /* En móvil, deshabilitar hover y usar solo el sistema de colapsable */
-         @media (max-width: 767px) {
-           .group:hover .card-glow {
-             box-shadow: none;
-           }
-         }
-
-         /* Avatar cuadrado para el equipo */
-         .square-avatar {
-           border-radius: 1rem;
-           background: linear-gradient(135deg, #1e293b 60%, #2563eb 100%);
-         }
-
-         /* Mejora de la transición del gradiente en hover */
-         .card-glow span {
-           transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-         }
-
-         /* Ocultar scrollbar pero mantener funcionalidad */
-         .team-card-scroll {
-           scrollbar-width: none; /* Firefox */
-           -ms-overflow-style: none; /* IE y Edge */
-         }
-
-         .team-card-scroll::-webkit-scrollbar {
-           display: none; /* Chrome, Safari y Opera */
-         }
-
-         /* Suavizar el movimiento de las cards del equipo */
-         .group {
-           transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-         }
-
-         /* Contenedor del avatar del equipo - altura proporcional */
-         .team-avatar-container {
-           height: 96px !important;
-           min-height: 96px !important;
-           max-height: 96px !important;
-           flex-shrink: 0 !important;
-         }
-
-         @media (min-width: 640px) {
-           .team-avatar-container {
-             height: 128px !important;
-             min-height: 128px !important;
-             max-height: 128px !important;
-           }
-         }
-
-         @media (min-width: 768px) {
-           .team-avatar-container {
-             height: 144px !important;
-             min-height: 144px !important;
-             max-height: 144px !important;
-           }
-         }
-
-         @media (min-width: 1024px) {
-           .team-avatar-container {
-             height: 176px !important;
-             min-height: 176px !important;
-             max-height: 176px !important;
-           }
-         }
-
-         @media (min-width: 1280px) {
-           .team-avatar-container {
-             height: 208px !important;
-             min-height: 208px !important;
-             max-height: 208px !important;
-           }
-         }
-
-         /* Asegurar que el card tenga suficiente espacio para el avatar */
-         .card-glow {
-           overflow: visible !important;
-         }
-
-         /* Ajustar el contenedor de la card del equipo */
-         .team-card-front {
-           overflow: visible !important;
-           padding-top: 1rem !important;
-           padding-bottom: 1rem !important;
-         }
-
-         @media (min-width: 640px) {
-           .team-card-front {
-             padding-top: 1.5rem !important;
-             padding-bottom: 1.5rem !important;
-           }
-         }
-
-         @media (min-width: 768px) {
-           .team-card-front {
-             padding-top: 2rem !important;
-             padding-bottom: 2rem !important;
-           }
-         }
-
-         @media (min-width: 1024px) {
-           .team-card-front {
-             padding-top: 2.5rem !important;
-             padding-bottom: 2.5rem !important;
-           }
-         }
-       `}</style>
     </div>
   );
 }
