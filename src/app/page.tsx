@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import {
   Code, ShoppingCart, Wrench, Database, Star,
-  Phone, Envelope, Crosshair, ArrowRight,
+  Crosshair, ArrowRight,
   CheckCircle, XCircle, X, InstagramLogo, CaretRight, XLogo, WhatsappLogo
 } from "@phosphor-icons/react";
 
@@ -18,6 +18,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Stars, Float, Sparkles } from "@react-three/drei";
+import * as THREE from "three";
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -103,7 +104,7 @@ const team = [
 
 // Reusable 3D Particle Element
 function AbstractNLogo() {
-  const groupRef = useRef<any>(null);
+  const groupRef = useRef<THREE.Group>(null);
   useFrame((state) => {
     if (groupRef.current) {
       groupRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
@@ -209,7 +210,7 @@ const CustomCursor = () => {
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [selectedService, setSelectedService] = useState<any | null>(null);
+  const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null);
 
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
