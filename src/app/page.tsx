@@ -344,24 +344,35 @@ export default function LandingPage() {
       return;
     }
 
-    // In local dev this will be skipped if you don't use real keys, but here is the logic ready:
-    if (!turnstileToken) {
+    // Require token only if the Site Key is configured (avoiding errors when keys are not set in .env)
+    const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+    if (siteKey && !turnstileToken) {
       pushToast("error", "Autenticación humana requerida (Captcha).");
       return;
     }
 
     setIsSubmitting(true);
     try {
+      const payload = {
+        ...formData,
+        turnstileToken
+      };
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
       if (response.ok) {
         setFormData({ name: "", email: "", subject: "", message: "" });
         pushToast("success", "¡Mensaje transferido a los servidores de NovaSite!");
       } else {
-        pushToast("error", "Hubo un error de transmisión.");
+        let errorMsg = "Hubo un error de transmisión.";
+        try {
+          const errData = await response.json();
+          if (errData.error) errorMsg = errData.error;
+        } catch (e) { }
+        pushToast("error", errorMsg);
       }
     } catch {
       pushToast("error", "Falla de conectividad local.");
@@ -840,26 +851,36 @@ export default function LandingPage() {
             <form onSubmit={handleSubmit} className="p-8 md:p-12 rounded-[2.5rem] bg-[#050F19] border border-[#0B3A5C] shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Identificación</label>
-                  <Input name="name" value={formData.name} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl h-14 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white" placeholder="Nombre de usuario o empresa" />
+                  <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Nombre</label>
+                  <Input name="name" value={formData.name} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl h-14 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white" placeholder="Tu nombre completo o empresa" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Capa de Red (Email)</label>
+                  <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Correo</label>
                   <Input name="email" value={formData.email} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl h-14 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white" placeholder="usuario@dominio.com" />
                 </div>
               </div>
               <div className="space-y-2 mb-6">
-                <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Vector de Negocio (Asunto)</label>
-                <Input name="subject" value={formData.subject} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl h-14 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white" placeholder="Propuesta de arquitectura" />
+                <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Asunto / Idea de negocio</label>
+                <select name="subject" value={formData.subject} onChange={(e) => handleInputChange(e as any)} className="w-full bg-[#070708] border border-[#0B3A5C] rounded-xl h-14 px-3 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white appearance-none outline-none">
+                  <option value="" disabled>Selecciona una opción</option>
+                  <option value="Landing Page">Landing Page</option>
+                  <option value="Ecommerce">Ecommerce</option>
+                  <option value="Sitio Web Corporativo">Sitio Web Corporativo</option>
+                  <option value="Aplicación Web">Aplicación Web</option>
+                  <option value="Software de Asistencia">Software de Asistencia</option>
+                  <option value="Consultoría/Mantenimiento">Consultoría / Mantenimiento</option>
+                  <option value="Otro">Otro proyecto</option>
+                </select>
               </div>
               <div className="space-y-2 mb-8">
-                <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Parámetros Operativos (Mensaje)</label>
-                <Textarea name="message" value={formData.message} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl min-h-[140px] font-geist-sans focus-visible:ring-[#0083EA]/50 resize-y text-white" placeholder="Describe los requisitos del sistema..." />
+                <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Mensaje</label>
+                <Textarea name="message" value={formData.message} onChange={handleInputChange} className="bg-[#070708] border-[#0B3A5C] rounded-xl min-h-[140px] font-geist-sans focus-visible:ring-[#0083EA]/50 resize-y text-white" placeholder="Describe los detalles de tu proyecto o idea..." />
               </div>
 
               <div className="mb-8 flex justify-center">
-                {/* Replace this siteKey with a real one from Cloudflare Dashboard later */}
-                <Turnstile siteKey="1x00000000000000000000AA" onSuccess={(token) => setTurnstileToken(token)} options={{ theme: 'dark' }} />
+                {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                  <Turnstile siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} onSuccess={(token) => setTurnstileToken(token)} options={{ theme: 'dark' }} />
+                )}
               </div>
 
               <MagneticButton>
