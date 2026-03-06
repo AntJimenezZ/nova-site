@@ -327,7 +327,7 @@ export default function LandingPage() {
 
   const TitleText = "NOVASITE".split("");
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -371,7 +371,7 @@ export default function LandingPage() {
         try {
           const errData = await response.json();
           if (errData.error) errorMsg = errData.error;
-        } catch (e) { }
+        } catch { }
         pushToast("error", errorMsg);
       }
     } catch {
@@ -861,7 +861,7 @@ export default function LandingPage() {
               </div>
               <div className="space-y-2 mb-6">
                 <label className="text-xs font-geist-mono tracking-wider text-[#0083EA] uppercase">Asunto / Idea de negocio</label>
-                <select name="subject" value={formData.subject} onChange={(e) => handleInputChange(e as any)} className="w-full bg-[#070708] border border-[#0B3A5C] rounded-xl h-14 px-3 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white appearance-none outline-none">
+                <select name="subject" value={formData.subject} onChange={handleInputChange} className="w-full bg-[#070708] border border-[#0B3A5C] rounded-xl h-14 px-3 font-geist-sans focus-visible:ring-[#0083EA]/50 text-white appearance-none outline-none">
                   <option value="" disabled>Selecciona una opción</option>
                   <option value="Landing Page">Landing Page</option>
                   <option value="Ecommerce">Ecommerce</option>
