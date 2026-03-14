@@ -519,7 +519,7 @@ export default function LandingPage() {
             <div className="mt-12 pointer-events-auto hero-sub">
               <MagneticButton className="w-fit">
                 <a href="#contacto" onClick={playClick} className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[#0083EA] text-white font-bold hover:bg-[#007CE8] transition-colors shadow-[0_0_30px_rgba(0,131,234,0.3)] hover:shadow-[0_0_40px_rgba(0,131,234,0.5)]">
-                  Iniciar Convergencia
+                  Iniciar Proyecto
                 </a>
               </MagneticButton>
             </div>
@@ -845,7 +845,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <div className="max-w-3xl mx-auto">
             <div className="mb-16 text-center">
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">Iniciar Convergencia</h2>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4 text-white">Iniciar Proyecto</h2>
               <p className="text-slate-400 font-geist-sans">Diseñamos el sistema que transformará radicalmente tus operaciones.</p>
             </div>
             <form onSubmit={handleSubmit} className="p-8 md:p-12 rounded-[2.5rem] bg-[#050F19] border border-[#0B3A5C] shadow-[0_20px_60px_rgba(0,0,0,0.5)] relative">
