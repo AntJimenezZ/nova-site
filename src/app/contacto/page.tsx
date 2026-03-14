@@ -4,10 +4,12 @@ import { useRef, useState } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Turnstile } from '@marsidev/react-turnstile'
 import { ArrowRight, CheckCircle2, Download, Mail, XCircle } from "lucide-react"
 
 export default function ContactoPage() {
   const formRef = useRef<HTMLFormElement>(null)
+  const [turnstileToken, setTurnstileToken] = useState<string>('')
   const [toast, setToast] = useState<null | { type: 'success' | 'error' | 'info', message: string }>(null)
   const pushToast = (type: 'success' | 'error' | 'info', message: string) => {
     setToast({ type, message })
@@ -33,7 +35,7 @@ export default function ContactoPage() {
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute -top-32 -right-24 h-80 w-80 rounded-full bg-blue-600/20 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-violet-600/20 blur-3xl" />
-        <div className="absolute inset-0 opacity-[0.05]" style={{backgroundImage:'radial-gradient(circle at 1px 1px, #fff 1px, transparent 1px)', backgroundSize: '24px 24px'}} />
+        <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
       </div>
 
       <div className="container mx-auto max-w-5xl">
@@ -64,6 +66,11 @@ export default function ContactoPage() {
                 ref={formRef}
                 onSubmit={async (e) => {
                   e.preventDefault();
+                  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+                  if (siteKey && !turnstileToken) {
+                    pushToast('error', 'Por favor, completa el captcha');
+                    return;
+                  }
                   const form = e.currentTarget as HTMLFormElement;
                   const data = new FormData(form);
                   const nombre = String(data.get('nombre') || '');
@@ -84,7 +91,19 @@ export default function ContactoPage() {
                       headers: {
                         'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify({ name: nombre, email, subject, message }),
+                      body: JSON.stringify({
+                        name: nombre,
+                        email,
+                        subject,
+                        message,
+                        company: empresa,
+                        projectType: tipo,
+                        description: descripcion,
+                        teamMembers: integrantes,
+                        budget: presupuesto,
+                        timeline: timeline,
+                        turnstileToken
+                      }),
                     });
 
                     if (!res.ok) {
@@ -92,7 +111,7 @@ export default function ContactoPage() {
                       try {
                         const err = await res.json();
                         if (err?.error) msg = err.error;
-                      } catch {}
+                      } catch { }
                       pushToast('error', msg);
                       return;
                     }
@@ -105,245 +124,255 @@ export default function ContactoPage() {
                   }
                 }}
               >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="nombre" className="block text-sm font-medium text-slate-300 mb-2">
+                      Nombre completo *
+                    </label>
+                    <input
+                      type="text"
+                      id="nombre"
+                      name="nombre"
+                      className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                      placeholder="Tu nombre completo"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                      placeholder="tu@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+
                 <div>
-                  <label htmlFor="nombre" className="block text-sm font-medium text-slate-300 mb-2">
-                    Nombre completo *
+                  <label htmlFor="empresa" className="block text-sm font-medium text-slate-300 mb-2">
+                    Empresa/Organización
                   </label>
                   <input
                     type="text"
-                    id="nombre"
-                    name="nombre"
+                    id="empresa"
+                    name="empresa"
                     className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                    placeholder="Tu nombre completo"
-                    required
+                    placeholder="Nombre de tu empresa"
                   />
                 </div>
+
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                    Email *
+                  <label htmlFor="tipo-proyecto" className="block text-sm font-medium text-slate-300 mb-2">
+                    Tipo de proyecto *
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
+                  <select
+                    id="tipo-proyecto"
+                    name="tipo-proyecto"
                     className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                    placeholder="tu@email.com"
                     required
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label htmlFor="empresa" className="block text-sm font-medium text-slate-300 mb-2">
-                  Empresa/Organización
-                </label>
-                <input
-                  type="text"
-                  id="empresa"
-                  name="empresa"
-                  className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  placeholder="Nombre de tu empresa"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="tipo-proyecto" className="block text-sm font-medium text-slate-300 mb-2">
-                  Tipo de proyecto *
-                </label>
-                <select
-                  id="tipo-proyecto"
-                  name="tipo-proyecto"
-                  className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  required
-                >
-                  <option value="">Selecciona el tipo de proyecto</option>
-                  <option value="landing-page">Landing Page</option>
-                  <option value="sitio-web">Sitio Web Corporativo</option>
-                  <option value="ecommerce">E-commerce</option>
-                  <option value="aplicacion-web">Aplicación Web</option>
-                  <option value="marketplace">Marketplace</option>
-                  <option value="otro">Otro</option>
-                </select>
-              </div>
-
-              <div>
-                <label htmlFor="descripcion" className="block text-sm font-medium text-slate-300 mb-2">
-                  Descripción del proyecto *
-                </label>
-                <textarea
-                  id="descripcion"
-                  name="descripcion"
-                  rows={4}
-                  className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none"
-                  placeholder="Describe tu proyecto, objetivos y funcionalidades que necesitas..."
-                  required
-                ></textarea>
-              </div>
-
-              <div>
-                <label htmlFor="integrantes" className="block text-sm font-medium text-slate-300 mb-2">
-                  Integrantes/Stakeholders
-                </label>
-                <textarea
-                  id="integrantes"
-                  name="integrantes"
-                  rows={3}
-                  className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none"
-                  placeholder="Nombres y roles de las personas involucradas (separados por coma)"
-                ></textarea>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="presupuesto" className="block text-sm font-medium text-slate-300 mb-2">
-                    Presupuesto estimado
-                  </label>
-                  <select
-                    id="presupuesto"
-                    name="presupuesto"
-                    className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                   >
-                    <option value="">Selecciona un rango</option>
-                    <option value="500-1500">$500 - $1,500</option>
-                    <option value="1500-3000">$1,500 - $3,000</option>
-                    <option value="3000-5000">$3,000 - $5,000</option>
-                    <option value="5000+">$5,000+</option>
-                    <option value="por-definir">Por definir</option>
+                    <option value="">Selecciona el tipo de proyecto</option>
+                    <option value="landing-page">Landing Page</option>
+                    <option value="sitio-web">Sitio Web Corporativo</option>
+                    <option value="ecommerce">E-commerce</option>
+                    <option value="aplicacion-web">Aplicación Web</option>
+                    <option value="marketplace">Marketplace</option>
+                    <option value="otro">Otro</option>
                   </select>
                 </div>
+
                 <div>
-                  <label htmlFor="timeline" className="block text sm font-medium text-slate-300 mb-2">
-                    Timeline deseado
+                  <label htmlFor="descripcion" className="block text-sm font-medium text-slate-300 mb-2">
+                    Descripción del proyecto *
                   </label>
-                  <select
-                    id="timeline"
-                    name="timeline"
-                    className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                  >
-                    <option value="">Selecciona un timeline</option>
-                    <option value="urgente">Urgente (1-2 semanas)</option>
-                    <option value="normal">Normal (3-4 semanas)</option>
-                    <option value="flexible">Flexible (1-2 meses)</option>
-                    <option value="sin-prisa">Sin prisa (2+ meses)</option>
-                  </select>
+                  <textarea
+                    id="descripcion"
+                    name="descripcion"
+                    rows={4}
+                    className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none"
+                    placeholder="Describe tu proyecto, objetivos y funcionalidades que necesitas..."
+                    required
+                  ></textarea>
                 </div>
-              </div>
 
-              <div className="pt-4 flex flex-col sm:flex-row gap-3">
-                <Button 
-                  type="button" 
-                  variant="gradient" 
-                  className="group relative overflow-hidden rounded-full px-6 flex-1 sm:flex-none focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-                  onClick={async () => {
-                    const form = formRef.current;
-                    if (!form) return;
-                    const data = new FormData(form);
-                    const nombre = String(data.get('nombre') || '');
-                    const email = String(data.get('email') || '');
-                    const empresa = String(data.get('empresa') || '');
-                    const tipo = String(data.get('tipo-proyecto') || '');
-                    const descripcion = String(data.get('descripcion') || '');
-                    const integrantes = String(data.get('integrantes') || '');
-                    const presupuesto = String(data.get('presupuesto') || '');
-                    const timeline = String(data.get('timeline') || '');
+                <div>
+                  <label htmlFor="integrantes" className="block text-sm font-medium text-slate-300 mb-2">
+                    Integrantes/Stakeholders
+                  </label>
+                  <textarea
+                    id="integrantes"
+                    name="integrantes"
+                    rows={3}
+                    className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none"
+                    placeholder="Nombres y roles de las personas involucradas (separados por coma)"
+                  ></textarea>
+                </div>
 
-                    // Fecha de generación
-                    const fecha = new Date();
-                    const fechaStr = fecha.toLocaleString();
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="presupuesto" className="block text-sm font-medium text-slate-300 mb-2">
+                      Presupuesto estimado
+                    </label>
+                    <select
+                      id="presupuesto"
+                      name="presupuesto"
+                      className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    >
+                      <option value="">Selecciona un rango</option>
+                      <option value="500-1500">$500 - $1,500</option>
+                      <option value="1500-3000">$1,500 - $3,000</option>
+                      <option value="3000-5000">$3,000 - $5,000</option>
+                      <option value="5000+">$5,000+</option>
+                      <option value="por-definir">Por definir</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="timeline" className="block text sm font-medium text-slate-300 mb-2">
+                      Timeline deseado
+                    </label>
+                    <select
+                      id="timeline"
+                      name="timeline"
+                      className="w-full px-3 py-2 bg-slate-600 border border-slate-500 rounded-md text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    >
+                      <option value="">Selecciona un timeline</option>
+                      <option value="urgente">Urgente (1-2 semanas)</option>
+                      <option value="normal">Normal (3-4 semanas)</option>
+                      <option value="flexible">Flexible (1-2 meses)</option>
+                      <option value="sin-prisa">Sin prisa (2+ meses)</option>
+                    </select>
+                  </div>
+                </div>
 
-                    try {
-                      const { jsPDF } = await import('jspdf');
-                      const doc = new jsPDF();
+                <div className="pt-4 flex justify-center">
+                  {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                    <Turnstile
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                      onSuccess={(token) => setTurnstileToken(token)}
+                      options={{ theme: 'dark' }}
+                    />
+                  )}
+                </div>
 
-                      // Colores
-                      const primary = [37, 99, 235]; // #2563eb
-                      const slate = [51, 65, 85]; // slate-700 aprox
+                <div className="pt-4 flex flex-col sm:flex-row gap-3">
+                  <Button
+                    type="button"
+                    variant="gradient"
+                    className="group relative overflow-hidden rounded-full px-6 flex-1 sm:flex-none focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
+                    onClick={async () => {
+                      const form = formRef.current;
+                      if (!form) return;
+                      const data = new FormData(form);
+                      const nombre = String(data.get('nombre') || '');
+                      const email = String(data.get('email') || '');
+                      const empresa = String(data.get('empresa') || '');
+                      const tipo = String(data.get('tipo-proyecto') || '');
+                      const descripcion = String(data.get('descripcion') || '');
+                      const integrantes = String(data.get('integrantes') || '');
+                      const presupuesto = String(data.get('presupuesto') || '');
+                      const timeline = String(data.get('timeline') || '');
 
-                      // Encabezado con logo/branding
-                      doc.setFillColor(primary[0], primary[1], primary[2]);
-                      doc.rect(0, 0, 210, 30, 'F');
+                      // Fecha de generación
+                      const fecha = new Date();
+                      const fechaStr = fecha.toLocaleString();
 
-                      // Logo placeholder: círculo blanco con "NS"
-                      doc.setFillColor(255, 255, 255);
-                      doc.circle(15, 15, 7, 'F');
-                      doc.setTextColor(primary[0], primary[1], primary[2]);
-                      doc.setFontSize(10);
-                      doc.text('NS', 12.5, 18, { baseline: 'bottom' });
+                      try {
+                        const { jsPDF } = await import('jspdf');
+                        const doc = new jsPDF();
 
-                      // Título y subtítulo
-                      doc.setTextColor(255, 255, 255);
-                      doc.setFontSize(16);
-                      doc.text('NovaSite — Formulario de Requerimientos', 30, 14);
-                      doc.setFontSize(10);
-                      doc.text(`Generado: ${fechaStr}`, 30, 22);
+                        // Colores
+                        const primary = [37, 99, 235]; // #2563eb
+                        const slate = [51, 65, 85]; // slate-700 aprox
 
-                      // Contenido
-                      let y = 40;
-                      const left = 15;
-                      const right = 195;
-                      const lineGap = 7;
+                        // Encabezado con logo/branding
+                        doc.setFillColor(primary[0], primary[1], primary[2]);
+                        doc.rect(0, 0, 210, 30, 'F');
 
-                      const section = (title: string) => {
+                        // Logo placeholder: círculo blanco con "NS"
+                        doc.setFillColor(255, 255, 255);
+                        doc.circle(15, 15, 7, 'F');
+                        doc.setTextColor(primary[0], primary[1], primary[2]);
+                        doc.setFontSize(10);
+                        doc.text('NS', 12.5, 18, { baseline: 'bottom' });
+
+                        // Título y subtítulo
+                        doc.setTextColor(255, 255, 255);
+                        doc.setFontSize(16);
+                        doc.text('NovaSite — Formulario de Requerimientos', 30, 14);
+                        doc.setFontSize(10);
+                        doc.text(`Generado: ${fechaStr}`, 30, 22);
+
+                        // Contenido
+                        let y = 40;
+                        const left = 15;
+                        const right = 195;
+                        const lineGap = 7;
+
+                        const section = (title: string) => {
+                          doc.setTextColor(slate[0], slate[1], slate[2]);
+                          doc.setFontSize(12);
+                          doc.text(title, left, y);
+                          y += 3;
+                          doc.setDrawColor(primary[0], primary[1], primary[2]);
+                          doc.setLineWidth(0.6);
+                          doc.line(left, y, right, y);
+                          y += 6;
+                        };
+
+                        const addField = (label: string, value: string) => {
+                          doc.setTextColor(0, 0, 0);
+                          doc.setFontSize(11);
+                          const field = `${label}: ${value || '-'}`;
+                          const wrapped = doc.splitTextToSize(field, right - left);
+                          doc.text(wrapped, left, y);
+                          y += lineGap + (wrapped.length - 1) * 5;
+                        };
+
+                        section('Información General');
+                        addField('Nombre', nombre);
+                        addField('Email', email);
+                        addField('Empresa', empresa);
+                        addField('Integrantes/Stakeholders', integrantes);
+
+                        section('Proyecto');
+                        addField('Tipo de proyecto', tipo);
+                        addField('Presupuesto estimado', presupuesto);
+                        addField('Timeline', timeline);
+
+                        section('Descripción');
+                        const descLines = doc.splitTextToSize(descripcion || '-', right - left);
+                        doc.text(descLines, left, y);
+                        y += lineGap + (descLines.length - 1) * 5;
+
+                        // Pie
+                        doc.setFontSize(9);
                         doc.setTextColor(slate[0], slate[1], slate[2]);
-                        doc.setFontSize(12);
-                        doc.text(title, left, y);
-                        y += 3;
-                        doc.setDrawColor(primary[0], primary[1], primary[2]);
-                        doc.setLineWidth(0.6);
-                        doc.line(left, y, right, y);
-                        y += 6;
-                      };
+                        doc.text('© NovaSite — Este documento fue generado automáticamente desde contacto', left, 285);
 
-                      const addField = (label: string, value: string) => {
-                        doc.setTextColor(0, 0, 0);
-                        doc.setFontSize(11);
-                        const field = `${label}: ${value || '-'}`;
-                        const wrapped = doc.splitTextToSize(field, right - left);
-                        doc.text(wrapped, left, y);
-                        y += lineGap + (wrapped.length - 1) * 5;
-                      };
+                        const filename = `requerimientos_${(nombre || 'proyecto').replace(/\s+/g, '_')}.pdf`;
+                        doc.save(filename.toLowerCase());
+                      } catch (err) {
+                        pushToast('error', 'No se pudo generar el PDF. Intenta nuevamente.');
+                        console.error('Error al generar el PDF:', err);
+                      }
+                    }}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Descargar formulario PDF
+                  </Button>
+                  <Button type="submit" variant="outlineGlow" className="group relative overflow-hidden rounded-full px-6 flex-1 sm:flex-none focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]">
+                    Enviar por email
+                  </Button>
+                </div>
 
-                      section('Información General');
-                      addField('Nombre', nombre);
-                      addField('Email', email);
-                      addField('Empresa', empresa);
-                      addField('Integrantes/Stakeholders', integrantes);
-
-                      section('Proyecto');
-                      addField('Tipo de proyecto', tipo);
-                      addField('Presupuesto estimado', presupuesto);
-                      addField('Timeline', timeline);
-
-                      section('Descripción');
-                      const descLines = doc.splitTextToSize(descripcion || '-', right - left);
-                      doc.text(descLines, left, y);
-                      y += lineGap + (descLines.length - 1) * 5;
-
-                      // Pie
-                      doc.setFontSize(9);
-                      doc.setTextColor(slate[0], slate[1], slate[2]);
-                      doc.text('© NovaSite — Este documento fue generado automáticamente desde contacto', left, 285);
-
-                      const filename = `requerimientos_${(nombre || 'proyecto').replace(/\s+/g, '_')}.pdf`;
-                      doc.save(filename.toLowerCase());
-                    } catch (err) {
-                      pushToast('error', 'No se pudo generar el PDF. Intenta nuevamente.');
-                      console.error('Error al generar el PDF:', err);
-                    }
-                  }}
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Descargar formulario PDF
-                </Button>
-                <Button type="submit" variant="outlineGlow" className="group relative overflow-hidden rounded-full px-6 flex-1 sm:flex-none focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]">
-                  Enviar por email
-                </Button>
-              </div>
-
-              <p className="text-xs text-slate-400 mt-4">
-                * Campos obligatorios. La información proporcionada será utilizada únicamente para elaborar tu propuesta.
-              </p>
+                <p className="text-xs text-slate-400 mt-4">
+                  * Campos obligatorios. La información proporcionada será utilizada únicamente para elaborar tu propuesta.
+                </p>
               </form>
             </CardContent>
           </Card>
