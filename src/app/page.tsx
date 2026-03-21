@@ -77,7 +77,7 @@ const team = [
     role: "Software Developer",
     description: "Experiencia en la implementación y desarrollo de software y aplicaciones personalizadas",
     avatar: "/logos/FotoSteven.jpg",
-    technologies: ["React", "Node.js", "Python", "Supabase", "C#"],
+    technologies: ["React", "Node.js", "Python", "PostgreSQL", "C#"],
   },
   {
     name: "Anthony (Noni)",
