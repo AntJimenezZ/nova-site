@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import { getSupabaseServerClient } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   try {
     const warnings: string[] = []
     const body = await request.json()
     const {
-      name, email, subject, message,
-      company, projectType, description,
-      teamMembers, budget, timeline, turnstileToken
+      name, email, subject, message, turnstileToken
     } = body
 
     // Validación básica
@@ -58,34 +55,6 @@ export async function POST(request: NextRequest) {
         { error: 'Email inválido' },
         { status: 400 }
       )
-    }
-
-    // Guardar en Supabase - Opcional, permitiendo seguir si falla para enviar el email
-    const supabase = getSupabaseServerClient()
-    if (supabase) {
-      try {
-        const { error: dbError } = await supabase.from('contact_messages').insert([{
-          name,
-          email,
-          company: company || null,
-          project_type: projectType || subject || 'Otro', // El subject funciona como project_type para el formulario corto
-          description: description || message || 'Sin mensaje', // El message funciona como descripción para el formulario corto
-          team_members: teamMembers || null,
-          budget: budget || null,
-          timeline: timeline || null
-        }])
-
-        if (dbError) {
-          console.error('Error al insertar en Supabase:', dbError)
-          warnings.push('No se pudo guardar en base de datos')
-        }
-      } catch (e) {
-        console.error('Excepción al insertar en Supabase:', e)
-        warnings.push('Error de conexión con Supabase')
-      }
-    } else {
-      console.warn('Omitiendo Supabase: variables SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY (o NEXT_PUBLIC_*) no configuradas.');
-      warnings.push('Supabase no configurado en el entorno')
     }
 
     // Configurar el transporter de Nodemailer
