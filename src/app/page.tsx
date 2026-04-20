@@ -83,7 +83,7 @@ const team = [
     name: "Anthony (Noni)",
     role: "Full Stack Developer",
     description: "Desarrollador full stack con experiencia en desarrollo web y móvil",
-    avatar: "/logos/FotoAnthony .jpg",
+    avatar: "/Noni-NovaSite.jpeg",
     technologies: ["React", "Vue", "React Native", "Firebase", "TypeScript"],
   },
   {
@@ -211,6 +211,9 @@ export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null);
+  const [selectedTeamMember, setSelectedTeamMember] = useState<typeof team[number] | null>(null);
+  const [activeMember, setActiveMember] = useState(0);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
 
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -247,6 +250,14 @@ export default function LandingPage() {
     }, 150);
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (isCarouselPaused) return;
+    const interval = setInterval(() => {
+      setActiveMember((prev) => (prev + 1) % team.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [isCarouselPaused]);
 
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -630,41 +641,201 @@ export default function LandingPage() {
         )}
       </AnimatePresence>
 
-      {/* Team Section */}
+      {/* Team Section - Literal Carousel */}
       <section id="equipo" className="container mx-auto px-4 md:px-8 py-24 relative border-t border-[#0B3A5C]">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-16">El Escuadrón</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {team.map((member, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1, type: "spring" }}
-              className="relative group rounded-[2.5rem] bg-[#050F19] border border-[#0B3A5C] p-8 flex flex-col sm:flex-row gap-8 items-center sm:items-start transition-colors hover:border-[#0083EA]/50"
+        <div className="mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">El Escuadrón</h2>
+            <p className="text-slate-400 mt-3 font-geist-sans max-w-xl">
+              Un carrusel real con acabados cinematográficos y rotación continua para presentar al equipo como una pieza protagonista.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setActiveMember((prev) => (prev - 1 + team.length) % team.length)}
+              onMouseEnter={() => setIsCarouselPaused(true)}
+              onMouseLeave={() => setIsCarouselPaused(false)}
+              className="w-11 h-11 rounded-full border border-[#0B3A5C] bg-[#050F19] text-[#007CE8] hover:border-[#0083EA] hover:text-[#0083EA] transition-colors"
+              aria-label="Integrante anterior"
             >
-              <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-[#0083EA]/30 shrink-0 group-hover:border-[#0083EA] transition-colors duration-500">
-                <Image src={member.avatar || "/placeholder.svg"} alt={member.name} width={128} height={128} className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700" />
+              {"<"}
+            </button>
+            <button
+              onClick={() => setActiveMember((prev) => (prev + 1) % team.length)}
+              onMouseEnter={() => setIsCarouselPaused(true)}
+              onMouseLeave={() => setIsCarouselPaused(false)}
+              className="w-11 h-11 rounded-full border border-[#0B3A5C] bg-[#050F19] text-[#007CE8] hover:border-[#0083EA] hover:text-[#0083EA] transition-colors"
+              aria-label="Siguiente integrante"
+            >
+              {">"}
+            </button>
+          </div>
+        </div>
+
+        <div
+          className="relative min-h-[520px] rounded-[2.5rem] border border-[#0B3A5C] bg-gradient-to-b from-[#050F19] via-[#060d16] to-[#070708] overflow-hidden px-4 md:px-10"
+          onMouseEnter={() => setIsCarouselPaused(true)}
+          onMouseLeave={() => setIsCarouselPaused(false)}
+        >
+          {/* Canopy - Tech HUD style */}
+          <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[95%] h-28 rounded-[999px] border border-[#0B3A5C] bg-gradient-to-b from-[#0C1B2E] via-[#081426] to-[#050F19] shadow-[0_8px_55px_rgba(0,131,234,0.14)]" />
+          <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[90%] h-16 rounded-[999px] border border-[#0083EA]/35 bg-[linear-gradient(90deg,rgba(0,131,234,0.05),rgba(0,131,234,0.2),rgba(0,131,234,0.05))]" />
+          <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[90%] h-16 rounded-[999px] opacity-30 bg-[linear-gradient(90deg,transparent_0%,rgba(0,131,234,0.6)_10%,transparent_20%,transparent_40%,rgba(0,131,234,0.35)_50%,transparent_60%,transparent_80%,rgba(0,131,234,0.5)_90%,transparent_100%)]" />
+          <div className="absolute top-[94px] left-1/2 -translate-x-1/2 w-[84%] h-px bg-gradient-to-r from-transparent via-[#0083EA]/70 to-transparent" />
+          <div className="absolute top-[82px] left-1/2 -translate-x-1/2 w-[70%] h-[2px] bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent blur-[1px]" />
+          <div className="absolute top-[56px] left-1/2 -translate-x-1/2 w-[76%] h-8 rounded-[999px] border border-cyan-400/20" />
+
+          {/* Arrow pointer to active card */}
+          <div className="absolute top-[112px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none">
+            <div className="w-1 h-9 bg-gradient-to-b from-[#0083EA]/90 to-[#0083EA]/30 rounded-full shadow-[0_0_18px_rgba(0,131,234,0.4)]" />
+            <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-[#0083EA] drop-shadow-[0_0_8px_rgba(0,131,234,0.7)]" />
+          </div>
+
+          {/* Cards orbit */}
+          <div className="relative h-[520px] flex items-center justify-center">
+            {team.map((member, idx) => {
+              const rawOffset = idx - activeMember;
+              const wrappedOffset = ((rawOffset + team.length + Math.floor(team.length / 2)) % team.length) - Math.floor(team.length / 2);
+              const depth = Math.abs(wrappedOffset);
+              const isFocused = wrappedOffset === 0;
+
+              return (
+                <motion.article
+                  key={member.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{
+                    x: wrappedOffset * 230,
+                    y: 34 + depth * 22,
+                    scale: isFocused ? 1 : 0.86 - depth * 0.07,
+                    opacity: isFocused ? 1 : 0.72 - depth * 0.2,
+                    zIndex: team.length - depth,
+                  }}
+                  transition={{ duration: 0.65, ease: "easeOut" }}
+                  onClick={() => {
+                    if (!isFocused) {
+                      setActiveMember(idx);
+                      return;
+                    }
+                    playClick();
+                    setSelectedTeamMember(member);
+                  }}
+                  className={`absolute w-[260px] md:w-[300px] rounded-3xl border p-4 md:p-5 backdrop-blur-xl ${isFocused
+                    ? "border-[#0083EA]/60 bg-[#050F19]/95 shadow-[0_0_40px_rgba(0,131,234,0.25)]"
+                    : "border-[#0B3A5C] bg-[#050F19]/80"
+                    } cursor-pointer`}
+                >
+                  <div className="w-full h-44 rounded-2xl overflow-hidden border border-[#0B3A5C]">
+                    <Image
+                      src={member.avatar || "/placeholder.svg"}
+                      alt={member.name}
+                      width={400}
+                      height={300}
+                      className={`object-cover w-full h-full transition-all duration-500 ${isFocused ? "grayscale-0" : "grayscale"
+                        }`}
+                    />
+                  </div>
+                  <div className="pt-4">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <h3 className="text-lg font-bold tracking-tight">{member.name}</h3>
+                      <Badge variant="outline" className="border-[#0B3A5C] text-[#007CE8] font-mono text-[10px] bg-[#070708]">
+                        {member.role}
+                      </Badge>
+                    </div>
+                    <p className="text-slate-400 text-xs md:text-sm font-geist-sans line-clamp-2">{member.description}</p>
+                  </div>
+                </motion.article>
+              );
+            })}
+          </div>
+
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+            {team.map((member, idx) => (
+              <button
+                key={member.name}
+                onClick={() => setActiveMember(idx)}
+                className={`h-2.5 rounded-full transition-all duration-300 ${idx === activeMember ? "w-8 bg-[#0083EA]" : "w-2.5 bg-[#0B3A5C]"
+                  }`}
+                aria-label={`Ir a ${member.name}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Member Modal */}
+      <AnimatePresence>
+        {selectedTeamMember && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center px-4 py-8 md:p-12"
+          >
+            <div
+              className="absolute inset-0 bg-[#070708]/90 backdrop-blur-md"
+              onClick={() => setSelectedTeamMember(null)}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ type: "spring", stiffness: 120, damping: 18 }}
+              className="relative w-full max-w-3xl bg-[#050F19] border border-[#0B3A5C] rounded-[2rem] shadow-[0_0_90px_rgba(0,131,234,0.2)] overflow-hidden z-10"
+            >
+              <div className="absolute top-5 right-5 z-20">
+                <button
+                  onClick={() => setSelectedTeamMember(null)}
+                  className="w-10 h-10 rounded-full bg-[#070708]/80 border border-[#0083EA]/40 hover:bg-[#0083EA]/20 transition-colors text-white"
+                  aria-label="Cerrar modal de integrante"
+                >
+                  ×
+                </button>
               </div>
-              <div className="flex-1 flex flex-col items-center sm:items-start">
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 w-fit mb-2">
-                  <h3 className="text-2xl font-bold tracking-tight">{member.name}</h3>
-                  <Badge variant="outline" className="border-[#0B3A5C] text-[#007CE8] font-mono text-[10px] bg-[#070708]">{member.role}</Badge>
+
+              <div className="grid grid-cols-1 md:grid-cols-2">
+                <div className="relative min-h-[280px] md:min-h-[420px]">
+                  <Image
+                    src={selectedTeamMember.avatar}
+                    alt={selectedTeamMember.name}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#050F19] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[#050F19]/10" />
                 </div>
-                <p className="text-slate-400 text-sm font-geist-sans text-center sm:text-left mb-4">{member.description}</p>
-                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-auto">
-                  {member.technologies.slice(0, 3).map((tech, i) => (
-                    <span key={i} className="text-xs px-2 py-1 bg-[#0B3A5C]/20 text-[#007CE8] rounded border border-[#0B3A5C] font-geist-mono">
-                      {tech}
-                    </span>
-                  ))}
-                  {member.technologies.length > 3 && <span className="text-xs px-2 py-1 text-[#007CE8] font-geist-mono">+{member.technologies.length - 3}</span>}
+
+                <div className="p-7 md:p-9 flex flex-col">
+                  <Badge variant="outline" className="w-fit border-[#0B3A5C] text-[#007CE8] font-mono text-[10px] bg-[#070708] mb-3">
+                    {selectedTeamMember.role}
+                  </Badge>
+                  <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">
+                    {selectedTeamMember.name}
+                  </h3>
+                  <p className="text-slate-300 font-geist-sans leading-relaxed mb-6">
+                    {selectedTeamMember.description}
+                  </p>
+
+                  <div className="mt-auto">
+                    <p className="text-xs tracking-widest uppercase font-geist-mono text-[#007CE8] mb-3">
+                      Stack principal
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedTeamMember.technologies.map((tech) => (
+                        <span
+                          key={tech}
+                          className="px-3 py-1.5 text-xs rounded-lg bg-[#0B3A5C]/20 text-[#c6def5] border border-[#0B3A5C] font-geist-mono"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
-          ))}
-        </div>
-      </section>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Portfolio Text-Only GSAP List */}
       <section id="portafolio" className="py-32 bg-[#050F19] border-t border-[#0B3A5C] overflow-hidden">

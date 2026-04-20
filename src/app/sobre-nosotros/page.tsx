@@ -35,7 +35,7 @@ export default function SobreNosotrosPage() {
     {
       name: "Anthony",
       role: "Full Stack Developer",
-      avatar: "/logos/FotoAnthony .jpg",
+      avatar: "/Noni-NovaSite.jpeg",
       bio: "Desarrollo web y móvil, arquitecturas escalables y seguras.",
     },
     {
