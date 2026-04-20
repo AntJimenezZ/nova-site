@@ -1,167 +1,237 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { projects } from "@/lib/projects"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, X } from "lucide-react"
-import { useState } from "react"
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, ArrowRight, CheckCircle, Star, X } from "@phosphor-icons/react";
+
+import { projects, Project } from "@/lib/projects";
+import { Badge } from "@/components/ui/badge";
 
 export default function ProyectosPage() {
-  type Project = typeof projects[number]
-  const [active, setActive] = useState<Project | null>(null)
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 px-4 py-16">
-      <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
-            Proyectos de NovaSite
-          </h1>
-          <p className="text-slate-300 max-w-3xl mx-auto">
-            Una selección de proyectos que demuestran nuestra experiencia en desarrollo web, móvil y backend.
-          </p>
-        </div>
+  const [active, setActive] = useState<Project | null>(null);
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {projects.map((p, i) => (
-            <Card key={i} className="overflow-hidden border-0 bg-slate-700 hover:bg-slate-600 transition-all duration-300 hover:-translate-y-1 shadow-xl">
-              <div className="relative w-full h-48 sm:h-56 bg-slate-900 rounded-md overflow-hidden ring-1 ring-slate-700/40">
+  useEffect(() => {
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+
+    if (active) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [active]);
+
+  return (
+    <main className="font-outfit min-h-[100dvh] bg-[#070708] text-slate-100 relative overflow-x-hidden">
+      <section className="relative border-b border-[#0B3A5C] bg-[radial-gradient(circle_at_top,rgba(0,131,234,0.12),transparent_45%)]">
+        <div className="container mx-auto px-4 md:px-8 py-20 md:py-24">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-geist-mono text-[#0083EA] border border-[#0B3A5C] px-4 py-2 rounded-full hover:border-[#0083EA] hover:bg-[#0083EA]/15 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Volver al inicio
+          </Link>
+
+          <div className="mt-8 max-w-3xl">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">
+              Todos los Proyectos Destacados
+            </h1>
+            <p className="mt-4 text-slate-400 font-geist-sans leading-relaxed">
+              Continuidad total con la experiencia principal de NovaSite. Explora casos reales, arquitectura aplicada y resultados medibles.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 md:px-8 py-16 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8">
+          {projects.map((project, index) => (
+            <motion.article
+              key={project.title}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-10%" }}
+              transition={{ duration: 0.45, ease: "easeOut", delay: index * 0.05 }}
+              className="group relative h-full rounded-[2rem] border border-[#0B3A5C] bg-[#050F19] overflow-hidden hover:border-[#0083EA] transition-all duration-300 shadow-[0_4px_30px_rgba(0,131,234,0.05)] hover:shadow-[0_8px_45px_rgba(0,131,234,0.18)]"
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-[#0083EA]/5 via-transparent to-[#0083EA]/10" />
+
+              <div className="relative h-52 border-b border-[#0B3A5C] bg-[#070708]">
                 <Image
-                  src={p.image}
-                  alt={p.title}
+                  src={project.image}
+                  alt={project.title}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-contain object-center p-2"
-                  priority={i < 2}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  className="object-contain p-5"
+                  priority={index < 3}
                 />
               </div>
-              <CardHeader>
-                <CardTitle className="text-slate-100 text-xl">{p.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-slate-300 mb-4 text-sm">{p.description}</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {p.tech.map((t, ti) => (
-                    <Badge key={ti} variant="outline" className="border-slate-500 text-blue-400 bg-slate-600">
-                      {t}
+
+              <div className="relative p-6 md:p-7 flex flex-col h-[calc(100%-13rem)]">
+                <h2 className="text-2xl font-black tracking-tight mb-3">{project.title}</h2>
+                <p className="text-slate-400 text-sm font-geist-sans leading-relaxed line-clamp-3 mb-5">
+                  {project.description}
+                </p>
+
+                <div className="flex flex-wrap gap-2 mb-6 min-h-14">
+                  {project.tech.slice(0, 4).map((tech) => (
+                    <Badge
+                      key={tech}
+                      variant="outline"
+                      className="border-[#0B3A5C] text-[#007CE8] bg-[#070708] font-geist-mono text-[10px] tracking-widest uppercase"
+                    >
+                      {tech}
                     </Badge>
                   ))}
                 </div>
-                <Button
-                  variant="gradient"
-                  className="group relative overflow-hidden rounded-full w-full cursor-pointer focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-                  onClick={() => setActive(p)}
+
+                <button
+                  onClick={() => setActive(project)}
+                  className="mt-auto w-full inline-flex items-center justify-center gap-2 rounded-xl border border-[#0B3A5C] bg-[#070708] py-3 text-xs font-bold tracking-widest uppercase text-[#0083EA] hover:border-[#0083EA] hover:bg-[#0083EA]/15 hover:text-white transition-colors"
                 >
-                  Ver detalles
-                  <ArrowRight className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="flex justify-center mt-12">
-          <Button asChild size="xl" variant="outlineGlow" className="group relative overflow-hidden rounded-full px-8 cursor-pointer focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]">
-            <Link href="/" aria-label="Volver al inicio">Volver al inicio</Link>
-          </Button>
-        </div>
-
-        {active && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
-            {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setActive(null)} />
-            {/* Dialog */}
-            <div role="dialog" aria-modal="true" className="relative z-10 w-full max-w-[95vw] sm:max-w-xl rounded-2xl bg-slate-900 ring-1 ring-slate-700/60 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95">
-              <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-slate-800">
-                <h3 className="text-lg sm:text-xl font-bold text-slate-100">{active.title}</h3>
-                <button aria-label="Cerrar" onClick={() => setActive(null)} className="p-2 rounded-lg hover:bg-slate-800 text-slate-300">
-                  <X className="w-5 h-5" />
+                  Ver caso completo
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-              <div className="px-3 sm:px-6 py-3 sm:py-4 grid gap-4 sm:gap-5 max-h-[80vh] overflow-y-auto">
-                <div className="relative w-full h-44 sm:h-56 bg-slate-800 rounded-lg overflow-hidden ring-1 ring-slate-700/40">
-                  <Image src={active.image} alt={active.title} fill sizes="(max-width: 640px) 90vw, 560px" className="object-contain object-center p-2" />
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      <AnimatePresence>
+        {active && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8 md:p-12 overflow-y-auto"
+          >
+            <div className="absolute inset-0 bg-[#070708]/90 backdrop-blur-md" onClick={() => setActive(null)} />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: 10 }}
+              transition={{ type: "spring", stiffness: 120, damping: 18 }}
+              className="relative my-auto w-full max-w-5xl max-h-[calc(100dvh-4rem)] bg-[#050F19] border border-[#0B3A5C] rounded-[2.5rem] shadow-[0_0_80px_rgba(0,131,234,0.2)] overflow-hidden flex flex-col z-10"
+            >
+              <div className="absolute top-6 right-6 z-20">
+                <button
+                  onClick={() => setActive(null)}
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-[#070708]/80 border border-[#0083EA]/50 hover:bg-[#0083EA]/20 transition-colors backdrop-blur-md shadow-lg"
+                  aria-label="Cerrar detalles del proyecto"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
+              </div>
+
+              <div className="max-h-[calc(100dvh-4rem)] overflow-y-auto hidden-scrollbar overscroll-contain">
+                <div className="w-full relative min-h-[220px] overflow-hidden border-b border-[#0B3A5C] p-8 md:p-16 flex flex-col justify-end bg-gradient-to-tr from-[#050F19] to-[#0B3A5C]/40">
+                  <Badge variant="outline" className="w-fit border-[#0083EA]/30 text-[#0083EA] bg-[#0083EA]/10 font-mono text-[10px] tracking-widest uppercase mb-6">
+                    {active.client || "Sector Empresarial"}
+                  </Badge>
+                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">
+                    {active.title}
+                  </h3>
                 </div>
-                <p className="text-slate-300 text-sm sm:text-base">
-                  {active.longDescription ?? active.description}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {active.tech?.map((t, idx) => (
-                    <Badge key={idx} variant="outline" className="border-slate-600 text-blue-400 bg-slate-700">{t}</Badge>
-                  ))}
-                </div>
-                {(active.role || active.duration || active.client) && (
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-                    {active.role && (
-                      <div className="rounded-lg bg-slate-800/60 p-3 ring-1 ring-slate-700/50">
-                        <div className="text-slate-400">Rol</div>
-                        <div className="text-slate-200 font-medium">{active.role}</div>
+
+                <div className="w-full p-8 md:p-16 flex flex-col gap-10">
+                  <p className="max-w-4xl text-lg md:text-xl text-slate-300 font-geist-sans leading-relaxed">
+                    {active.longDescription || active.description}
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4">
+                    {active.features && (
+                      <div className="p-6 md:p-8 rounded-[1.5rem] bg-[#070708]/70 border border-[#0B3A5C]">
+                        <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-6 uppercase">Características Implementadas</h4>
+                        <ul className="space-y-4">
+                          {active.features.map((feature, i) => (
+                            <li key={i} className="flex items-start text-slate-300 font-geist-sans">
+                              <CheckCircle weight="fill" className="w-5 h-5 text-[#0083EA] mr-3 shrink-0 mt-0.5" />
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     )}
-                    {active.duration && (
-                      <div className="rounded-lg bg-slate-800/60 p-3 ring-1 ring-slate-700/50">
-                        <div className="text-slate-400">Duración</div>
-                        <div className="text-slate-200 font-medium">{active.duration}</div>
-                      </div>
-                    )}
-                    {active.client && (
-                      <div className="rounded-lg bg-slate-800/60 p-3 ring-1 ring-slate-700/50">
-                        <div className="text-slate-400">Cliente</div>
-                        <div className="text-slate-200 font-medium">{active.client}</div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {active.features && active.features.length > 0 && (
-                  <div>
-                    <div className="text-slate-200 font-semibold mb-2">Características clave</div>
-                    <ul className="list-disc pl-5 space-y-1 text-slate-300 text-sm">
-                      {active.features.map((f, i) => (
-                        <li key={i}>{f}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {active.outcomes && active.outcomes.length > 0 && (
-                  <div>
-                    <div className="text-slate-200 font-semibold mb-2">Resultados</div>
-                    <ul className="list-disc pl-5 space-y-1 text-slate-300 text-sm">
-                      {active.outcomes.map((o, i) => (
-                        <li key={i}>{o}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {active.metrics && active.metrics.length > 0 && (
-                  <div>
-                    <div className="text-slate-200 font-semibold mb-2">Métricas</div>
-                    <div className="flex flex-wrap gap-2">
-                      {active.metrics.map((m, i) => (
-                        <div key={i} className="px-3 py-1 rounded-full bg-slate-800/70 ring-1 ring-slate-700/60 text-slate-200 text-xs">
-                          <span className="text-slate-400 mr-1">{m.label}:</span>
-                          <span className="font-semibold">{m.value}</span>
+
+                    {(active.metrics || active.outcomes) && (
+                      <div className="p-6 md:p-8 rounded-[1.5rem] bg-[#070708] border border-[#0B3A5C] flex flex-col justify-center">
+                        <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-8 uppercase text-center">Impacto Operativo</h4>
+
+                        <div className="grid grid-cols-2 gap-6 text-center mb-8">
+                          {active.metrics?.map((metric, i) => (
+                            <div key={i}>
+                              <p className="text-4xl font-black text-white mb-2">{metric.value}</p>
+                              <p className="text-xs text-slate-500 font-geist-mono uppercase tracking-widest">{metric.label}</p>
+                            </div>
+                          ))}
                         </div>
-                      ))}
+
+                        <div className="space-y-3 border-t border-[#0B3A5C] pt-6">
+                          {active.outcomes?.map((outcome, i) => (
+                            <div key={i} className="text-sm text-slate-400 font-geist-sans flex items-center justify-center">
+                              <Star weight="fill" className="w-4 h-4 text-[#007CE8] mr-2" />
+                              {outcome}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4 pt-8 border-t border-[#0B3A5C] flex gap-3 flex-wrap">
+                    {active.tech.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-5 py-2 bg-[#0B3A5C]/20 text-white hover:bg-[#0083EA]/20 hover:border-[#0083EA] transition-colors font-geist-mono text-xs rounded-xl border border-[#0B3A5C]"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  {active.links?.demo && active.links.demo !== "#" && (
+                    <div className="pt-2">
+                      <a
+                        href={active.links.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-xl border border-[#0B3A5C] bg-[#070708] px-5 py-3 text-xs font-bold tracking-widest uppercase text-[#0083EA] hover:border-[#0083EA] hover:bg-[#0083EA]/15 hover:text-white transition-colors"
+                      >
+                        Ver proyecto en vivo
+                        <ArrowRight className="w-4 h-4" />
+                      </a>
+                    </div>
+                  )}
+
+                  <div className="pt-2">
+                    <p className="text-xs tracking-widest uppercase font-geist-mono text-[#007CE8] mb-3">
+                      Vista del proyecto
+                    </p>
+                    <div className="relative w-full h-64 md:h-[26rem] rounded-[1.5rem] overflow-hidden border border-[#0B3A5C] bg-[#070708]">
+                      <Image
+                        src={active.image}
+                        alt={`Vista del proyecto ${active.title}`}
+                        fill
+                        className="object-cover object-center"
+                        sizes="(max-width: 768px) 100vw, 1200px"
+                      />
                     </div>
                   </div>
-                )}
-                {/* Enlaces de demo/repositorio removidos a solicitud del usuario */}
+                </div>
               </div>
-              <div className="px-3 sm:px-6 py-3 sm:py-4 border-t border-slate-800 flex flex-col sm:flex-row justify-end gap-3">
-                <Button
-                  variant="outlineGlow"
-                  className="group relative overflow-hidden rounded-full px-6 w-full sm:w-auto cursor-pointer focus-visible:ring-[3px] focus-visible:ring-blue-400/50 before:absolute before:inset-y-0 before:-left-1/3 before:w-1/3 before:bg-white/10 before:skew-x-[-20deg] before:transition-transform before:duration-500 hover:before:translate-x-[300%]"
-                  onClick={() => setActive(null)}
-                >
-                  Cerrar
-                </Button>
-              </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </main>
-  )
+  );
 }
