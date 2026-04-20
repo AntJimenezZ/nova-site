@@ -223,6 +223,7 @@ export default function LandingPage() {
   const [bootProgress, setBootProgress] = useState(0);
   const [isBooting, setIsBooting] = useState(true);
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const lenisRef = useRef<Lenis | null>(null);
 
   // Sound Engine
   const uiClick = useRef<Howl | null>(null);
@@ -235,6 +236,26 @@ export default function LandingPage() {
 
   const playClick = () => { if (audioEnabled) uiClick.current?.play(); };
   const playHover = () => { if (audioEnabled) uiHover.current?.play(); };
+
+  useEffect(() => {
+    const hasOpenModal = Boolean(selectedProject || selectedService || selectedTeamMember);
+    const { body, documentElement } = document;
+    const previousBodyOverflow = body.style.overflow;
+    const previousHtmlOverflow = documentElement.style.overflow;
+
+    if (hasOpenModal) {
+      body.style.overflow = "hidden";
+      documentElement.style.overflow = "hidden";
+      lenisRef.current?.stop();
+    } else {
+      lenisRef.current?.start();
+    }
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, [selectedProject, selectedService, selectedTeamMember]);
 
   // Terminal Boot Sequence
   useEffect(() => {
@@ -271,13 +292,19 @@ export default function LandingPage() {
       smoothWheel: true,
       touchMultiplier: 2,
     });
+    lenisRef.current = lenis;
+    let rafId = 0;
 
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
-    return () => lenis.destroy();
+    rafId = requestAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
   }, []);
 
   useGSAP(() => {
@@ -896,6 +923,19 @@ export default function LandingPage() {
               </motion.div>
             ))}
           </div>
+
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/proyectos"
+              onMouseEnter={playHover}
+              onClick={playClick}
+              className="group inline-flex items-center gap-3 rounded-full border border-[#0B3A5C] bg-[#070708] px-7 py-3.5 text-sm font-bold tracking-widest uppercase text-[#0083EA] transition-all duration-300 hover:border-[#0083EA] hover:bg-[#0083EA]/15 hover:text-white"
+              aria-label="Ver más proyectos destacados"
+            >
+              Ver más proyectos destacados
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -906,13 +946,13 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8 md:p-12"
+            className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8 md:p-12 overflow-y-auto"
           >
             <div className="absolute inset-0 bg-[#070708]/90 backdrop-blur-md" onClick={() => setSelectedProject(null)} />
 
             <motion.div
               layoutId={`project-card-${selectedProject.title}`}
-              className="relative w-full max-w-5xl max-h-[90vh] bg-[#050F19] border border-[#0B3A5C] rounded-[2.5rem] shadow-[0_0_80px_rgba(0,131,234,0.2)] overflow-y-auto hidden-scrollbar flex flex-col z-10"
+              className="relative my-auto w-full max-w-5xl max-h-[calc(100dvh-4rem)] bg-[#050F19] border border-[#0B3A5C] rounded-[2.5rem] shadow-[0_0_80px_rgba(0,131,234,0.2)] overflow-hidden flex flex-col z-10"
             >
               <div className="absolute top-6 right-6 z-20">
                 <MagneticButton>
@@ -925,59 +965,90 @@ export default function LandingPage() {
                 </MagneticButton>
               </div>
 
-              {/* Informative Header (No Image) */}
-              <div className="w-full relative min-h-[220px] overflow-hidden border-b border-[#0B3A5C] p-8 md:p-16 flex flex-col justify-end bg-gradient-to-tr from-[#050F19] to-[#0B3A5C]/40">
-                <Badge variant="outline" className="w-fit border-[#0083EA]/30 text-[#0083EA] bg-[#0083EA]/10 font-mono text-[10px] tracking-widest uppercase mb-6">{selectedProject.client || "Sector Empresarial"}</Badge>
-                <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">{selectedProject.title}</h3>
-              </div>
-
-              <div className="w-full p-8 md:p-16 flex flex-col gap-10">
-                <p className="text-xl md:text-2xl text-slate-300 font-geist-sans leading-relaxed">
-                  {selectedProject.longDescription || selectedProject.description}
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4">
-                  {selectedProject.features && (
-                    <div>
-                      <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-6 uppercase">Características Implementadas</h4>
-                      <ul className="space-y-4">
-                        {selectedProject.features.map((feature, i) => (
-                          <li key={i} className="flex items-start text-slate-300 font-geist-sans">
-                            <CheckCircle weight="fill" className="w-5 h-5 text-[#0083EA] mr-3 shrink-0 mt-0.5" />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {(selectedProject.metrics || selectedProject.outcomes) && (
-                    <div className="p-8 rounded-[2rem] bg-[#070708] border border-[#0B3A5C] flex flex-col justify-center">
-                      <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-8 uppercase text-center">Impacto Operativo</h4>
-                      <div className="grid grid-cols-2 gap-6 text-center mb-8">
-                        {selectedProject.metrics?.map((m, i) => (
-                          <div key={i}>
-                            <p className="text-4xl font-black text-white mb-2">{m.value}</p>
-                            <p className="text-xs text-slate-500 font-geist-mono uppercase tracking-widest">{m.label}</p>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="space-y-3 border-t border-[#0B3A5C] pt-6">
-                        {selectedProject.outcomes?.map((o, i) => (
-                          <div key={i} className="text-sm text-slate-400 font-geist-sans flex items-center justify-center">
-                            <Star weight="fill" className="w-4 h-4 text-[#007CE8] mr-2" />
-                            {o}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+              <div data-lenis-prevent className="max-h-[calc(100dvh-4rem)] overflow-y-auto hidden-scrollbar overscroll-contain">
+                {/* Informative Header (No Image) */}
+                <div className="w-full relative min-h-[220px] overflow-hidden border-b border-[#0B3A5C] p-8 md:p-16 flex flex-col justify-end bg-gradient-to-tr from-[#050F19] to-[#0B3A5C]/40">
+                  <Badge variant="outline" className="w-fit border-[#0083EA]/30 text-[#0083EA] bg-[#0083EA]/10 font-mono text-[10px] tracking-widest uppercase mb-6">{selectedProject.client || "Sector Empresarial"}</Badge>
+                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">{selectedProject.title}</h3>
                 </div>
 
-                <div className="mt-8 pt-8 border-t border-[#0B3A5C] flex gap-3 flex-wrap">
-                  {selectedProject.tech.map(t => (
-                    <span key={t} className="px-5 py-2 bg-[#0B3A5C]/20 text-white hover:bg-[#0083EA]/20 hover:border-[#0083EA] transition-colors font-geist-mono text-xs rounded-xl border border-[#0B3A5C]">{t}</span>
-                  ))}
+                <div className="w-full p-8 md:p-16 flex flex-col gap-10">
+                  <p className="max-w-4xl text-lg md:text-xl text-slate-300 font-geist-sans leading-relaxed">
+                    {selectedProject.longDescription || selectedProject.description}
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-4">
+                    {selectedProject.features && (
+                      <div className="p-6 md:p-8 rounded-[1.5rem] bg-[#070708]/70 border border-[#0B3A5C]">
+                        <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-6 uppercase">Características Implementadas</h4>
+                        <ul className="space-y-4">
+                          {selectedProject.features.map((feature, i) => (
+                            <li key={i} className="flex items-start text-slate-300 font-geist-sans">
+                              <CheckCircle weight="fill" className="w-5 h-5 text-[#0083EA] mr-3 shrink-0 mt-0.5" />
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {(selectedProject.metrics || selectedProject.outcomes) && (
+                      <div className="p-6 md:p-8 rounded-[1.5rem] bg-[#070708] border border-[#0B3A5C] flex flex-col justify-center">
+                        <h4 className="text-xs tracking-widest font-mono text-[#007CE8] mb-8 uppercase text-center">Impacto Operativo</h4>
+                        <div className="grid grid-cols-2 gap-6 text-center mb-8">
+                          {selectedProject.metrics?.map((m, i) => (
+                            <div key={i}>
+                              <p className="text-4xl font-black text-white mb-2">{m.value}</p>
+                              <p className="text-xs text-slate-500 font-geist-mono uppercase tracking-widest">{m.label}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="space-y-3 border-t border-[#0B3A5C] pt-6">
+                          {selectedProject.outcomes?.map((o, i) => (
+                            <div key={i} className="text-sm text-slate-400 font-geist-sans flex items-center justify-center">
+                              <Star weight="fill" className="w-4 h-4 text-[#007CE8] mr-2" />
+                              {o}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-4 pt-8 border-t border-[#0B3A5C] flex gap-3 flex-wrap">
+                    {selectedProject.tech.map(t => (
+                      <span key={t} className="px-5 py-2 bg-[#0B3A5C]/20 text-white hover:bg-[#0083EA]/20 hover:border-[#0083EA] transition-colors font-geist-mono text-xs rounded-xl border border-[#0B3A5C]">{t}</span>
+                    ))}
+                  </div>
+
+                  {selectedProject.links?.demo && selectedProject.links.demo !== "#" && (
+                    <div className="pt-2">
+                      <a
+                        href={selectedProject.links.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-xl border border-[#0B3A5C] bg-[#070708] px-5 py-3 text-xs font-bold tracking-widest uppercase text-[#0083EA] hover:border-[#0083EA] hover:bg-[#0083EA]/15 hover:text-white transition-colors"
+                      >
+                        Ver proyecto en vivo
+                        <ArrowRight className="w-4 h-4" />
+                      </a>
+                    </div>
+                  )}
+
+                  <div className="pt-2">
+                    <p className="text-xs tracking-widest uppercase font-geist-mono text-[#007CE8] mb-3">
+                      Vista del proyecto
+                    </p>
+                    <div className="relative w-full h-64 md:h-[26rem] rounded-[1.5rem] overflow-hidden border border-[#0B3A5C] bg-[#070708]">
+                      <Image
+                        src={selectedProject.image}
+                        alt={`Vista del proyecto ${selectedProject.title}`}
+                        fill
+                        className="object-cover object-center"
+                        sizes="(max-width: 768px) 100vw, 1200px"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
