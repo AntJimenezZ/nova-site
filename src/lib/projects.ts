@@ -17,7 +17,7 @@ export const projects: Project[] = [
   {
     title: "Mea Culpa",
     description: "RPG narrativo inspirado en Dungeons & Dragons con creación de personajes y sistema de roles",
-    image: "/MEACULPA.RPG.png",
+    image: "/mea-culpa.webp",
     tech: ["React", "Node.js", "PostgreSQL"],
     longDescription:
       "Desarrollamos Mea Culpa, un RPG online basado en la experiencia de Dungeons & Dragons, centrado en interpretación de personajes y desempeño de roles dentro de campañas narrativas. Implementamos creación de personajes, fichas dinámicas, gestión de habilidades, inventario y progresión por sesiones, junto con herramientas para directores de juego.",
