@@ -1089,7 +1089,7 @@ const Home = (): JSX.Element => {
             <div>
               <h4 className="font-semibold mb-4">Contacto</h4>
               <ul className="space-y-2 text-slate-400">
-                <li>novasitesc@gmail.com</li>
+                <li>contacto@novacr.site</li>
                 <li>+(506) 8304-7436</li>
                 <li>Costa Rica, Alajuela</li>
               </ul>
