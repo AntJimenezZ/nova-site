@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Turnstile } from '@marsidev/react-turnstile'
 import { ArrowRight, CheckCircle2, Download, Mail, Phone, XCircle } from "lucide-react"
 
 export default function GuiaProyectoPage() {
@@ -42,6 +43,7 @@ export default function GuiaProyectoPage() {
   ]
 
   const formRef = useRef<HTMLFormElement>(null)
+  const [turnstileToken, setTurnstileToken] = useState<string>('')
   // Toast de feedback (éxito/error/info)
   const [toast, setToast] = useState<null | { type: 'success' | 'error' | 'info', message: string }>(null)
   const pushToast = (type: 'success' | 'error' | 'info', message: string) => {
@@ -312,6 +314,11 @@ export default function GuiaProyectoPage() {
                 ref={formRef}
                 onSubmit={async (e) => {
                   e.preventDefault();
+                  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+                  if (siteKey && !turnstileToken) {
+                    pushToast('error', 'Por favor, completa el captcha');
+                    return;
+                  }
                   const form = e.currentTarget as HTMLFormElement;
                   const data = new FormData(form);
                   const nombre = String(data.get('nombre') || '');
@@ -332,7 +339,7 @@ export default function GuiaProyectoPage() {
                       headers: {
                         'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify({ name: nombre, email, subject, message }),
+                      body: JSON.stringify({ name: nombre, email, subject, message, turnstileToken }),
                     });
 
                     if (!res.ok) {
@@ -476,6 +483,16 @@ export default function GuiaProyectoPage() {
                       <option value="sin-prisa">Sin prisa (2+ meses)</option>
                     </select>
                   </div>
+                </div>
+
+                <div className="pt-4 flex justify-center">
+                  {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                    <Turnstile
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                      onSuccess={(token) => setTurnstileToken(token)}
+                      options={{ theme: 'dark' }}
+                    />
+                  )}
                 </div>
 
                 <div className="pt-4 flex flex-col sm:flex-row gap-3">

@@ -3,7 +3,6 @@ import nodemailer from 'nodemailer'
 
 export async function POST(request: NextRequest) {
   try {
-    const warnings: string[] = []
     const body = await request.json()
     const {
       name, email, subject, message, turnstileToken
@@ -61,77 +60,80 @@ export async function POST(request: NextRequest) {
     const emailUser = process.env.EMAIL_USER || ''
     const emailPassword = process.env.EMAIL_APP_PASSWORD || process.env.EMAIL_PASSWORD || ''
 
-    if (emailUser && emailPassword) {
-      try {
-        const transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: emailUser,
-            pass: emailPassword,
-          },
-        })
+    if (!emailUser || !emailPassword) {
+      console.error('Faltan EMAIL_USER o EMAIL_APP_PASSWORD/EMAIL_PASSWORD en variables de entorno')
+      return NextResponse.json(
+        { error: 'El servicio de email no está configurado. Contacta al administrador.' },
+        { status: 503 }
+      )
+    }
 
-        // Configurar el email
-        const mailOptions = {
-          from: emailUser,
-          to: emailUser, // Enviar a tu propio email
-          subject: `Contacto Web: ${subject}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
-                Nuevo mensaje de contacto desde NovaSite
-              </h2>
-              
-              <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="color: #374151; margin-top: 0;">Información del contacto:</h3>
-                <p><strong>Nombre:</strong> ${name}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Asunto:</strong> ${subject}</p>
-              </div>
-              
-              <div style="background-color: #ffffff; padding: 20px; border-left: 4px solid #2563eb; margin: 20px 0;">
-                <h3 style="color: #374151; margin-top: 0;">Mensaje:</h3>
-                <p style="line-height: 1.6; color: #4b5563;">${message.replace(/\n/g, '<br>')}</p>
-              </div>
-              
-              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
-                <p>Este mensaje fue enviado desde el formulario de contacto de NovaSite</p>
-                <p>Para responder, envía un email directamente a: <strong>${email}</strong></p>
-              </div>
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: emailUser,
+          pass: emailPassword,
+        },
+      })
+
+      // Configurar el email
+      const mailOptions = {
+        from: emailUser,
+        to: emailUser, // Enviar a tu propio email
+        subject: `Contacto Web: ${subject}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">
+              Nuevo mensaje de contacto desde NovaSite
+            </h2>
+            
+            <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #374151; margin-top: 0;">Información del contacto:</h3>
+              <p><strong>Nombre:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Asunto:</strong> ${subject}</p>
             </div>
-          `,
-          // También enviar una copia en texto plano
-          text: `
-            Nuevo mensaje de contacto desde NovaSite
             
-            Nombre: ${name}
-            Email: ${email}
-            Asunto: ${subject}
+            <div style="background-color: #ffffff; padding: 20px; border-left: 4px solid #2563eb; margin: 20px 0;">
+              <h3 style="color: #374151; margin-top: 0;">Mensaje:</h3>
+              <p style="line-height: 1.6; color: #4b5563;">${message.replace(/\n/g, '<br>')}</p>
+            </div>
             
-            Mensaje:
-            ${message}
-            
-            ---
-            Para responder, envía un email directamente a: ${email}
-          `,
-        }
-
-        // Enviar el email
-        await transporter.sendMail(mailOptions)
-      } catch (mailError) {
-        console.error('Error enviando email (Nodemailer):', mailError)
-        warnings.push('No se pudo enviar el correo')
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
+              <p>Este mensaje fue enviado desde el formulario de contacto de NovaSite</p>
+              <p>Para responder, envía un email directamente a: <strong>${email}</strong></p>
+            </div>
+          </div>
+        `,
+        // También enviar una copia en texto plano
+        text: `
+          Nuevo mensaje de contacto desde NovaSite
+          
+          Nombre: ${name}
+          Email: ${email}
+          Asunto: ${subject}
+          
+          Mensaje:
+          ${message}
+          
+          ---
+          Para responder, envía un email directamente a: ${email}
+        `,
       }
-    } else {
-      console.warn('Omitiendo Nodemailer: Falta EMAIL_USER o EMAIL_APP_PASSWORD/EMAIL_PASSWORD en variables de entorno')
-      warnings.push('Email no configurado en el entorno')
+
+      // Enviar el email
+      await transporter.sendMail(mailOptions)
+    } catch (mailError) {
+      console.error('Error enviando email (Nodemailer):', mailError)
+      return NextResponse.json(
+        { error: 'No se pudo enviar el correo. Intenta de nuevo más tarde.' },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json(
-      {
-        message: 'Operación procesada',
-        warnings: warnings.length ? warnings : undefined,
-      },
+      { message: 'Mensaje enviado correctamente' },
       { status: 200 }
     )
 
