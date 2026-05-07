@@ -124,10 +124,12 @@ export async function POST(request: NextRequest) {
 
       // Enviar el email
       await transporter.sendMail(mailOptions)
-    } catch (mailError) {
+    } catch (mailError: unknown) {
+      const errMsg = mailError instanceof Error ? mailError.message : String(mailError)
+      const errCode = (mailError as { code?: string })?.code || 'UNKNOWN'
       console.error('Error enviando email (Nodemailer):', mailError)
       return NextResponse.json(
-        { error: 'No se pudo enviar el correo. Intenta de nuevo más tarde.' },
+        { error: 'No se pudo enviar el correo.', detail: errMsg, code: errCode },
         { status: 500 }
       )
     }
