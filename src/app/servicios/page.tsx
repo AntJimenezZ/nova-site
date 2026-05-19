@@ -243,7 +243,7 @@ export default function ServiciosPage() {
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-6"
           }`}>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-4 text-slate-100">
               Servicios Principales
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
@@ -376,7 +376,7 @@ export default function ServiciosPage() {
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-6"
           }`}>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-4 text-slate-100">
               Nuestro Proceso de Trabajo
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
@@ -431,7 +431,7 @@ export default function ServiciosPage() {
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-6"
           }`}>
-            <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-4 text-slate-100">
               Servicios Adicionales
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
@@ -494,7 +494,7 @@ export default function ServiciosPage() {
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-6"
           }`}>
-            <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+            <h2 className="text-4xl font-bold mb-6 text-slate-100">
               ¿Listo para Transformar tu Negocio?
             </h2>
             <p className="text-xl text-slate-300 mb-8 max-w-2xl mx-auto">

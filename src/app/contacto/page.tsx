@@ -44,7 +44,7 @@ export default function ContactoPage() {
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-600/60 bg-slate-800/60 px-3 py-1 text-xs text-slate-300 mb-4">
             <span>¿Listo para empezar?</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-200 via-blue-300 to-cyan-300">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-100">
             Contacto
           </h1>
           <p className="mt-4 text-slate-300 max-w-2xl mx-auto">

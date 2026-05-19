@@ -79,11 +79,11 @@ export default function GuiaProyectoPage() {
             Guía práctica NovaSite
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-4 leading-[1.1] tracking-tight text-balance max-w-5xl mx-auto">
-            <span className="bg-gradient-to-r from-slate-200 via-blue-300 to-blue-500 bg-clip-text text-transparent">
+            <span className="text-slate-100">
               Comienza tu Proyecto
             </span>
             <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="text-slate-100">
               con Confianza
             </span>
           </h1>
@@ -141,7 +141,7 @@ export default function GuiaProyectoPage() {
 
         {/* Metodología */}
         <section className="mt-4 mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-slate-100">
             ¿Cómo trabajamos?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -206,7 +206,7 @@ export default function GuiaProyectoPage() {
 
         {/* FAQ */}
         <section id="faqs" className="mt-14">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-slate-100">
             Preguntas frecuentes
           </h2>
           <div className="space-y-3">
@@ -299,7 +299,7 @@ export default function GuiaProyectoPage() {
 
         {/* Formulario de Requerimientos */}
         <section id="requerimientos" className="mt-14">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-slate-100">
             Formulario de Requerimientos
           </h2>
           <Card className="border-0 bg-slate-700/90 shadow-xl">

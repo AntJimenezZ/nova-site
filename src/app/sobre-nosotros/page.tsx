@@ -63,9 +63,9 @@ export default function SobreNosotrosPage() {
             Sobre Nosotros
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 leading-tight tracking-tight text-balance max-w-5xl mx-auto">
-            <span className="bg-gradient-to-r from-slate-200 via-blue-300 to-blue-500 bg-clip-text text-transparent">Construimos software</span>
+            <span className="text-slate-100">Construimos software</span>
             <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">que impulsa tu crecimiento</span>
+            <span className="text-slate-100">que impulsa tu crecimiento</span>
           </h1>
           <p className="text-slate-300 text-lg sm:text-xl max-w-3xl mx-auto">
             Somos un equipo pequeño y multidisciplinario. Unimos estrategia, diseño y tecnología para convertir ideas en productos digitales reales.
@@ -99,7 +99,7 @@ export default function SobreNosotrosPage() {
         <section className="mb-14">
           <div className="flex items-center gap-3 mb-6">
             <Users className="w-6 h-6 text-blue-400" />
-            <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">Nuestra filosofía</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100">Nuestra filosof{"\u00ED"}a</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {valores.map((v) => (
@@ -138,7 +138,7 @@ export default function SobreNosotrosPage() {
         <section className="mb-14">
           <div className="flex items-center gap-3 mb-6">
             <CheckCircle2 className="w-6 h-6 text-blue-400" />
-            <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">Nuestro equipo</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100">Nuestro equipo</h2>
           </div>
           
           {/* Carpeta de Integrantes - Diseño Innovador */}
@@ -159,7 +159,7 @@ export default function SobreNosotrosPage() {
                   </div>
                   
                   {/* Título y descripción */}
-                  <CardTitle className="text-3xl sm:text-4xl font-bold text-slate-100 mb-4 bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">
+                  <CardTitle className="text-3xl sm:text-4xl font-bold text-slate-100 mb-4">
                     Nuestro Equipo
                   </CardTitle>
                   <CardDescription className="text-lg sm:text-xl text-slate-300 mb-6">
@@ -246,7 +246,7 @@ export default function SobreNosotrosPage() {
         <section className="mb-14">
           <div className="flex items-center gap-3 mb-6">
             <CheckCircle2 className="w-6 h-6 text-blue-400" />
-            <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-slate-200 to-blue-400 bg-clip-text text-transparent">Qué dicen nuestros clientes</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100">Qu{"\u00E9"} dicen nuestros clientes</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {testimonials.slice(0, 6).map((t, i) => (

@@ -80,14 +80,14 @@ const team = [
     technologies: ["React", "Node.js", "Python", "PostgreSQL", "C#"],
   },
   {
-    name: "Anthony (Noni)",
+    name: "Anthony",
     role: "Full Stack Developer",
     description: "Desarrollador full stack con experiencia en desarrollo web y móvil",
     avatar: "/Noni-NovaSite.jpeg",
     technologies: ["React", "Vue", "React Native", "Firebase", "TypeScript"],
   },
   {
-    name: "Alejandro (Pecho)",
+    name: "Alejandro",
     role: "Backend Engineer",
     description: "Ingeniero backend enfocado en arquitecturas escalables y seguras",
     avatar: "/logos/FotoAlejandro.jpg",
@@ -95,8 +95,8 @@ const team = [
   },
   {
     name: "Paulo",
-    role: "Frontend UI Developer",
-    description: "Experiencia en diseño frontend UI y desarrollo de aplicaciones web y móviles.",
+    role: "Frontend & UI/UX Developer",
+    description: "Ingeniero TI con experiencia en diseño frontend UI y desarrollo full-stack de aplicaciones web y móviles.",
     avatar: "/logos/FotoPaulo.jpeg",
     technologies: ["React", "UI/UX", "GSAP", "Three.js", "TailwindCSS"],
   }
@@ -127,7 +127,7 @@ function AbstractNLogo() {
           <meshStandardMaterial color="#0083EA" metalness={0.6} roughness={0.2} transparent opacity={0.85} />
         </mesh>
         {/* Diagonal */}
-        <mesh position={[0, 0, 0]} rotation={[0, 0, -0.52]}>
+        <mesh position={[0, 0, 0]} rotation={[0, 0, 0.52]}>
           <boxGeometry args={[0.7, 5.2, 0.7]} />
           <meshStandardMaterial color="#007CE8" metalness={0.8} roughness={0.1} />
         </mesh>
@@ -539,19 +539,19 @@ export default function LandingPage() {
           <div className="max-w-4xl">
             <div className="flex items-center gap-3 mb-6 hero-sub">
               <span className="h-px w-8 bg-[#0083EA]" />
-              <span className="text-[#007CE8] font-geist-mono text-sm tracking-widest uppercase">Estudio Digital</span>
+              <span className="text-[#007CE8] font-geist-mono text-sm tracking-widest uppercase">Bienvenido a</span>
             </div>
 
             <h1 className="text-5xl md:text-[7.5rem] font-black tracking-tighter leading-[0.8] text-white flex pointer-events-auto" style={{ perspective: "1200px" }}>
               {TitleText.map((char, i) => (
-                <span key={i} className="hero-char transform-gpu inline-block text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-[#0B3A5C]" style={{ transformStyle: "preserve-3d" }}>
+                <span key={i} className="hero-char transform-gpu inline-block text-white" style={{ transformStyle: "preserve-3d" }}>
                   {char}
                 </span>
               ))}
             </h1>
 
             <p className="hero-sub mt-8 text-xl text-slate-400 max-w-xl font-geist-sans font-light leading-relaxed pointer-events-auto">
-              Ingeniería de software de alta gama. Desafiamos lo convencional con interfaces que respiran y sistemas empresariales que escalan a niveles absolutos.
+              Software de alto nivel pensado para crecer con su negocio. Nos enfocamos en desarrollar interfaces modernas y sistemas eficientes.
             </p>
 
             <div className="mt-12 pointer-events-auto hero-sub">
@@ -568,13 +568,12 @@ export default function LandingPage() {
       {/* Services Bento Grid */}
       <section id="servicios" className="container mx-auto px-4 md:px-8 py-24">
         <div className="mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">Módulos Logísticos de Software</h2>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">Nuestros Servicios</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, idx) => (
             <motion.div
               key={idx}
-              layoutId={`service-card-${service.title}`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
@@ -597,19 +596,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Morphing Modal for Services */}
+      {/* Modal for Services */}
       <AnimatePresence>
         {selectedService && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
             className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8 md:p-12"
           >
             <div className="absolute inset-0 bg-[#070708]/90 backdrop-blur-md" onClick={() => setSelectedService(null)} />
 
             <motion.div
-              layoutId={`service-card-${selectedService.title}`}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
               className="relative w-full max-w-4xl max-h-[90vh] bg-[#050F19] border border-[#0B3A5C] rounded-[2.5rem] shadow-[0_0_80px_rgba(0,131,234,0.2)] overflow-y-auto hidden-scrollbar flex flex-col z-10"
             >
               <div className="absolute top-6 right-6 z-20">
@@ -631,7 +634,7 @@ export default function LandingPage() {
                   <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0083EA]/20 border border-[#0083EA]/50 mb-6 shadow-[0_0_30px_rgba(0,131,234,0.3)]">
                     <selectedService.icon weight="fill" className="w-8 h-8 text-[#0083EA]" />
                   </div>
-                  <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">{selectedService.title}</h3>
+                  <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-white">{selectedService.title}</h3>
                 </div>
               </div>
 
@@ -668,76 +671,143 @@ export default function LandingPage() {
         )}
       </AnimatePresence>
 
-      {/* Team Section - Literal Carousel */}
+      {/* Team Section - Responsive Carousel */}
       <section id="equipo" className="container mx-auto px-4 md:px-8 py-24 relative border-t border-[#0B3A5C]">
-        <div className="mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div className="mb-12 md:mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <div>
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">El Escuadrón</h2>
-            <p className="text-slate-400 mt-3 font-geist-sans max-w-xl">
-              Un carrusel real con acabados cinematográficos y rotación continua para presentar al equipo como una pieza protagonista.
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">Nuestro Equipo</h2>
+            <p className="text-slate-400 mt-3 font-geist-sans max-w-xl leading-relaxed">
+              Cada integrante cumple un papel importante para ofrecer lo mejor a nuestros clientes.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setActiveMember((prev) => (prev - 1 + team.length) % team.length)}
+              onClick={() => { playClick(); setActiveMember((prev) => (prev - 1 + team.length) % team.length); }}
               onMouseEnter={() => setIsCarouselPaused(true)}
               onMouseLeave={() => setIsCarouselPaused(false)}
-              className="w-11 h-11 rounded-full border border-[#0B3A5C] bg-[#050F19] text-[#007CE8] hover:border-[#0083EA] hover:text-[#0083EA] transition-colors"
+              className="w-11 h-11 flex items-center justify-center rounded-full border border-[#0B3A5C] bg-[#050F19] text-[#007CE8] hover:border-[#0083EA] hover:text-[#0083EA] hover:bg-[#0083EA]/10 transition-all duration-300"
               aria-label="Integrante anterior"
             >
-              {"<"}
+              <ArrowRight className="w-4 h-4 rotate-180" />
             </button>
+            <span className="text-xs font-geist-mono text-slate-500 tracking-widest tabular-nums min-w-[3ch] text-center">
+              {String(activeMember + 1).padStart(2, '0')}
+            </span>
             <button
-              onClick={() => setActiveMember((prev) => (prev + 1) % team.length)}
+              onClick={() => { playClick(); setActiveMember((prev) => (prev + 1) % team.length); }}
               onMouseEnter={() => setIsCarouselPaused(true)}
               onMouseLeave={() => setIsCarouselPaused(false)}
-              className="w-11 h-11 rounded-full border border-[#0B3A5C] bg-[#050F19] text-[#007CE8] hover:border-[#0083EA] hover:text-[#0083EA] transition-colors"
+              className="w-11 h-11 flex items-center justify-center rounded-full border border-[#0B3A5C] bg-[#050F19] text-[#007CE8] hover:border-[#0083EA] hover:text-[#0083EA] hover:bg-[#0083EA]/10 transition-all duration-300"
               aria-label="Siguiente integrante"
             >
-              {">"}
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
+        {/* Mobile: Single card with AnimatePresence transitions */}
         <div
-          className="relative min-h-[520px] rounded-[2.5rem] border border-[#0B3A5C] bg-gradient-to-b from-[#050F19] via-[#060d16] to-[#070708] overflow-hidden px-4 md:px-10"
+          className="block md:hidden"
+          onTouchStart={() => setIsCarouselPaused(true)}
+          onTouchEnd={() => setIsCarouselPaused(false)}
+        >
+          <div className="relative rounded-[2rem] border border-[#0B3A5C] bg-gradient-to-b from-[#050F19] to-[#070708] overflow-hidden">
+            {/* Decorative top line */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[#0083EA]/60 to-transparent" />
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeMember}
+                initial={{ opacity: 0, x: 60 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -60 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="p-5"
+              >
+                <div
+                  className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-[#0B3A5C] mb-5 cursor-pointer"
+                  onClick={() => { playClick(); setSelectedTeamMember(team[activeMember]); }}
+                >
+                  <Image
+                    src={team[activeMember].avatar}
+                    alt={team[activeMember].name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 400px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#050F19]/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <Badge variant="outline" className="border-[#0083EA]/40 text-[#0083EA] bg-[#050F19]/80 font-mono text-[10px] tracking-widest uppercase backdrop-blur-sm">
+                      {team[activeMember].role}
+                    </Badge>
+                  </div>
+                </div>
+
+                <h3 className="text-2xl font-black tracking-tight mb-2">{team[activeMember].name}</h3>
+                <p className="text-slate-400 text-sm font-geist-sans leading-relaxed mb-5">
+                  {team[activeMember].description}
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  {team[activeMember].technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-3 py-1.5 text-[10px] rounded-lg bg-[#0B3A5C]/20 text-[#c6def5] border border-[#0B3A5C] font-geist-mono tracking-wider uppercase"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Mobile dot indicators */}
+            <div className="flex items-center justify-center gap-2 pb-5">
+              {team.map((member, idx) => (
+                <button
+                  key={member.name}
+                  onClick={() => setActiveMember(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${idx === activeMember ? "w-7 bg-[#0083EA]" : "w-2 bg-[#0B3A5C] hover:bg-[#0B3A5C]/80"
+                    }`}
+                  aria-label={`Ir a ${member.name}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Coverflow 3D Carousel */}
+        <div
+          className="hidden md:block relative py-16"
           onMouseEnter={() => setIsCarouselPaused(true)}
           onMouseLeave={() => setIsCarouselPaused(false)}
+          style={{ perspective: "1200px" }}
         >
-          {/* Canopy - Tech HUD style */}
-          <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[95%] h-28 rounded-[999px] border border-[#0B3A5C] bg-gradient-to-b from-[#0C1B2E] via-[#081426] to-[#050F19] shadow-[0_8px_55px_rgba(0,131,234,0.14)]" />
-          <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[90%] h-16 rounded-[999px] border border-[#0083EA]/35 bg-[linear-gradient(90deg,rgba(0,131,234,0.05),rgba(0,131,234,0.2),rgba(0,131,234,0.05))]" />
-          <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[90%] h-16 rounded-[999px] opacity-30 bg-[linear-gradient(90deg,transparent_0%,rgba(0,131,234,0.6)_10%,transparent_20%,transparent_40%,rgba(0,131,234,0.35)_50%,transparent_60%,transparent_80%,rgba(0,131,234,0.5)_90%,transparent_100%)]" />
-          <div className="absolute top-[94px] left-1/2 -translate-x-1/2 w-[84%] h-px bg-gradient-to-r from-transparent via-[#0083EA]/70 to-transparent" />
-          <div className="absolute top-[82px] left-1/2 -translate-x-1/2 w-[70%] h-[2px] bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent blur-[1px]" />
-          <div className="absolute top-[56px] left-1/2 -translate-x-1/2 w-[76%] h-8 rounded-[999px] border border-cyan-400/20" />
-
-          {/* Arrow pointer to active card */}
-          <div className="absolute top-[112px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none">
-            <div className="w-1 h-9 bg-gradient-to-b from-[#0083EA]/90 to-[#0083EA]/30 rounded-full shadow-[0_0_18px_rgba(0,131,234,0.4)]" />
-            <div className="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-[#0083EA] drop-shadow-[0_0_8px_rgba(0,131,234,0.7)]" />
-          </div>
-
-          {/* Cards orbit */}
-          <div className="relative h-[520px] flex items-center justify-center">
+          <div className="relative h-[420px] flex items-center justify-center">
             {team.map((member, idx) => {
               const rawOffset = idx - activeMember;
               const wrappedOffset = ((rawOffset + team.length + Math.floor(team.length / 2)) % team.length) - Math.floor(team.length / 2);
               const depth = Math.abs(wrappedOffset);
               const isFocused = wrappedOffset === 0;
 
+              const xOffset = isFocused ? 0 : wrappedOffset * 280;
+              const rotateY = isFocused ? 0 : wrappedOffset > 0 ? -45 : 45;
+              const zOffset = isFocused ? 80 : -depth * 60;
+              const cardScale = isFocused ? 1 : 0.82;
+              const cardOpacity = isFocused ? 1 : Math.max(0.3, 0.65 - depth * 0.2);
+
               return (
                 <motion.article
                   key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
                   animate={{
-                    x: wrappedOffset * 230,
-                    y: 34 + depth * 22,
-                    scale: isFocused ? 1 : 0.86 - depth * 0.07,
-                    opacity: isFocused ? 1 : 0.72 - depth * 0.2,
-                    zIndex: team.length - depth,
+                    x: xOffset,
+                    rotateY: rotateY,
+                    z: zOffset,
+                    scale: cardScale,
+                    opacity: cardOpacity,
+                    zIndex: team.length - depth + (isFocused ? 10 : 0),
                   }}
-                  transition={{ duration: 0.65, ease: "easeOut" }}
+                  transition={{ type: "spring", stiffness: 200, damping: 26 }}
                   onClick={() => {
                     if (!isFocused) {
                       setActiveMember(idx);
@@ -746,19 +816,19 @@ export default function LandingPage() {
                     playClick();
                     setSelectedTeamMember(member);
                   }}
-                  className={`absolute w-[260px] md:w-[300px] rounded-3xl border p-4 md:p-5 backdrop-blur-xl ${isFocused
-                    ? "border-[#0083EA]/60 bg-[#050F19]/95 shadow-[0_0_40px_rgba(0,131,234,0.25)]"
-                    : "border-[#0B3A5C] bg-[#050F19]/80"
+                  className={`absolute w-[300px] rounded-2xl border p-5 transition-colors duration-300 ${isFocused
+                      ? "border-[#0083EA]/50 bg-[#050F19] shadow-[0_8px_60px_rgba(0,131,234,0.2)]"
+                      : "border-[#0B3A5C]/60 bg-[#050F19]/90"
                     } cursor-pointer`}
+                  style={{ transformStyle: "preserve-3d" }}
                 >
-                  <div className="w-full h-44 rounded-2xl overflow-hidden border border-[#0B3A5C]">
+                  <div className="w-full h-48 rounded-xl overflow-hidden border border-[#0B3A5C]/50">
                     <Image
                       src={member.avatar || "/placeholder.svg"}
                       alt={member.name}
                       width={400}
                       height={300}
-                      className={`object-cover w-full h-full transition-all duration-500 ${isFocused ? "grayscale-0" : "grayscale"
-                        }`}
+                      className={`object-cover w-full h-full transition-all duration-500 ${isFocused ? "grayscale-0" : "grayscale"}`}
                     />
                   </div>
                   <div className="pt-4">
@@ -768,20 +838,20 @@ export default function LandingPage() {
                         {member.role}
                       </Badge>
                     </div>
-                    <p className="text-slate-400 text-xs md:text-sm font-geist-sans line-clamp-2">{member.description}</p>
+                    <p className="text-slate-400 text-sm font-geist-sans line-clamp-2">{member.description}</p>
                   </div>
                 </motion.article>
               );
             })}
           </div>
 
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+          {/* Minimal dot indicators */}
+          <div className="flex items-center justify-center gap-2 mt-8">
             {team.map((member, idx) => (
               <button
                 key={member.name}
                 onClick={() => setActiveMember(idx)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${idx === activeMember ? "w-8 bg-[#0083EA]" : "w-2.5 bg-[#0B3A5C]"
-                  }`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${idx === activeMember ? "w-8 bg-[#0083EA]" : "w-1.5 bg-[#0B3A5C]/80 hover:bg-[#0B3A5C]"}`}
                 aria-label={`Ir a ${member.name}`}
               />
             ))}
@@ -835,7 +905,7 @@ export default function LandingPage() {
                   <Badge variant="outline" className="w-fit border-[#0B3A5C] text-[#007CE8] font-mono text-[10px] bg-[#070708] mb-3">
                     {selectedTeamMember.role}
                   </Badge>
-                  <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">
+                  <h3 className="text-3xl md:text-4xl font-black tracking-tighter mb-4 text-white">
                     {selectedTeamMember.name}
                   </h3>
                   <p className="text-slate-300 font-geist-sans leading-relaxed mb-6">
@@ -876,7 +946,7 @@ export default function LandingPage() {
             {projects.map((proj, idx) => (
               <motion.div
                 key={proj.title}
-                layoutId={`project-card-${proj.title}`}
+
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-10%" }}
@@ -939,19 +1009,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Full Screen Morphing Modal for Deep Dive Case Studies */}
+      {/* Full Screen Modal for Deep Dive Case Studies */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-8 md:p-12 overflow-y-auto"
           >
             <div className="absolute inset-0 bg-[#070708]/90 backdrop-blur-md" onClick={() => setSelectedProject(null)} />
 
             <motion.div
-              layoutId={`project-card-${selectedProject.title}`}
+              initial={{ opacity: 0, scale: 0.96, y: 24 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 12 }}
+              transition={{ type: "spring", stiffness: 400, damping: 30 }}
               className="relative my-auto w-full max-w-5xl max-h-[calc(100dvh-4rem)] bg-[#050F19] border border-[#0B3A5C] rounded-[2.5rem] shadow-[0_0_80px_rgba(0,131,234,0.2)] overflow-hidden flex flex-col z-10"
             >
               <div className="absolute top-6 right-6 z-20">
@@ -969,7 +1043,7 @@ export default function LandingPage() {
                 {/* Informative Header (No Image) */}
                 <div className="w-full relative min-h-[220px] overflow-hidden border-b border-[#0B3A5C] p-8 md:p-16 flex flex-col justify-end bg-gradient-to-tr from-[#050F19] to-[#0B3A5C]/40">
                   <Badge variant="outline" className="w-fit border-[#0083EA]/30 text-[#0083EA] bg-[#0083EA]/10 font-mono text-[10px] tracking-widest uppercase mb-6">{selectedProject.client || "Sector Empresarial"}</Badge>
-                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">{selectedProject.title}</h3>
+                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-white">{selectedProject.title}</h3>
                 </div>
 
                 <div className="w-full p-8 md:p-16 flex flex-col gap-10">

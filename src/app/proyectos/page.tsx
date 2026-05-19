@@ -40,7 +40,7 @@ export default function ProyectosPage() {
           </Link>
 
           <div className="mt-8 max-w-3xl">
-            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white">
               Todos los Proyectos Destacados
             </h1>
             <p className="mt-4 text-slate-400 font-geist-sans leading-relaxed">
@@ -137,7 +137,7 @@ export default function ProyectosPage() {
                   <Badge variant="outline" className="w-fit border-[#0083EA]/30 text-[#0083EA] bg-[#0083EA]/10 font-mono text-[10px] tracking-widest uppercase mb-6">
                     {active.client || "Sector Empresarial"}
                   </Badge>
-                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-[#007CE8]">
+                  <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-white">
                     {active.title}
                   </h3>
                 </div>
