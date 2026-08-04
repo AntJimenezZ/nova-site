@@ -1,3 +1,5 @@
+import data from "../../content/testimonials.json"
+
 export type Testimonial = {
   id: string
   name: string
@@ -9,65 +11,5 @@ export type Testimonial = {
   avatar?: string
 }
 
-export const testimonials: Testimonial[] = [
-  {
-    id: "1",
-    name: "Barbara Torres",
-    company: "Toast Cafe",
-    role: "Gerente General",
-    comment: "El sistema de registro que desarrollaron superó nuestras expectativas. La integración con el personal para el control de asistencia fue perfecta y nuestro control aumento en los primeros 3 meses.",
-    rating: 5,
-    projectTitle: "Control de Asistencia",
-    avatar: "/avatars/maria.jpg"
-  },
-  {
-    id: "2",
-    name: "Carlos Mendoza",
-    company: "App Restaurante",
-    role: "Gerente General",
-    comment: "El software del Restaurante revolucionó nuestro control de pedidos. Ahora tenemos reportes en tiempo real y el proceso de pedidos se automatizó completamente.",
-    rating: 5,
-    projectTitle: "Software de Pedidos",
-    avatar: "/avatars/carlos.jpg"
-  },
-  {
-    id: "3",
-    name: "Ana Rodríguez",
-    company: "Restaurante La Tradición",
-    role: "Gerente General",
-    comment: "La aplicación de reservas transformó nuestro negocio. Los clientes pueden reservar fácilmente y nosotros gestionamos todo desde un panel muy intuitivo. Excelente trabajo!",
-    rating: 5,
-    projectTitle: "Software de Reservas",
-    avatar: "/avatars/ana.jpg"
-  },
-  {
-    id: "4",
-    name: "David Zúñiga",
-    company: "E-commerce",
-    role: "Gerente General",
-    comment: "Trabajar con NovaSite fue una experiencia increíble. Su expertise en React y Node.js se nota en cada detalle del marketplace. Altamente recomendados.",
-    rating: 5,
-    projectTitle: "Market-Place",
-    avatar: "/avatars/roberto.jpg"
-  },
-  {
-    id: "5",
-    name: "Laura Jiménez",
-    company: "Corporativo Integral",
-    role: "Directora de Operaciones",
-    comment: "El sistema de asistencia es robusto y confiable. La integración con PostgreSQL garantiza que nuestros datos estén seguros. Un trabajo profesional de principio a fin.",
-    rating: 5,
-    projectTitle: "APP de Empleados",
-    avatar: "/avatars/laura.jpg"
-  },
-  {
-    id: "6",
-    name: "Diego Morales",
-    company: "Bistro Moderno",
-    role: "Propietario",
-    comment: "La app móvil para nuestro restaurante es exactamente lo que necesitábamos. Firebase funciona perfecto y Stripe hace que los pagos sean súper seguros.",
-    rating: 5,
-    projectTitle: "Restaurant App",
-    avatar: "/avatars/diego.jpg"
-  }
-]
+/** Contenido en content/testimonials.json, editable desde /admin (TinaCMS). */
+export const testimonials = data.items as Testimonial[]
