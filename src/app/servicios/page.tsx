@@ -1,13 +1,76 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight, Check } from "lucide-react";
-import { capabilities, services } from "@/lib/services";
+import { services } from "@/lib/services";
+import { testimonials } from "@/lib/testimonials";
+import { Testimonial } from "@/components/testimonial";
+import { openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Servicios",
   description:
-    "Desarrollo web, e-commerce, backend a medida y mantenimiento. Qué incluye cada servicio y con qué stack lo construimos.",
+    "Diseño de páginas web en Costa Rica: sitios corporativos, tiendas en línea, aplicaciones a medida y mantenimiento. Qué incluye cada servicio, con qué stack y desde cuánto cuesta.",
+  alternates: { canonical: "/servicios" },
+  openGraph: openGraphFor(
+    "/servicios",
+    "Servicios · NovaSite",
+    "Cuánto cuesta una página web, qué incluye cada servicio y en cuánto tiempo se entrega. Precios orientativos de partida.",
+  ),
 };
+
+/**
+ * ⚠️ PENDIENTE ANTES DE DESPLEGAR: sustituir cada "$XXX" por el rango real.
+ *
+ * "Cuánto cuesta una página web en Costa Rica" es una búsqueda de alta
+ * intención comercial y hoy el sitio no responde esa pregunta en ninguna
+ * parte —salvo, irónicamente, en el select del formulario, que se la hace
+ * al cliente antes de contestarla.
+ */
+const pricing = [
+  {
+    title: "Landing page",
+    from: "$XXX",
+    time: "1–3 semanas",
+    detail: "Una página, un objetivo: que te escriban o te compren.",
+  },
+  {
+    title: "Sitio web corporativo",
+    from: "$XXX",
+    time: "3–5 semanas",
+    detail: "Varias secciones, blog o catálogo y panel para editarlo tú.",
+  },
+  {
+    title: "Tienda en línea",
+    from: "$XXX",
+    time: "4–8 semanas",
+    detail: "Catálogo, carrito, pagos e inventario conectados.",
+  },
+  {
+    title: "Aplicación a medida",
+    from: "Cotización",
+    time: "Por etapas",
+    detail: "Sistemas internos y productos que no salen de una plantilla.",
+  },
+];
+
+/** Tu cliente no sabe si necesita "landing" o "sitio corporativo": esto lo traduce. */
+const guidance = [
+  {
+    q: "Solo quiero que me encuentren en Google y me escriban.",
+    a: "Desarrollo web",
+    href: "#web",
+  },
+  {
+    q: "Quiero vender mis productos por internet.",
+    a: "E-commerce",
+    href: "#ecommerce",
+  },
+  {
+    q: "Necesito ordenar algo que hoy llevo en papel o en Excel.",
+    a: "Backend a medida",
+    href: "#backend",
+  },
+];
 
 export default function ServiciosPage() {
   return (
@@ -89,35 +152,83 @@ export default function ServiciosPage() {
         </section>
       ))}
 
-      <section className="border-t border-line py-14 md:py-20">
-        <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
-          También cubrimos
+      <section
+        id="precios"
+        aria-labelledby="precios-title"
+        className="scroll-mt-24 border-t border-line py-14 md:py-20"
+      >
+        <h2
+          id="precios-title"
+          className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter"
+        >
+          ¿Cuánto cuesta una página web?
         </h2>
         <p className="measure mt-4 text-muted-foreground">
-          Complementos que acompañan a un proyecto. No se contratan sueltos.
+          Es la primera pregunta de todo el mundo, así que va antes del
+          formulario y no después. Estos son los puntos de partida reales de
+          proyectos que ya entregamos.
         </p>
 
         <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-          {capabilities.map((c) => (
-            <li key={c.title} className="reveal bg-surface p-7">
-              <c.icon className="size-5 text-brand" aria-hidden />
-              <h3 className="mt-5 font-display text-base font-semibold">
-                {c.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {c.description}
+          {pricing.map((p) => (
+            <li key={p.title} className="reveal flex flex-col bg-surface p-7">
+              <h3 className="font-display text-base font-semibold">{p.title}</h3>
+              <p className="tnum mt-4 font-display text-[clamp(1.5rem,3vw,2rem)] font-bold leading-none tracking-tighter text-brand">
+                {p.from === "Cotización" ? p.from : `desde ${p.from}`}
               </p>
-              <ul className="mt-5 flex flex-wrap gap-1.5">
-                {c.tags.map((t) => (
-                  <li
-                    key={t}
-                    className="rounded-full border border-line px-2.5 py-1 text-[0.7rem] text-muted-foreground"
-                  >
-                    {t}
-                  </li>
-                ))}
-              </ul>
+              <p className="label mt-3 text-muted-foreground">{p.time}</p>
+              <p className="mt-5 flex-1 text-sm leading-relaxed text-muted-foreground">
+                {p.detail}
+              </p>
             </li>
+          ))}
+        </ul>
+
+        <p className="measure mt-8 text-sm leading-relaxed text-muted-foreground">
+          El precio final depende del alcance. Si no tienes un número en mente,
+          no pasa nada: te ayudamos a estimarlo antes de que te comprometas a
+          nada.
+        </p>
+      </section>
+
+      <section className="border-t border-line py-14 md:py-20">
+        <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
+          ¿Qué necesito?
+        </h2>
+        <p className="measure mt-4 text-muted-foreground">
+          Si no sabes cómo se llama lo que buscas, empieza por aquí.
+        </p>
+
+        <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-3">
+          {guidance.map((g) => (
+            <li key={g.href} className="reveal bg-surface">
+              <a
+                href={g.href}
+                className="group flex h-full flex-col p-7 transition-colors hover:bg-surface-2"
+              >
+                <p className="measure text-base leading-relaxed">
+                  «{g.q}»
+                </p>
+                <span className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-medium text-brand">
+                  {g.a}
+                  <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section
+        aria-label="Testimonios de clientes"
+        className="border-t border-line py-14 md:py-20"
+      >
+        <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
+          Qué dicen los clientes
+        </h2>
+        <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((t) => (
+            <Testimonial key={t.id} testimonial={t} />
           ))}
         </ul>
       </section>

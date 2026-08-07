@@ -2,63 +2,97 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/lib/projects";
-import { CaseStudy } from "@/components/case-study";
+import { ProjectMedia } from "@/components/project-media";
+import { JsonLd } from "@/components/json-ld";
+import { breadcrumbSchema, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Trabajo",
   description:
-    "Casos de NovaSite: qué construimos, con qué stack y qué resultado dejó en producción.",
+    "Casos reales de NovaSite: qué construimos para cada cliente, con qué stack y qué resultado dejó en producción.",
+  alternates: { canonical: "/proyectos" },
+  openGraph: openGraphFor(
+    "/proyectos",
+    "Trabajo · NovaSite",
+    "Cada proyecto con su alcance real, su stack y el número que movió. Lo que no llegó a producción no está aquí.",
+  ),
 };
 
+/**
+ * Índice. La ficha completa de cada caso vive en /proyectos/[slug]: repetirla
+ * aquí crearía dos URLs con el mismo contenido compitiendo entre sí.
+ */
 export default function ProyectosPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
-      {/* Cabecera compacta: el índice es contenido, no relleno */}
       <header className="py-14 md:py-20">
-        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="label text-brand">Trabajo</p>
-            <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
-              Casos, no capturas
-              <br />
-              sueltas.
-            </h1>
-            <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-              Cada proyecto con su alcance real, su stack y el número que movió.
-              Lo que no llegó a producción no está aquí.
-            </p>
-          </div>
-
-          <nav aria-label="Índice de casos" className="shrink-0">
-            <ol className="flex flex-col gap-px overflow-hidden rounded-xl border border-line">
-              {projects.map((p, i) => (
-                <li key={p.slug}>
-                  <a
-                    href={`#${p.slug}`}
-                    className="group flex items-center gap-6 bg-surface px-5 py-3.5 transition-colors hover:bg-surface-2"
-                  >
-                    <span className="label tnum text-muted-foreground">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="mr-auto text-sm font-medium">{p.title}</span>
-                    <span className="label text-muted-foreground">{p.year}</span>
-                    <ArrowUpRight className="size-4 text-muted-foreground transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand" />
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        </div>
+        <p className="label text-brand">Trabajo</p>
+        <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
+          Casos, no capturas
+          <br />
+          sueltas.
+        </h1>
+        <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
+          Cada proyecto con su alcance real, su stack y el número que movió. Lo
+          que no llegó a producción no está aquí.
+        </p>
       </header>
 
-      {projects.map((project, i) => (
-        <CaseStudy
-          key={project.slug}
-          project={project}
-          index={i}
-          total={projects.length}
-        />
-      ))}
+      <ol className="grid gap-6 border-t border-line py-14 md:grid-cols-2 md:py-20">
+        {projects.map((p, i) => (
+          <li key={p.slug} className="reveal">
+            <Link
+              href={`/proyectos/${p.slug}`}
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-line-strong"
+            >
+              <div className="relative aspect-[16/10] overflow-hidden bg-stage">
+                <ProjectMedia
+                  project={p}
+                  priority={i === 0}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+
+              <div className="flex flex-1 flex-col p-7 md:p-8">
+                <div className="flex items-center gap-3">
+                  <span className="label tnum text-brand">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="h-px w-8 bg-line-strong" />
+                  <span className="label text-muted-foreground">
+                    {p.category} · {p.year}
+                  </span>
+                </div>
+
+                <h2 className="mt-5 font-display text-[clamp(1.5rem,3vw,2rem)] font-bold leading-tight tracking-tighter">
+                  {p.title}
+                </h2>
+
+                <p className="measure mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                  {p.description}
+                </p>
+
+                <ul className="mt-6 flex flex-wrap gap-1.5">
+                  {p.tech.slice(0, 4).map((t) => (
+                    <li
+                      key={t}
+                      className="rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[0.7rem] text-muted-foreground"
+                    >
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+
+                <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-brand">
+                  Ver el caso
+                  <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            </Link>
+          </li>
+        ))}
+      </ol>
 
       <section className="border-t border-line py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
@@ -75,6 +109,8 @@ export default function ProyectosPage() {
           <ArrowUpRight className="size-4" />
         </Link>
       </section>
+
+      <JsonLd data={breadcrumbSchema([{ name: "Trabajo", path: "/proyectos" }])} />
     </div>
   );
 }

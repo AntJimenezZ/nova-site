@@ -85,7 +85,6 @@ export const TestimonialsPartsFragmentDoc = gql`
     comment
     rating
     projectTitle
-    avatar
   }
 }
     `;
@@ -365,7 +364,7 @@ const generateRequester = (client) => {
 export const ExperimentalGetTinaClient = () => getSdk(
   generateRequester(
     createClient({
-      url: "http://localhost:3002/graphql",
+      url: "http://localhost:4001/graphql",
       queries
     })
   )

@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
+/**
+ * El correo lo escribe quien rellena el formulario, así que llega crudo al HTML
+ * del mensaje. Va a nuestra propia bandeja y los clientes de correo modernos
+ * sanean, pero escapar los tres caracteres que importan cierra el tema.
+ */
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -35,7 +43,9 @@ export async function POST(request: NextRequest) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `secret=${secretKey}&response=${turnstileToken}`,
+        // URLSearchParams codifica el token: sin esto, un "+" o un "&" dentro
+        // del token rompe el cuerpo del POST y la verificación falla sola.
+        body: new URLSearchParams({ secret: secretKey, response: turnstileToken }),
       })
 
       const verifyData = await verifyRes.json()
@@ -81,6 +91,9 @@ export async function POST(request: NextRequest) {
       const mailOptions = {
         from: emailUser,
         to: emailUser, // Enviar a tu propio email
+        // Sin esto el correo llega de ti para ti y "Responder" no sirve: había
+        // que copiar la dirección a mano. Prometemos respuesta en 24 h.
+        replyTo: email,
         subject: `Contacto Web: ${subject}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -90,19 +103,19 @@ export async function POST(request: NextRequest) {
             
             <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
               <h3 style="color: #374151; margin-top: 0;">Información del contacto:</h3>
-              <p><strong>Nombre:</strong> ${name}</p>
-              <p><strong>Email:</strong> ${email}</p>
-              <p><strong>Asunto:</strong> ${subject}</p>
+              <p><strong>Nombre:</strong> ${escapeHtml(name)}</p>
+              <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+              <p><strong>Asunto:</strong> ${escapeHtml(subject)}</p>
             </div>
-            
+
             <div style="background-color: #ffffff; padding: 20px; border-left: 4px solid #2563eb; margin: 20px 0;">
               <h3 style="color: #374151; margin-top: 0;">Mensaje:</h3>
-              <p style="line-height: 1.6; color: #4b5563;">${message.replace(/\n/g, '<br>')}</p>
+              <p style="line-height: 1.6; color: #4b5563;">${escapeHtml(message).replace(/\n/g, '<br>')}</p>
             </div>
-            
+
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6b7280; font-size: 14px;">
               <p>Este mensaje fue enviado desde el formulario de contacto de NovaSite</p>
-              <p>Para responder, envía un email directamente a: <strong>${email}</strong></p>
+              <p>Responde a este correo y le llega directamente a <strong>${escapeHtml(email)}</strong></p>
             </div>
           </div>
         `,
@@ -118,7 +131,7 @@ export async function POST(request: NextRequest) {
           ${message}
           
           ---
-          Para responder, envía un email directamente a: ${email}
+          Responde a este correo y le llega directamente a: ${email}
         `,
       }
 

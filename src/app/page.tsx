@@ -1,19 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Mail } from "lucide-react";
 
 import { HeroShowreel } from "@/components/showreel";
-import { ContactForm } from "@/components/contact-form";
+import { RequirementsForm } from "@/components/requirements-form";
+import { Testimonial } from "@/components/testimonial";
 import { WhatsAppIcon } from "@/components/brand-icons";
 import { projects } from "@/lib/projects";
 import { services } from "@/lib/services";
 import { team } from "@/lib/team";
+import { testimonials } from "@/lib/testimonials";
+import { site } from "@/lib/site";
 
+/**
+ * Cifras que el visitante puede verificar bajando a la sección de trabajo.
+ * Antes decía "+20 proyectos entregados" con tres casos publicados: un número
+ * que el usuario desmiente en un scroll cuesta más que no poner número.
+ */
 const stats = [
-  { value: "+20", label: "Proyectos entregados" },
-  { value: "+8", label: "Sectores" },
-  { value: "100%", label: "En producción" },
+  { value: `${projects.length}`, label: "Proyectos en producción" },
+  { value: "100%", label: "Entregados y funcionando" },
   { value: "<24 h", label: "Tiempo de respuesta" },
+  { value: `${team.length}`, label: "Personas en el equipo" },
 ];
 
 const process = [
@@ -136,7 +144,7 @@ export default function HomePage() {
             {projects.map((p, i) => (
               <li key={p.slug} className="reveal">
                 <Link
-                  href={`/proyectos#${p.slug}`}
+                  href={`/proyectos/${p.slug}`}
                   className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-5 gap-y-2 border-b border-line py-6 transition-colors hover:bg-surface md:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_auto_auto] md:gap-x-8 md:py-8"
                 >
                   <span className="label tnum text-muted-foreground">
@@ -233,6 +241,24 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Testimonios justo antes del formulario: la prueba social vale donde
+          la persona decide, no en /sobre-nosotros, que es la que menos visita. */}
+      <section
+        aria-label="Testimonios de clientes"
+        className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28"
+      >
+        <p className="label text-brand">Clientes</p>
+        <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
+          Qué dicen de nosotros
+        </h2>
+
+        <ul className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((t) => (
+            <Testimonial key={t.id} testimonial={t} />
+          ))}
+        </ul>
+      </section>
+
       {/* Contacto */}
       <section
         id="contacto"
@@ -253,40 +279,36 @@ export default function HomePage() {
 
             <div className="mt-8 flex flex-col gap-3">
               <a
-                href="https://wa.me/50683047436"
+                href={site.whatsapp}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex w-fit items-center gap-2 text-sm text-foreground transition-colors hover:text-brand"
               >
                 <WhatsAppIcon className="size-4 text-brand" />
-                WhatsApp +506 8304 7436
+                WhatsApp {site.phoneDisplay}
+              </a>
+              <a
+                href={`mailto:${site.email}`}
+                className="inline-flex w-fit items-center gap-2 text-sm text-foreground transition-colors hover:text-brand"
+              >
+                <Mail className="size-4 text-brand" />
+                {site.email}
               </a>
               <Link
                 href="/guia-proyecto"
                 className="inline-flex w-fit items-center gap-2 text-sm text-foreground transition-colors hover:text-brand"
               >
                 <ArrowUpRight className="size-4 text-brand" />
-                ¿Prefieres el formulario largo? Guía de proyecto
+                ¿Cómo trabajamos? Lee la guía antes de escribir
               </Link>
             </div>
           </div>
 
           <div className="rounded-2xl border border-line bg-surface p-6 md:p-9">
-            <ContactForm />
+            <RequirementsForm />
           </div>
         </div>
       </section>
-
-      {/* Acceso rápido a WhatsApp, respetando el área segura en móvil */}
-      <a
-        href="https://wa.me/50683047436"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Escribir por WhatsApp"
-        className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-6 z-40 grid size-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95"
-      >
-        <WhatsAppIcon className="size-6" />
-      </a>
     </>
   );
 }

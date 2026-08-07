@@ -74,6 +74,5 @@ fragment TestimonialsParts on Testimonials {
     comment
     rating
     projectTitle
-    avatar
   }
 }

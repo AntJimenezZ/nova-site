@@ -3,11 +3,18 @@ import Link from "next/link";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { RequirementsForm } from "@/components/requirements-form";
 import { socials } from "@/components/brand-icons";
+import { openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contacto",
   description:
-    "Cuéntanos tu proyecto. Respondemos en menos de 24 horas con alcance, plazo y precio.",
+    "¿Necesitas una página web para tu negocio en Costa Rica? Cuéntanos tu proyecto y te respondemos en menos de 24 horas con alcance, plazo y precio.",
+  alternates: { canonical: "/contacto" },
+  openGraph: openGraphFor(
+    "/contacto",
+    "Contacto · NovaSite",
+    "Escríbenos por WhatsApp, correo o el formulario. Respondemos en menos de 24 horas con alcance, plazo y precio.",
+  ),
 };
 
 export default function ContactoPage() {
@@ -66,7 +73,7 @@ export default function ContactoPage() {
           <p className="mt-8 text-sm leading-relaxed text-muted-foreground">
             ¿Quieres saber cómo trabajamos antes de escribir?{" "}
             <Link href="/guia-proyecto" className="text-brand underline underline-offset-4">
-              Lee la guía de proyecto
+              Lee cómo trabajamos
             </Link>
             .
           </p>

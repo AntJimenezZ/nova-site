@@ -241,7 +241,9 @@ export default defineConfig({
               label: "Proyecto",
               required: true,
             },
-            { type: "image", name: "avatar", label: "Foto" },
+            // Sin campo de foto: los avatares eran de plantilla (/avatars/*.jpg,
+            // una carpeta que ni existe) y la ficha no los renderiza. Para
+            // añadir fotos reales, reponer el campo y usarlo en testimonial.tsx.
           ],
         },
       ]),

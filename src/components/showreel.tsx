@@ -120,7 +120,7 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
             </div>
 
             <Link
-              href={`/proyectos#${active.slug}`}
+              href={`/proyectos/${active.slug}`}
               className="mt-7 inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-stage-foreground px-6 text-sm font-medium text-stage transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
             >
               Ver el caso
@@ -140,7 +140,17 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
             </h1>
 
             {/* me-16 en lg deja libre la esquina del botón flotante de WhatsApp */}
+            {/* La pausa va primero en el DOM: rota cada 6 s, así que tiene que
+                alcanzarse con un tabulador, no después de todos los puntos. */}
             <div className="mt-6 flex items-center gap-2 lg:me-16 lg:justify-end">
+              <button
+                type="button"
+                onClick={() => setPaused((p) => !p)}
+                aria-label={paused ? "Reanudar rotación" : "Pausar rotación"}
+                className="mr-1 grid size-11 cursor-pointer place-items-center rounded-full border border-stage-muted/25 text-stage-muted transition-colors hover:border-stage-muted/60 hover:text-stage-foreground"
+              >
+                {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
+              </button>
               {projects.map((p, i) => (
                 <button
                   key={p.slug}
@@ -159,14 +169,6 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
                   />
                 </button>
               ))}
-              <button
-                type="button"
-                onClick={() => setPaused((p) => !p)}
-                aria-label={paused ? "Reanudar rotación" : "Pausar rotación"}
-                className="ml-1 grid size-11 cursor-pointer place-items-center rounded-full border border-stage-muted/25 text-stage-muted transition-colors hover:border-stage-muted/60 hover:text-stage-foreground"
-              >
-                {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
-              </button>
             </div>
           </div>
         </div>

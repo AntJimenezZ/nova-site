@@ -435,7 +435,6 @@ export type TestimonialsItems = {
   comment: Scalars['String']['output'];
   rating: Scalars['Float']['output'];
   projectTitle: Scalars['String']['output'];
-  avatar?: Maybe<Scalars['String']['output']>;
 };
 
 export type Testimonials = Node & Document & {
@@ -464,7 +463,6 @@ export type TestimonialsItemsFilter = {
   comment?: InputMaybe<StringFilter>;
   rating?: InputMaybe<NumberFilter>;
   projectTitle?: InputMaybe<StringFilter>;
-  avatar?: InputMaybe<ImageFilter>;
 };
 
 export type TestimonialsFilter = {
@@ -673,7 +671,6 @@ export type TestimonialsItemsMutation = {
   comment?: InputMaybe<Scalars['String']['input']>;
   rating?: InputMaybe<Scalars['Float']['input']>;
   projectTitle?: InputMaybe<Scalars['String']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type TestimonialsMutation = {
@@ -686,7 +683,7 @@ export type ServicesPartsFragment = { __typename: 'Services', services?: Array<{
 
 export type TeamPartsFragment = { __typename: 'Team', members?: Array<{ __typename: 'TeamMembers', name: string, role: string, bio: string, avatar: string, technologies?: Array<string | null> | null } | null> | null };
 
-export type TestimonialsPartsFragment = { __typename: 'Testimonials', items?: Array<{ __typename: 'TestimonialsItems', id: string, name: string, company: string, role: string, comment: string, rating: number, projectTitle: string, avatar?: string | null } | null> | null };
+export type TestimonialsPartsFragment = { __typename: 'Testimonials', items?: Array<{ __typename: 'TestimonialsItems', id: string, name: string, company: string, role: string, comment: string, rating: number, projectTitle: string } | null> | null };
 
 export type ProjectsQueryVariables = Exact<{
   relativePath: Scalars['String']['input'];
@@ -750,7 +747,7 @@ export type TestimonialsQueryVariables = Exact<{
 }>;
 
 
-export type TestimonialsQuery = { __typename?: 'Query', testimonials: { __typename: 'Testimonials', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, items?: Array<{ __typename: 'TestimonialsItems', id: string, name: string, company: string, role: string, comment: string, rating: number, projectTitle: string, avatar?: string | null } | null> | null } };
+export type TestimonialsQuery = { __typename?: 'Query', testimonials: { __typename: 'Testimonials', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, items?: Array<{ __typename: 'TestimonialsItems', id: string, name: string, company: string, role: string, comment: string, rating: number, projectTitle: string } | null> | null } };
 
 export type TestimonialsConnectionQueryVariables = Exact<{
   before?: InputMaybe<Scalars['String']['input']>;
@@ -762,7 +759,7 @@ export type TestimonialsConnectionQueryVariables = Exact<{
 }>;
 
 
-export type TestimonialsConnectionQuery = { __typename?: 'Query', testimonialsConnection: { __typename?: 'TestimonialsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'TestimonialsConnectionEdges', cursor: string, node?: { __typename: 'Testimonials', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, items?: Array<{ __typename: 'TestimonialsItems', id: string, name: string, company: string, role: string, comment: string, rating: number, projectTitle: string, avatar?: string | null } | null> | null } | null } | null> | null } };
+export type TestimonialsConnectionQuery = { __typename?: 'Query', testimonialsConnection: { __typename?: 'TestimonialsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string, endCursor: string }, edges?: Array<{ __typename?: 'TestimonialsConnectionEdges', cursor: string, node?: { __typename: 'Testimonials', id: string, _sys: { __typename?: 'SystemInfo', filename: string, basename: string, hasReferences?: boolean | null, breadcrumbs: Array<string>, path: string, relativePath: string, extension: string }, items?: Array<{ __typename: 'TestimonialsItems', id: string, name: string, company: string, role: string, comment: string, rating: number, projectTitle: string } | null> | null } | null } | null> | null } };
 
 export const ProjectsPartsFragmentDoc = gql`
     fragment ProjectsParts on Projects {
@@ -844,7 +841,6 @@ export const TestimonialsPartsFragmentDoc = gql`
     comment
     rating
     projectTitle
-    avatar
   }
 }
     `;
@@ -1150,7 +1146,7 @@ export const ExperimentalGetTinaClient = () =>
   getSdk(
     generateRequester(
       createClient({
-        url: "http://localhost:3002/graphql",
+        url: "http://localhost:4001/graphql",
         queries,
       })
     )

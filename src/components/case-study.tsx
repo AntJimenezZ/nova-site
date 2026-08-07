@@ -21,10 +21,14 @@ export function CaseStudy({
   project,
   index,
   total,
+  // En /proyectos/[slug] el título del caso es el encabezado de la página; en
+  // cualquier índice que liste varios casos tiene que seguir siendo h2.
+  heading: Heading = "h2",
 }: {
   project: Project;
   index: number;
   total: number;
+  heading?: "h1" | "h2";
 }) {
   return (
     <section
@@ -44,12 +48,12 @@ export function CaseStudy({
             </span>
           </div>
 
-          <h2
+          <Heading
             id={`${project.slug}-title`}
             className="mt-4 font-display text-[clamp(2rem,5vw,3.25rem)] font-bold leading-[0.95] tracking-tighter"
           >
             {project.title}
-          </h2>
+          </Heading>
 
           <p className="measure mt-5 text-[0.95rem] leading-relaxed text-muted-foreground">
             {project.longDescription ?? project.description}

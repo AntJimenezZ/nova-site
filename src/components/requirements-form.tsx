@@ -5,31 +5,40 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import {
   ArrowUpRight,
   CheckCircle2,
+  ChevronDown,
   Download,
   Loader2,
   XCircle,
 } from "lucide-react";
 
 /**
- * Formulario de requerimientos. Compartido por /contacto y /guia-proyecto,
- * que antes tenían dos copias del mismo formulario y de la misma lógica de envío.
+ * Único formulario de contacto del sitio. Antes había dos componentes distintos
+ * —uno corto en la home, uno de 8 campos en /contacto y /guia-proyecto—, así que
+ * el sitio pedía cosas diferentes según la puerta por la que entrara la persona.
+ *
+ * Ahora es uno en dos modos: corto por defecto y el detalle detrás de un
+ * <details>. Quien tiene el proyecto definido lo abre; quien no, lo ignora.
  */
 
 const PROJECT_TYPES = [
   { value: "landing-page", label: "Landing page" },
   { value: "sitio-web", label: "Sitio web corporativo" },
-  { value: "ecommerce", label: "E-commerce" },
+  { value: "ecommerce", label: "Tienda en línea" },
   { value: "aplicacion-web", label: "Aplicación web" },
   { value: "marketplace", label: "Marketplace" },
-  { value: "otro", label: "Otro" },
+  { value: "otro", label: "Otro / no lo sé" },
 ];
 
+/**
+ * Sin "Por definir" al final de la lista: esa opción ahora es la primera y es
+ * el valor por defecto. Cuatro cifras antes de poder decir "no sé" filtran
+ * justo al cliente que nunca ha comprado software, que es el público objetivo.
+ */
 const BUDGETS = [
   { value: "500-1500", label: "$500 – $1 500" },
   { value: "1500-3000", label: "$1 500 – $3 000" },
   { value: "3000-5000", label: "$3 000 – $5 000" },
   { value: "5000+", label: "Más de $5 000" },
-  { value: "por-definir", label: "Por definir" },
 ];
 
 const TIMELINES = [
@@ -38,6 +47,8 @@ const TIMELINES = [
   { value: "flexible", label: "Flexible (3 – 6 meses)" },
   { value: "sin-prisa", label: "Sin prisa" },
 ];
+
+const SIN_RESPUESTA = "Aún no lo sé";
 
 const field =
   "h-12 w-full rounded-xl border border-line bg-surface px-4 text-sm text-foreground placeholder:text-muted-foreground/70 transition-colors focus:border-brand-vivid";
@@ -63,8 +74,9 @@ function Label({ htmlFor, children }: { htmlFor: string; children: React.ReactNo
   );
 }
 
+/** Vacío = la persona dejó el campo opcional sin tocar, no un dato perdido. */
 const labelOf = (list: { value: string; label: string }[], v: string) =>
-  list.find((o) => o.value === v)?.label ?? v;
+  list.find((o) => o.value === v)?.label ?? (v || SIN_RESPUESTA);
 
 export function RequirementsForm() {
   const id = useId();
@@ -218,142 +230,148 @@ export function RequirementsForm() {
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-6">
-      <fieldset className="flex flex-col gap-5 border-0 p-0">
-        <legend className="label mb-5 text-brand">Sobre ti</legend>
-
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${id}-nombre`}>Nombre</Label>
-            <input
-              id={`${id}-nombre`}
-              name="nombre"
-              required
-              autoComplete="name"
-              placeholder="Tu nombre"
-              className={field}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${id}-email`}>Correo</Label>
-            <input
-              id={`${id}-email`}
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              placeholder="tu@empresa.com"
-              className={field}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${id}-empresa`}>Empresa (opcional)</Label>
-            <input
-              id={`${id}-empresa`}
-              name="empresa"
-              autoComplete="organization"
-              placeholder="Nombre de la empresa"
-              className={field}
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${id}-integrantes`}>Tamaño del equipo (opcional)</Label>
-            <input
-              id={`${id}-integrantes`}
-              name="integrantes"
-              inputMode="numeric"
-              placeholder="Ej. 12 personas"
-              className={field}
-            />
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset className="flex flex-col gap-5 border-0 p-0">
-        <legend className="label mb-5 text-brand">Sobre el proyecto</legend>
-
+      <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <Label htmlFor={`${id}-tipo`}>Tipo de proyecto</Label>
-          <select
-            id={`${id}-tipo`}
-            name="tipo-proyecto"
+          <Label htmlFor={`${id}-nombre`}>Nombre</Label>
+          <input
+            id={`${id}-nombre`}
+            name="nombre"
             required
-            defaultValue=""
-            className={selectField}
-            style={caret}
-          >
-            <option value="" disabled>
-              Selecciona una opción
-            </option>
-            {PROJECT_TYPES.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${id}-presupuesto`}>Presupuesto</Label>
-            <select
-              id={`${id}-presupuesto`}
-              name="presupuesto"
-              required
-              defaultValue=""
-              className={selectField}
-              style={caret}
-            >
-              <option value="" disabled>
-                Selecciona un rango
-              </option>
-              {BUDGETS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor={`${id}-timeline`}>Plazo</Label>
-            <select
-              id={`${id}-timeline`}
-              name="timeline"
-              required
-              defaultValue=""
-              className={selectField}
-              style={caret}
-            >
-              <option value="" disabled>
-                Selecciona un plazo
-              </option>
-              {TIMELINES.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor={`${id}-descripcion`}>Descripción</Label>
-          <textarea
-            id={`${id}-descripcion`}
-            name="descripcion"
-            required
-            rows={6}
-            placeholder="Qué problema resuelve, quién lo va a usar y qué funcionalidades no pueden faltar."
-            className={`${field} h-auto resize-y py-3.5 leading-relaxed`}
+            autoComplete="name"
+            placeholder="Tu nombre"
+            className={field}
           />
-          <p className="text-xs text-muted-foreground">
-            Si tienes referencias visuales o de producto, menciónalas aquí.
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label htmlFor={`${id}-email`}>Correo</Label>
+          <input
+            id={`${id}-email`}
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="tu@empresa.com"
+            className={field}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor={`${id}-tipo`}>Qué necesitas</Label>
+        <select
+          id={`${id}-tipo`}
+          name="tipo-proyecto"
+          required
+          defaultValue=""
+          className={selectField}
+          style={caret}
+        >
+          <option value="" disabled>
+            Selecciona una opción
+          </option>
+          {PROJECT_TYPES.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Label htmlFor={`${id}-descripcion`}>Cuéntanos</Label>
+        <textarea
+          id={`${id}-descripcion`}
+          name="descripcion"
+          required
+          rows={5}
+          placeholder="Qué problema resuelve, quién lo va a usar y qué no puede faltar. Con un par de líneas nos basta para empezar."
+          className={`${field} h-auto resize-y py-3.5 leading-relaxed`}
+        />
+        <p className="text-xs text-muted-foreground">
+          Si tienes referencias visuales o de productos parecidos, menciónalas
+          aquí.
+        </p>
+      </div>
+
+      {/* <details> nativo: la persona decide cuánto esfuerzo invierte.
+          Antes presupuesto, plazo y tipo eran obligatorios para todo el mundo. */}
+      <details className="group rounded-xl border border-line bg-surface-2/50">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-medium transition-colors hover:text-brand [&::-webkit-details-marker]:hidden">
+          ¿Ya tienes el proyecto definido? Cuéntanos el detalle
+          <ChevronDown
+            className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
+            aria-hidden
+          />
+        </summary>
+
+        <div className="flex flex-col gap-5 border-t border-line px-5 py-6">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor={`${id}-empresa`}>Empresa</Label>
+              <input
+                id={`${id}-empresa`}
+                name="empresa"
+                autoComplete="organization"
+                placeholder="Nombre de la empresa"
+                className={field}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor={`${id}-integrantes`}>Tamaño del equipo</Label>
+              <input
+                id={`${id}-integrantes`}
+                name="integrantes"
+                inputMode="numeric"
+                placeholder="Ej. 12 personas"
+                className={field}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor={`${id}-presupuesto`}>Presupuesto</Label>
+              <select
+                id={`${id}-presupuesto`}
+                name="presupuesto"
+                defaultValue=""
+                className={selectField}
+                style={caret}
+              >
+                <option value="">{SIN_RESPUESTA}</option>
+                {BUDGETS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor={`${id}-timeline`}>Plazo</Label>
+              <select
+                id={`${id}-timeline`}
+                name="timeline"
+                defaultValue=""
+                className={selectField}
+                style={caret}
+              >
+                <option value="">{SIN_RESPUESTA}</option>
+                {TIMELINES.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            Si no tienes un número en mente, no pasa nada: te ayudamos a
+            estimarlo. Nada de este bloque es obligatorio.
           </p>
         </div>
-      </fieldset>
+      </details>
 
       {siteKey && (
         <Turnstile
@@ -377,7 +395,7 @@ export function RequirementsForm() {
             </>
           ) : (
             <>
-              Enviar requerimientos
+              Enviar mensaje
               <ArrowUpRight className="size-4" />
             </>
           )}

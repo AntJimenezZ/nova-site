@@ -30,6 +30,7 @@ const check = (name, ok, extra = "") => {
 const ROUTES = [
   "/",
   "/proyectos",
+  "/proyectos/restaurant-app",
   "/servicios",
   "/sobre-nosotros",
   "/contacto",
@@ -150,19 +151,87 @@ const ROUTES = [
   await ctx.close();
 }
 
-// 6. Las anclas del showreel llegan a su caso en /proyectos.
+// 6. Cada caso tiene su propia URL indexable. Antes los tres vivían como
+//    anclas dentro de /proyectos, que Google no indexa como páginas.
 {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
-  await page.goto(`${BASE}/proyectos#restaurant-app`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(1500);
-  const visible = await page.locator("#restaurant-app").isVisible();
-  const y = await page.evaluate(() => window.scrollY);
-  check("el ancla #restaurant-app navega y es visible", visible && y > 100, `scrollY=${Math.round(y)}`);
+
+  await page.goto(`${BASE}/proyectos`, { waitUntil: "networkidle" });
+  await page.locator('a[href="/proyectos/restaurant-app"]').first().click();
+  await page.waitForURL("**/proyectos/restaurant-app");
+
+  check(
+    "el índice lleva al caso y el título es el h1",
+    (await page.locator("h1").innerText()).includes("Restaurant App"),
+  );
+
+  const canonical = await page
+    .locator('link[rel="canonical"]')
+    .getAttribute("href");
+  check(
+    "el caso declara su propio canonical",
+    canonical?.endsWith("/proyectos/restaurant-app"),
+    `canonical=${canonical}`,
+  );
   await ctx.close();
 }
 
-// 7. Lenis: activo, y sin romper lo que depende del scroll real.
+// 7. La metadata apunta al dominio real y no al de la plantilla anterior.
+{
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  for (const path of ROUTES) {
+    await page.goto(BASE + path, { waitUntil: "domcontentloaded" });
+    const [canonical, ogUrl, ogImage] = await Promise.all([
+      page.locator('link[rel="canonical"]').getAttribute("href"),
+      page.locator('meta[property="og:url"]').getAttribute("content"),
+      page.locator('meta[property="og:image"]').getAttribute("content"),
+    ]);
+    const ok =
+      canonical?.startsWith("https://www.novacr.site") &&
+      !ogUrl?.includes("novasite.com") &&
+      !ogImage?.includes("novasite.com");
+    check(`${path} apunta a www.novacr.site`, ok, `canonical=${canonical}`);
+  }
+  await ctx.close();
+}
+
+// 8. Presupuesto y plazo son opcionales: se puede enviar sin tocarlos.
+//    Era el filtro que funcionaba al revés, espantando a quien no sabe cuánto
+//    cuesta el software — que es justamente el público objetivo.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}/contacto`, { waitUntil: "networkidle" });
+
+  const requeridos = await page.evaluate(() =>
+    [...document.querySelectorAll("form [required]")].map(
+      (el) => el.getAttribute("name"),
+    ),
+  );
+  check(
+    "solo nombre, correo, tipo y descripción son obligatorios",
+    !requeridos.includes("presupuesto") && !requeridos.includes("timeline"),
+    `requeridos: ${requeridos.join(", ")}`,
+  );
+
+  // textContent y no innerText: el bloque opcional arranca plegado dentro de
+  // un <details>, así que innerText de algo oculto devuelve cadena vacía.
+  const primera = await page.evaluate(
+    () =>
+      document.querySelector('select[name="presupuesto"] option')?.textContent ??
+      "",
+  );
+  check(
+    '"Aún no lo sé" es la primera opción de presupuesto',
+    primera.trim() === "Aún no lo sé",
+    `primera: ${primera}`,
+  );
+  await ctx.close();
+}
+
+// 9. Lenis: activo, y sin romper lo que depende del scroll real.
 //    Lenis desplaza el documento en vez de traducir un wrapper; si algún día
 //    eso cambia, sticky y las revelaciones se rompen en silencio. De ahí el test.
 {
@@ -198,11 +267,12 @@ const ROUTES = [
   await ctx.close();
 }
 
-// 8. Sticky de los casos de estudio sigue pegado con Lenis.
+// 10. Sticky del caso de estudio sigue pegado con Lenis. Vive en su propia
+//     URL desde que los casos dejaron de ser anclas dentro de /proyectos.
 {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await ctx.newPage();
-  await page.goto(`${BASE}/proyectos`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE}/proyectos/mea-culpa`, { waitUntil: "networkidle" });
   await page.locator("#mea-culpa").scrollIntoViewIfNeeded();
   await page.waitForTimeout(1200);
   const col = page.locator("#mea-culpa > div > div").first();
@@ -216,7 +286,7 @@ const ROUTES = [
   await ctx.close();
 }
 
-// 9. Con reduced-motion Lenis no se instancia.
+// 11. Con reduced-motion Lenis no se instancia.
 {
   const ctx = await browser.newContext({
     viewport: { width: 1440, height: 900 },
@@ -229,6 +299,66 @@ const ROUTES = [
     "con reduced-motion Lenis no se activa",
     !(await page.evaluate(() => document.documentElement.classList.contains("lenis")))
   );
+  await ctx.close();
+}
+
+// 12. La marca del header: reposa en И, gira a N bajo el cursor y vuelve a И al
+//     quitarlo. La letra que se ve sale de dos cosas independientes —cómo está
+//     dibujada la diagonal y si el CSS refleja el elemento—, y cada una por
+//     separado puede parecer correcta mientras el resultado está del revés. Por
+//     eso se miden juntas en vez de mirar sólo el transform.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE, { waitUntil: "networkidle" });
+
+  // Devuelve >0 si en pantalla se lee И y <0 si se lee N.
+  const letra = () =>
+    page.evaluate(() => {
+      const svg = document.querySelector("header .logo-mark");
+      const diagonal = svg.querySelectorAll("rect")[2];
+      // getCTM se detiene en el viewBox: da la diagonal tal como está dibujada,
+      // sin contar el giro CSS del elemento. Si la punta de arriba cae a la
+      // derecha de la de abajo, lo dibujado es una И.
+      const ctm = diagonal.getCTM();
+      const arriba = new DOMPoint(12, 1.4).matrixTransform(ctm);
+      const abajo = new DOMPoint(12, 22.6).matrixTransform(ctm);
+      const dibujada = arriba.x - abajo.x;
+
+      // rotateY(180deg) deja m11 = -1: el elemento está reflejado, así que la
+      // letra se ve al revés de como está dibujada.
+      const t = getComputedStyle(svg).transform;
+      const espejo = t !== "none" && new DOMMatrix(t).m11 < 0;
+      return espejo ? -dibujada : dibujada;
+    });
+
+  // La animación de carga dura 2s y no deja fill: hay que dejarla acabar.
+  await page.waitForTimeout(2400);
+  const reposo = await letra();
+  check("en reposo la marca es la И", reposo > 0.5, `desvío: ${reposo.toFixed(2)}`);
+
+  await page.locator("header .logo-link").hover();
+  await page.waitForTimeout(1000);
+  const encima = await letra();
+  check("con el cursor encima es una N", encima < -0.5, `desvío: ${encima.toFixed(2)}`);
+
+  // Sacar el cursor del logo: la transición tiene que devolverla sola.
+  await page.mouse.move(900, 600);
+  await page.waitForTimeout(1000);
+  const fuera = await letra();
+  check("al quitar el cursor vuelve a la И", fuera > 0.5, `desvío: ${fuera.toFixed(2)}`);
+
+  // La de carga es animación, no estado: tiene que volver a correr al refrescar.
+  // A los 700ms (35% de 2s) ya debería estar enseñando la N.
+  await page.reload({ waitUntil: "commit" });
+  await page.waitForTimeout(700);
+  const durante = await letra();
+  check(
+    "al refrescar la animación se dispara otra vez",
+    durante < -0.5,
+    `desvío a mitad de animación: ${durante.toFixed(2)}`
+  );
+
   await ctx.close();
 }
 

@@ -29,15 +29,15 @@
       "metrics": [
         {
           "label": "Campañas activas",
-          "value": "120+"
+          "value": "30+"
         },
         {
           "label": "Jugadores registrados",
-          "value": "2.5K+"
+          "value": "1.2K+"
         },
         {
           "label": "Sesiones / semana",
-          "value": "900+"
+          "value": "400+"
         }
       ],
       "role": "Full-stack (arquitectura, gameplay web, backend)",
@@ -52,7 +52,7 @@
       "title": "Software de Asistencia",
       "summary": "Fichaje, turnos y nómina en un solo sistema para RR. HH.",
       "description": "Panel de control empresarial para el registro de asistencia de los empleados y pagos",
-      "image": "/ToastCafe.png",
+      "image": "/ToastCafe.webp",
       "imageKind": "shot",
       "year": "2025",
       "category": "Interno",

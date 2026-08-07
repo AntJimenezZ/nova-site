@@ -3,18 +3,39 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Moon, Sun, X, ArrowUpRight } from "lucide-react";
+import { Mail, Menu, Moon, Sun, X, ArrowUpRight } from "lucide-react";
 import { lenis } from "@/components/smooth-scroll";
-import { socials } from "@/components/brand-icons";
+import { socials, WhatsAppIcon } from "@/components/brand-icons";
+import { site } from "@/lib/site";
 
+// "Cómo trabajamos" es /guia-proyecto: la página con más contenido del sitio
+// y la que mejor le habla a quien no es técnico. Estaba fuera del menú, así que
+// no recibía enlaces internos y Google la leía como secundaria.
 const NAV = [
   { href: "/proyectos", label: "Trabajo" },
   { href: "/servicios", label: "Servicios" },
+  { href: "/guia-proyecto", label: "Cómo trabajamos" },
   { href: "/sobre-nosotros", label: "Estudio" },
   { href: "/contacto", label: "Contacto" },
 ];
 
-/** Marca "N": dos pilares y una diagonal. Hereda currentColor, así sirve en ambos temas. */
+/**
+ * Marca de dos pilares y una diagonal. Hereda currentColor, así sirve en ambos
+ * temas.
+ *
+ * Se dibuja invertida (И) a propósito: ese es el estado de reposo querido, y la
+ * N correcta es la excepción que aparece al cargar y bajo el cursor.
+ *
+ * Los pilares son espejo exacto uno del otro respecto al eje x=12 (2→6.2 y
+ * 17.8→22), así que lo único que decide la letra es el signo del giro de la
+ * diagonal: rotate(20) sube hacia la derecha y se lee И; rotate(-20) sube hacia
+ * la izquierda y es una N. De ahí sale la animación: voltear la marca 180°
+ * sobre su eje vertical la refleja, y ese reflejo convierte la И en N sin tocar
+ * la geometría. El giro no decora el cambio de letra, ES el cambio de letra.
+ *
+ * Por eso aquí no hay nada que hacer y el reposo no necesita CSS: lo que está
+ * dibujado ya es lo que se quiere ver la mayor parte del tiempo.
+ */
 function Mark({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -40,7 +61,10 @@ function Mark({ className = "" }: { className?: string }) {
 export function Wordmark({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <Mark className="h-5 w-5 text-brand-vivid" />
+      {/* .logo-mark sólo marca el objetivo del giro; quien lo dispara es
+          .logo-link, que sólo existe en el header. En el footer y el menú la
+          clase viaja pero no anima: se quedan en la И de reposo. */}
+      <Mark className="logo-mark h-5 w-5 text-brand-vivid" />
       <span className="font-display text-[0.95rem] font-bold uppercase tracking-[0.2em]">
         Novasite
       </span>
@@ -128,7 +152,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between gap-4 px-5 md:h-20 md:px-10">
         <Link
           href="/"
-          className="shrink-0 text-foreground transition-opacity hover:opacity-70"
+          className="logo-link shrink-0 text-foreground transition-opacity hover:opacity-70"
         >
           <Wordmark />
           <span className="sr-only">NovaSite, ir al inicio</span>
@@ -227,6 +251,27 @@ export function SiteHeader() {
   );
 }
 
+/**
+ * Acceso rápido a WhatsApp en todas las páginas menos /contacto, donde
+ * competiría con el formulario que la persona ya tiene delante.
+ */
+export function WhatsAppFab() {
+  const pathname = usePathname();
+  if (pathname === "/contacto") return null;
+
+  return (
+    <a
+      href={site.whatsapp}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Escribir por WhatsApp"
+      className="fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-6 z-40 grid size-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95"
+    >
+      <WhatsAppIcon className="size-6" />
+    </a>
+  );
+}
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-line bg-surface-2">
@@ -235,8 +280,13 @@ export function SiteFooter() {
           <div>
             <Wordmark className="text-foreground" />
             <p className="measure mt-5 text-sm leading-relaxed text-muted-foreground">
-              Estudio de software en Costa Rica. Diseñamos y construimos
-              productos digitales que llegan a producción y se quedan ahí.
+              Empresa de diseño y desarrollo de páginas web en Costa Rica.
+              Hacemos sitios, tiendas en línea y sistemas a medida que llegan a
+              producción y se quedan ahí.
+            </p>
+            {/* Señal local: le dice a la persona y a Google dónde operamos. */}
+            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
+              {site.coverage}
             </p>
           </div>
 
@@ -261,6 +311,20 @@ export function SiteFooter() {
             {/* Icono + nombre + identificador. El icono nunca va solo: es
                 decorativo (aria-hidden) y el texto es quien nombra el enlace. */}
             <ul className="mt-4 space-y-0.5">
+              {/* El correo estaba solo en /guia-proyecto. Mucha PYME prefiere
+                  escribir un correo antes que llenar un formulario. */}
+              <li>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="group -mx-2.5 flex min-h-11 items-center gap-3 rounded-lg px-2.5 text-sm transition-colors hover:bg-surface"
+                >
+                  <Mail className="size-4 text-muted-foreground transition-colors group-hover:text-brand" />
+                  <span className="min-w-20 text-foreground">Correo</span>
+                  <span className="truncate text-muted-foreground">
+                    {site.email}
+                  </span>
+                </a>
+              </li>
               {socials.map(({ name, handle, href, Icon }) => (
                 <li key={name}>
                   <a
@@ -285,8 +349,11 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-16 flex flex-col gap-3 border-t border-line pt-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} NovaSite. Todos los derechos reservados.</p>
-          <p className="tnum">San Carlos, Costa Rica</p>
+          <p>© {new Date().getFullYear()} {site.name}. Todos los derechos reservados.</p>
+          <p className="tnum">
+            {site.address.locality}, {site.address.region}, Costa Rica ·{" "}
+            {site.phoneDisplay}
+          </p>
         </div>
       </div>
     </footer>

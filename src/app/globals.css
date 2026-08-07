@@ -279,6 +279,40 @@
   animation: marquee var(--marquee-duration, 40s) linear infinite;
 }
 
+/* Giro de la marca. El reposo es la И que ya dibuja el SVG, así que aquí no se
+   declara: rotateY(180deg) la refleja y ese reflejo es la N correcta.
+
+   No pongas backface-visibility: hidden — la cara trasera es exactamente lo que
+   se quiere enseñar. perspective a 120px sobre 20px de logo da escorzo
+   suficiente para que se lea como un giro y no como un aplastado horizontal. */
+.logo-link .logo-mark {
+  /* Transición, no animación: el hover tiene que volver solo al quitar el
+     cursor y una transición ya es bidireccional. Con @keyframes habría que
+     escribir la vuelta a mano y cancelarla a medias si el cursor va y viene. */
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  /* Corre en cada carga completa de página. El header vive en el layout y no
+     remonta al navegar entre rutas, así que esto es justo "al refrescar". */
+  animation: mark-intro 2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Enseña la N, la sostiene medio segundo para que dé tiempo a leerla, y vuelve.
+   Sin fill-mode a propósito: al acabar cae sola en el reposo del SVG sin tener
+   que declararlo, y con reduced-motion (duración a 0.01ms) no queda ningún
+   fotograma congelado del revés. */
+@keyframes mark-intro {
+  0%       { transform: perspective(120px) rotateY(0); }
+  35%, 65% { transform: perspective(120px) rotateY(180deg); }
+  100%     { transform: perspective(120px) rotateY(0); }
+}
+
+/* Sólo con ratón: en táctil el :hover se queda pegado tras el toque y la marca
+   se quedaría girada al volver de una navegación. */
+@media (hover: hover) {
+  .logo-link:hover .logo-mark {
+    transform: perspective(120px) rotateY(180deg);
+  }
+}
+
 /* Accesibilidad: respeta la preferencia del sistema en TODO, incluido Framer Motion */
 @media (prefers-reduced-motion: reduce) {
   html {

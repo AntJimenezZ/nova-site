@@ -8,7 +8,6 @@ export type Testimonial = {
   comment: string
   rating: number
   projectTitle: string
-  avatar?: string
 }
 
 /** Contenido en content/testimonials.json, editable desde /admin (TinaCMS). */

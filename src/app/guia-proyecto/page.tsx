@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import { ChevronDown, Mail } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, ChevronDown, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/brand-icons";
-import { RequirementsForm } from "@/components/requirements-form";
+import { JsonLd } from "@/components/json-ld";
+import { breadcrumbSchema, openGraphFor, site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Guía de proyecto",
+  title: "Cómo trabajamos",
   description:
-    "Cómo trabajamos paso a paso, qué información necesitamos y respuestas a las dudas más frecuentes antes de empezar.",
+    "Cómo hacemos una página web paso a paso, cuánto cuesta, cuánto tarda y qué información necesitamos para empezar. Preguntas frecuentes en lenguaje llano.",
+  alternates: { canonical: "/guia-proyecto" },
+  openGraph: openGraphFor(
+    "/guia-proyecto",
+    "Cómo trabajamos · NovaSite",
+    "Seis etapas, sin sorpresas. Qué pasa desde que nos escribes hasta que tu proyecto está en producción, y las respuestas a las dudas de siempre.",
+  ),
 };
 
 const steps = [
@@ -59,7 +67,16 @@ const helpful = [
   "Plazos tentativos y presupuesto",
 ];
 
-const faqs = [
+const faqs: { q: string; a: string; href?: string }[] = [
+  {
+    q: "¿Cuánto cuesta una página web?",
+    a: "Una landing page parte desde un rango fijo y un sitio corporativo o una tienda en línea suben según el alcance. Publicamos los precios orientativos de partida en la página de Servicios para que no tengas que preguntarlos. El número final depende de cuántas secciones, integraciones y contenido necesites.",
+    href: "/servicios#precios",
+  },
+  {
+    q: "¿Y si no sé cuánto me puedo gastar?",
+    a: "Es lo normal si nunca has comprado software. Cuéntanos qué necesitas y te proponemos un alcance que quepa en lo que puedas invertir, o te decimos con franqueza si no da. Ningún campo de presupuesto es obligatorio en nuestro formulario.",
+  },
   {
     q: "¿Cuánto tarda un proyecto?",
     a: "Depende del alcance. Una landing puede tomar 1–3 semanas; productos más complejos se dividen en varias etapas con entregas parciales.",
@@ -98,7 +115,7 @@ export default function GuiaProyectoPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
       <header className="py-14 md:py-20">
-        <p className="label text-brand">Guía de proyecto</p>
+        <p className="label text-brand">Cómo trabajamos</p>
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
           De la idea al
           <br />
@@ -173,28 +190,28 @@ export default function GuiaProyectoPage() {
             <ul className="mt-6 space-y-4">
               <li>
                 <a
-                  href="mailto:contacto@novacr.site"
+                  href={`mailto:${site.email}`}
                   className="flex items-center gap-3 text-sm transition-colors hover:text-brand"
                 >
                   <Mail className="size-4 shrink-0 text-brand" aria-hidden />
-                  contacto@novacr.site
+                  {site.email}
                 </a>
               </li>
               <li>
                 <a
-                  href="https://wa.me/50683047436"
+                  href={site.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-sm transition-colors hover:text-brand"
                 >
                   <WhatsAppIcon className="size-4 text-brand" />
-                  +506 8304 7436
+                  {site.phoneDisplay}
                 </a>
               </li>
             </ul>
             <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-muted-foreground">
-              ¿Prefieres llevarte el formulario? Rellénalo abajo y descárgalo en
-              PDF sin enviar nada.
+              Si prefieres escribir un correo antes que llenar un formulario,
+              este es el nuestro. Te contestamos igual de rápido.
             </p>
           </div>
         </div>
@@ -220,34 +237,75 @@ export default function GuiaProyectoPage() {
                   aria-hidden
                 />
               </summary>
-              <p className="measure px-6 pb-6 text-sm leading-relaxed text-muted-foreground">
-                {f.a}
-              </p>
+              <div className="px-6 pb-6">
+                <p className="measure text-sm leading-relaxed text-muted-foreground">
+                  {f.a}
+                </p>
+                {f.href && (
+                  <Link
+                    href={f.href}
+                    className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand"
+                  >
+                    Ver precios orientativos
+                    <ArrowUpRight className="size-3.5" />
+                  </Link>
+                )}
+              </div>
             </details>
           ))}
         </div>
       </section>
 
-      <section
-        id="requerimientos"
-        className="scroll-mt-24 border-t border-line py-14 md:py-20"
-      >
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
-              Formulario de requerimientos
-            </h2>
-            <p className="measure mt-4 text-sm leading-relaxed text-muted-foreground">
-              Envíalo por correo o descárgalo en PDF para revisarlo
-              internamente antes. Los dos botones usan los mismos datos.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-line bg-surface p-6 md:p-10">
-            <RequirementsForm />
-          </div>
+      {/* El formulario vivía aquí y en /contacto, dos páginas que se enlazan
+          entre sí: la misma persona se lo encontraba tres veces. Aquí queda
+          la guía; el formulario, en un sitio solo. */}
+      <section className="border-t border-line py-20 text-center md:py-28">
+        <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
+          ¿Listo para empezar?
+        </h2>
+        <p className="measure mx-auto mt-4 text-muted-foreground">
+          Cuéntanos qué necesitas y te devolvemos alcance, plazo y precio en
+          menos de 24 horas. No hace falta que lo tengas todo definido.
+        </p>
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link
+            href="/contacto"
+            className="inline-flex h-13 cursor-pointer items-center gap-2 rounded-full bg-primary px-7 py-3.5 text-sm font-medium text-primary-foreground transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
+          >
+            Iniciar proyecto
+            <ArrowUpRight className="size-4" />
+          </Link>
+          <a
+            href={site.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-13 cursor-pointer items-center gap-2 rounded-full border border-line px-7 py-3.5 text-sm font-medium transition-colors hover:border-line-strong hover:bg-surface-2"
+          >
+            <WhatsAppIcon className="size-4 text-brand" />
+            Escribir por WhatsApp
+            <span className="sr-only">(se abre en una pestaña nueva)</span>
+          </a>
         </div>
       </section>
+
+      {/* Las 8 preguntas ya estaban escritas: marcarlas las mete dentro del
+          resultado de Google, donde ocupan más pantalla que un enlace suelto. */}
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }}
+      />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Cómo trabajamos", path: "/guia-proyecto" },
+        ])}
+      />
     </div>
   );
 }

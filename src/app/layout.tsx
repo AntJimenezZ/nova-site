@@ -2,9 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import { SiteHeader, SiteFooter } from "@/components/chrome";
+import { SiteHeader, SiteFooter, WhatsAppFab } from "@/components/chrome";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Locator } from "@/components/locator";
+import { JsonLd } from "@/components/json-ld";
+import { businessSchema, openGraphFor, site } from "@/lib/site";
 
 const archivo = Archivo({
   variable: "--font-archivo",
@@ -21,21 +23,16 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://novasite.com"),
+  // Base contra la que Next resuelve toda URL relativa de la metadata: si está
+  // mal, arrastra la imagen de compartir y todos los canonical con ella.
+  metadataBase: new URL(site.url),
   title: {
     default: "NovaSite — Estudio de software",
     template: "%s · NovaSite",
   },
-  description:
-    "Estudio de software en Costa Rica. Diseñamos y construimos productos digitales a medida: web, e-commerce, aplicaciones y sistemas internos.",
-  keywords: [
-    "desarrollo web",
-    "software a medida",
-    "e-commerce",
-    "aplicaciones",
-    "costa rica",
-  ],
-  authors: [{ name: "NovaSite" }],
+  description: site.description,
+  alternates: { canonical: "/" },
+  authors: [{ name: site.name }],
   creator: "NovaSite",
   publisher: "NovaSite",
   formatDetection: { email: false, address: false, telephone: false },
@@ -48,23 +45,11 @@ export const metadata: Metadata = {
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
   manifest: "/site.webmanifest",
-  openGraph: {
-    type: "website",
-    locale: "es_ES",
-    url: "https://novasite.com",
-    siteName: "NovaSite",
-    title: "NovaSite — Estudio de software",
-    description:
-      "Estudio de software en Costa Rica. Productos digitales a medida, de la idea a producción.",
-    images: [
-      {
-        url: "/logos/novasite.png",
-        width: 1200,
-        height: 630,
-        alt: "NovaSite — Estudio de software",
-      },
-    ],
-  },
+  openGraph: openGraphFor(
+    "/",
+    "NovaSite — Estudio de software en Costa Rica",
+    "Hacemos páginas web, tiendas en línea y aplicaciones a medida para empresas de Costa Rica.",
+  ),
 };
 
 export const viewport: Viewport = {
@@ -77,7 +62,12 @@ export const viewport: Viewport = {
   ],
 };
 
-const GA_MEASUREMENT_ID = "G-QVMKJ66BSM";
+/**
+ * Solo GTM. Antes cargaba también gtag.js con G-QVMKJ66BSM: si GTM lleva
+ * dentro una etiqueta de GA4 —que es la razón habitual para instalar GTM—,
+ * cada visita se contaba dos veces. La etiqueta de GA4 se configura dentro
+ * del contenedor, no aquí.
+ */
 const GTM_ID = "GTM-P54PF2ZQ";
 
 /**
@@ -127,18 +117,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <main id="contenido">{children}</main>
         <SiteFooter />
 
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `}
-        </Script>
+        {/* Vive aquí y no en cada página: antes faltaba justo en /servicios y
+            /proyectos, donde el visitante termina de decidirse. */}
+        <WhatsAppFab />
+
+        <JsonLd data={businessSchema} />
       </body>
     </html>
   );

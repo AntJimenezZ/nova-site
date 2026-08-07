@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
   distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
 
   /**
+   * El showreel pide quality={68} para la imagen del LCP. Hoy funciona con un
+   * warning; a partir de Next.js 16 las calidades que no estén declaradas aquí
+   * dejan de servirse. 75 es la que usa el resto del sitio por defecto.
+   */
+  images: { qualities: [68, 75] },
+
+  /**
    * LocatorJS: React 19 eliminó `fiber._debugSource`, así que el runtime solo
    * no encuentra el origen de los elementos. El plugin de Babel lo resuelve
    * por otra vía: inyecta `data-locatorjs-id` en el JSX al compilar.
