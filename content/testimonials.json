@@ -1,0 +1,31 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "name": "Barbara Torres",
+      "company": "Toast Cafe",
+      "role": "Gerente General",
+      "comment": "El sistema de registro que desarrollaron superó nuestras expectativas. La integración con el personal para el control de asistencia fue perfecta y nuestro control aumento en los primeros 3 meses.",
+      "rating": 5,
+      "projectTitle": "Software de Asistencia"
+    },
+    {
+      "id": "2",
+      "name": "Diego Morales",
+      "company": "Bistro Moderno",
+      "role": "Propietario",
+      "comment": "La app móvil para nuestro restaurante es exactamente lo que necesitábamos. Firebase funciona perfecto y Stripe hace que los pagos sean súper seguros.",
+      "rating": 5,
+      "projectTitle": "Restaurant App"
+    },
+    {
+      "id": "3",
+      "name": "Carlos Jimenez",
+      "company": "Comunidad RPG",
+      "role": "Director de juego",
+      "comment": "Antes llevábamos todo en un servidor de discord y cada partida tardaba bastante en empezar. Ahora la gente entra, encuentra su personaje y se juega de una vez. Se nos llenaron las campañas y la comunidad creció sola.",
+      "rating": 5,
+      "projectTitle": "MudHakar"
+    }
+  ]
+}

@@ -1,362 +1,357 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Estilos para el efecto de tarjeta con deslizamiento vertical suave */
-.perspective-1000 {
-  perspective: none;
-}
-
-.transition-transform-600 {
-  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.transition-all-600 {
-  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Efecto de brillo al pasar el mouse */
-.card-glow {
-  position: relative;
-  overflow: hidden;
-}
-
-.card-glow::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
-    rgba(59, 130, 246, 0.2), transparent 70%);
-  opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.card-glow:hover::before {
-  opacity: 1;
-}
-
-.card-glow::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(59, 130, 246, 0.1) 50%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-              transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  pointer-events: none;
-  z-index: 0;
-  transform: rotate(45deg) translateX(-100%);
-}
-
-.card-glow:hover::after {
-  opacity: 1;
-  transform: rotate(45deg) translateX(100%);
-}
-
 @custom-variant dark (&:is(.dark *));
 
-.font-montserrat {
-  font-family: var(--font-montserrat), sans-serif;
+/* ============================================================
+   NovaSite — sistema de diseño
+   Paleta verificada WCAG AA en ambos modos (ver README de diseño).
+   Regla: los componentes NUNCA usan hex crudo, solo estos tokens.
+   ============================================================ */
+
+:root {
+  --radius: 0.75rem;
+
+  /* superficies */
+  --background: oklch(0.9900 0.0020 250);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.9700 0.0035 250);
+
+  /* tinta */
+  --foreground: oklch(0.2000 0.0150 255);
+  --muted-foreground: oklch(0.5000 0.0160 255);
+
+  /* líneas */
+  --line: oklch(0.9150 0.0045 250);
+  --line-strong: oklch(0.8400 0.0070 250);
+
+  /* marca. brand = legible como texto (5.3:1). vivid = solo UI grande y glows */
+  --brand: oklch(0.5228 0.1633 253.4);
+  --brand-vivid: oklch(0.6070 0.1816 252.0);
+  --brand-soft: oklch(0.6070 0.1816 252.0 / 0.10);
+
+  /* CTA invertido: siempre >15:1, nunca depende del azul */
+  --primary: oklch(0.2000 0.0150 255);
+  --primary-foreground: oklch(0.9900 0.0020 250);
+
+  /* compatibilidad shadcn (components/ui/*) */
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface);
+  --popover-foreground: var(--foreground);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--surface-2);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.5500 0.2100 27.3);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--brand-vivid);
+
+  /* Escenario del showreel: NO cambia con el tema.
+     El texto va sobre capturas arbitrarias, así que el fondo tiene que ser
+     oscuro siempre para poder garantizar el contraste del overlay. */
+  --stage: oklch(0.1350 0.0080 255);
+  --stage-foreground: oklch(0.9750 0.0030 250);
+  --stage-muted: oklch(0.7400 0.0130 255);
+
+  --chart-1: oklch(0.6070 0.1816 252.0);
+  --chart-2: oklch(0.6800 0.1300 200.0);
+  --chart-3: oklch(0.5600 0.1500 285.0);
+  --chart-4: oklch(0.7200 0.1500 155.0);
+  --chart-5: oklch(0.7000 0.1600 60.0);
 }
 
-/* Título hero: Outfit */
-.font-nexa {
-  font-family: var(--font-outfit), var(--font-montserrat), sans-serif;
+.dark {
+  --background: oklch(0.1650 0.0080 255);
+  --surface: oklch(0.2050 0.0100 255);
+  --surface-2: oklch(0.2450 0.0115 255);
+
+  --foreground: oklch(0.9700 0.0030 250);
+  --muted-foreground: oklch(0.7000 0.0130 255);
+
+  --line: oklch(0.2950 0.0125 255);
+  --line-strong: oklch(0.3850 0.0150 255);
+
+  --brand: oklch(0.7591 0.1147 245.3);
+  --brand-vivid: oklch(0.6070 0.1816 252.0);
+  --brand-soft: oklch(0.6070 0.1816 252.0 / 0.16);
+
+  --primary: oklch(0.9700 0.0030 250);
+  --primary-foreground: oklch(0.1650 0.0080 255);
+
+  --destructive: oklch(0.6900 0.1900 22.2);
+  --input: var(--line-strong);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-brand: var(--brand);
+  --color-brand-vivid: var(--brand-vivid);
+  --color-brand-soft: var(--brand-soft);
+  --color-stage: var(--stage);
+  --color-stage-foreground: var(--stage-foreground);
+  --color-stage-muted: var(--stage-muted);
+
   --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-archivo), sans-serif;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
-
-/* Animación para revelación de cards desde la carpeta */
-@keyframes folder-reveal {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.9) rotateZ(-5deg);
-    filter: blur(10px);
-  }
-  50% {
-    opacity: 0.7;
-    transform: translateY(-10px) scale(0.95) rotateZ(-2deg);
-    filter: blur(5px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotateZ(0deg);
-    filter: blur(0);
-  }
-}
-
-.animate-folder-reveal {
-  animation: folder-reveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  opacity: 0;
-}
-
-/* Animación de zoom sutil hacia el centro */
-@keyframes background-move {
-  0% {
-    transform: scale(1.0);
-    filter: brightness(1) saturate(1.05) contrast(1);
-  }
-  50% {
-    transform: scale(1.1);
-    filter: brightness(1.04) saturate(1.1) contrast(1.04);
-  }
-  100% {
-    transform: scale(1.0);
-    filter: brightness(1) saturate(1.05) contrast(1);
-  }
-}
-
-.animate-background-move {
-  animation: background-move 20s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-  will-change: transform, filter;
-  transform-origin: center center;
-}
-
-/* Animación título hero: la letra aparece en su sitio sin moverse (solo difuminado) */
-@keyframes title-letter-build {
-  0% {
-    opacity: 0;
-    filter: blur(10px);
-  }
-  40% {
-    opacity: 0.6;
-    filter: blur(3px);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0);
-  }
-}
-
-.animate-title-letter {
-  animation: title-letter-build 1s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes title-reveal {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.animate-title-reveal {
-  animation: title-reveal 0.25s ease-out forwards;
-}
-
-@keyframes pulse-subtle {
-  0%, 100% { opacity: 0.9; }
-  50% { opacity: 1; }
-}
-
-.animate-pulse-subtle {
-  animation: pulse-subtle 0.6s ease-in-out infinite;
-}
-
-/* Calcinación: desvanecimiento por partes. Cada partícula deja de existir (sin ondulación, sin viaje) */
-@keyframes tetris-block-fall {
-  0%, 20% {
-    opacity: 1;
-    transform: translate(0, 0);
-    filter: brightness(1) contrast(1);
-  }
-  28% {
-    opacity: 1;
-    transform: translate(0, 0);
-    filter: brightness(0.5) contrast(1.05);
-  }
-  38% {
-    opacity: 0.6;
-    transform: translate(0, 0);
-    filter: brightness(0.12) contrast(1.1);
-  }
-  48% {
-    opacity: 0.2;
-    transform: translate(0, 0);
-    filter: brightness(0) contrast(1.05);
-  }
-  56%, 68% {
-    opacity: 0;
-    transform: translate(0, 0);
-    filter: brightness(0) contrast(0);
-  }
-  76% {
-    opacity: 0.35;
-    transform: translate(0, 0);
-    filter: brightness(0.2);
-  }
-  86% {
-    opacity: 0.8;
-    transform: translate(0, 0);
-    filter: brightness(0.7);
-  }
-  94%, 100% {
-    opacity: 1;
-    transform: translate(0, 0);
-    filter: brightness(1) contrast(1);
-  }
-}
-
-.tetris-block {
-  animation: tetris-block-fall 18s ease-in-out infinite;
-}
-
-/* Dígitos: entran suaves, como reviviendo de las cenizas (tras el corte de calcinación) */
-@keyframes digits-revive-from-ashes {
-  0% {
-    opacity: 0;
-    filter: blur(12px);
-    transform: scale(0.92);
-  }
-  30% {
-    opacity: 0.4;
-    filter: blur(6px);
-    transform: scale(0.96);
-  }
-  60% {
-    opacity: 0.75;
-    filter: blur(2px);
-    transform: scale(0.99);
-  }
-  100% {
-    opacity: 1;
-    filter: blur(0);
-    transform: scale(1);
-  }
-}
-
-.digits-revive-from-ashes {
-  animation: digits-revive-from-ashes 1.4s ease-out forwards;
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 4rem; /* Offset para el header sticky */
-}
-
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 14px);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Cuando Lenis está activo el scroll suave lo gestiona él. Dejar además el
+     nativo hace que ambos peleen por el mismo desplazamiento y da tirones.
+     Sin JS o con reduced-motion no se añade .lenis y sigue el nativo. */
+  html.lenis {
+    scroll-behavior: auto;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    /* la transición de tema va en body, no en *, para no costar un repaint global */
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Un solo anillo de foco para todo el sitio. Nunca se elimina. */
+  :focus-visible {
+    outline: 2px solid var(--brand-vivid);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--brand-vivid);
+    color: white;
+  }
+
+  /* Cifras alineadas en contadores, métricas y tablas */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer utilities {
+  /* Usada por los modales; antes se aplicaba sin estar definida. */
+  .hidden-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hidden-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Etiqueta técnica: versalitas espaciadas. Reemplaza las font-geist-mono muertas. */
+  .label {
+    @apply font-display text-[0.6875rem] font-medium uppercase tracking-[0.18em];
+  }
+
+  /* Ancho de lectura cómodo (65-75 caracteres) */
+  .measure {
+    max-width: 62ch;
+  }
+
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, var(--line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+}
+
+@keyframes slide-fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Usada por los toasts de contacto y guia-proyecto; antes tampoco existía. */
+.animate-slide-fade-in {
+  animation: slide-fade-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Revelación al scroll sin JavaScript. Donde no hay soporte de scroll-driven
+   animations (Firefox), la animación corre una vez al cargar: el contenido
+   siempre acaba visible, nunca se queda en opacity 0. */
+.reveal {
+  animation: reveal-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation-timeline: view();
+    animation-range: entry 0% cover 24%;
+  }
+}
+
+/* Al imprimir no hay scroll que avance la línea de tiempo: sin esto, todo lo
+   que quede fuera de la primera pantalla se imprime en blanco. */
+@media print {
+  .reveal {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes hero-text-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.hero-text-in {
+  animation: hero-text-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Deriva lenta de la imagen del showreel.
+   `infinite alternate` en vez de `both`: la animación ya no se reinicia con cada
+   rotación —ahora envuelve las tres capas a la vez, ver showreel.tsx— así que
+   necesita no terminarse nunca para que la imagen no se quede quieta. Al
+   alternar, va y vuelve entre los mismos dos valores sin ningún salto. */
+@keyframes slow-zoom {
+  from { transform: scale(1.06); }
+  to   { transform: scale(1); }
+}
+
+.slow-zoom {
+  animation: slow-zoom 7.5s linear infinite alternate;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+/* Giro de la marca. El reposo es la И que ya dibuja el SVG, así que aquí no se
+   declara: rotateY(180deg) la refleja y ese reflejo es la N correcta.
+
+   No pongas backface-visibility: hidden — la cara trasera es exactamente lo que
+   se quiere enseñar. perspective a 120px sobre 20px de logo da escorzo
+   suficiente para que se lea como un giro y no como un aplastado horizontal. */
+.logo-link .logo-mark {
+  /* Transición, no animación: el hover tiene que volver solo al quitar el
+     cursor y una transición ya es bidireccional. Con @keyframes habría que
+     escribir la vuelta a mano y cancelarla a medias si el cursor va y viene. */
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  /* Corre en cada carga completa de página. El header vive en el layout y no
+     remonta al navegar entre rutas, así que esto es justo "al refrescar". */
+  animation: mark-intro 2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Enseña la N, la sostiene medio segundo para que dé tiempo a leerla, y vuelve.
+   Sin fill-mode a propósito: al acabar cae sola en el reposo del SVG sin tener
+   que declararlo, y con reduced-motion (duración a 0.01ms) no queda ningún
+   fotograma congelado del revés. */
+@keyframes mark-intro {
+  0%       { transform: perspective(120px) rotateY(0); }
+  35%, 65% { transform: perspective(120px) rotateY(180deg); }
+  100%     { transform: perspective(120px) rotateY(0); }
+}
+
+/* Sólo con ratón: en táctil el :hover se queda pegado tras el toque y la marca
+   se quedaría girada al volver de una navegación. */
+@media (hover: hover) {
+  .logo-link:hover .logo-mark {
+    transform: perspective(120px) rotateY(180deg);
+  }
+}
+
+/* Menú móvil.
+   ────────────────────────────────────────────────────────────────────────────
+   La animación ya no vive aquí: la trae el componente Sheet de shadcn, que usa
+   `data-[state=open]` y las utilidades de tw-animate-css.
+
+   Aquí hubo unas 70 líneas de <dialog> nativo con @starting-style y
+   `transition-behavior: allow-discrete`. Funcionaba en Chrome y se rompía en
+   Safari de iOS por dos motivos distintos a la vez; el detalle está en el
+   commit, pero el resumen es que mantener a mano el ciclo de vida de la capa
+   superior no compensa cuando Radix ya lo tiene resuelto y probado.
+
+   Lo único que sobrevive es esto: con el menú abierto, el hero y las
+   revelaciones quedan detrás de un panel opaco y no se ve ni un píxel de
+   ellos. Seguir animándolos obliga al compositor a rehacer una veintena de
+   capas en cada fotograma justo mientras el panel se desliza.
+
+   Medido con LayerTree: 29 capas compuestas a mitad de apertura, de las cuales
+   ~17 eran .reveal con ActiveTransformAnimation permanente —usan
+   animation-timeline: view(), que Chrome considera siempre activas— más el
+   hero a 412x775 animando sin parar. */
+body:has([data-slot="sheet-content"][data-state="open"]) .slow-zoom,
+body:has([data-slot="sheet-content"][data-state="open"]) .reveal {
+  animation-play-state: paused;
+}
+
+/* Accesibilidad: respeta la preferencia del sistema en TODO, incluido Framer Motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

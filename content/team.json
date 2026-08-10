@@ -1,0 +1,69 @@
+{
+  "members": [
+    {
+      "name": "Paulo",
+      "role": "Frontend & UI/UX",
+      "bio": "Diseño de interfaz y desarrollo full-stack de aplicaciones web y móviles.",
+      "avatar": "/logos/FotoPaulo.jpeg",
+      "technologies": [
+        "React",
+        "UI/UX",
+        "GSAP",
+        "Three.js",
+        "Tailwind CSS"
+      ]
+    },
+    {
+      "name": "Gabriel",
+      "role": "Software Developer",
+      "bio": "Desarrollo full stack y soluciones a medida, de la base de datos a la interfaz.",
+      "avatar": "/logos/FotoGabriel.jpg",
+      "technologies": [
+        "React",
+        "Node.js",
+        "Python",
+        "MongoDB",
+        "AWS"
+      ]
+    },
+    {
+      "name": "Steven",
+      "role": "Software Developer",
+      "bio": "Implementación y desarrollo de software y aplicaciones personalizadas.",
+      "avatar": "/logos/FotoSteven.jpg",
+      "technologies": [
+        "React",
+        "Node.js",
+        "Python",
+        "PostgreSQL",
+        "C#"
+      ]
+    },
+    {
+      "name": "Anthony",
+      "role": "Full Stack Developer",
+      "bio": "Desarrollo web y móvil con arquitecturas escalables y seguras.",
+      "avatar": "/Noni-NovaSite.jpeg",
+      "technologies": [
+        "React",
+        "Vue",
+        "React Native",
+        "Firebase",
+        "TypeScript"
+      ]
+    },
+    {
+      "name": "Alejandro",
+      "role": "Backend Engineer",
+      "bio": "APIs robustas, bases de datos y despliegues en la nube.",
+      "avatar": "/logos/FotoAlejandro.jpg",
+      "technologies": [
+        "Python",
+        "Django",
+        "PostgreSQL",
+        "Docker",
+        "Kubernetes"
+      ]
+    }
+  ]
+}

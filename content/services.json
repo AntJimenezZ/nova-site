@@ -1,0 +1,129 @@
+{
+  "services": [
+    {
+      "slug": "web",
+      "title": "Desarrollo web",
+      "summary": "Sitios y aplicaciones que cargan rápido y se ven bien en cualquier pantalla.",
+      "description": "Construimos interfaces de alto rendimiento con frameworks modernos. Cada decisión de diseño se mide contra un objetivo de negocio, no contra una tendencia.",
+      "features": [
+        "Aplicaciones de una sola página (SPA)",
+        "Renderizado en servidor (SSR) e islas estáticas",
+        "Animación con GSAP y Framer Motion",
+        "SEO técnico y Core Web Vitals"
+      ],
+      "tech": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "Framer Motion"
+      ],
+      "icon": "CodeXml"
+    },
+    {
+      "slug": "ecommerce",
+      "title": "E-commerce",
+      "summary": "Tiendas con pago, inventario y reportes que aguantan temporada alta.",
+      "description": "Desarrollamos motores de venta escalables, listos para volumen alto de transacciones y enfocados en quitar fricción del checkout.",
+      "features": [
+        "Pasarelas de pago y cobro recurrente",
+        "Panel de administración y analítica",
+        "Inventario automatizado multinivel",
+        "Protección activa contra fraude"
+      ],
+      "tech": [
+        "Stripe",
+        "PostgreSQL",
+        "Next.js Commerce",
+        "Redis"
+      ],
+      "icon": "ShoppingCart"
+    },
+    {
+      "slug": "mantenimiento",
+      "title": "Mantenimiento",
+      "summary": "Monitoreo, parches y mejoras continuas sin parar la operación.",
+      "description": "Mantenemos la infraestructura estable y actualizada, aplicando parches de seguridad y ajustes de rendimiento sin ventanas de caída.",
+      "features": [
+        "Monitoreo 24/7 con alertas",
+        "Auditoría de seguridad periódica",
+        "Escalado dinámico en la nube",
+        "Refactorización de código heredado"
+      ],
+      "tech": [
+        "AWS",
+        "Docker",
+        "Sentry",
+        "Vercel",
+        "CI/CD"
+      ],
+      "icon": "Wrench"
+    },
+    {
+      "slug": "backend",
+      "title": "Backend a medida",
+      "summary": "APIs y bases de datos diseñadas alrededor de tu lógica de negocio.",
+      "description": "Diseñamos la lógica que sostiene el producto: microservicios, bases relacionales o NoSQL, con alta disponibilidad y baja latencia.",
+      "features": [
+        "APIs REST y GraphQL documentadas",
+        "Arquitectura de microservicios",
+        "Caché de alto rendimiento",
+        "Integraciones corporativas a medida"
+      ],
+      "tech": [
+        "Node.js",
+        "Python",
+        "PostgreSQL",
+        "MongoDB",
+        "Redis"
+      ],
+      "icon": "Database"
+    }
+  ],
+  "capabilities": [
+    {
+      "title": "Desarrollo móvil",
+      "description": "Aplicaciones nativas y multiplataforma para iOS y Android.",
+      "tags": [
+        "React Native",
+        "Flutter",
+        "Swift",
+        "Kotlin"
+      ],
+      "icon": "Smartphone"
+    },
+    {
+      "title": "SEO y marketing",
+      "description": "Posicionamiento técnico y medición de lo que de verdad convierte.",
+      "tags": [
+        "SEO técnico",
+        "Contenido",
+        "Google Ads",
+        "Analytics"
+      ],
+      "icon": "Search"
+    },
+    {
+      "title": "Ciberseguridad",
+      "description": "Endurecimiento de la aplicación y cumplimiento normativo.",
+      "tags": [
+        "SSL/TLS",
+        "Pentesting",
+        "Auditoría",
+        "GDPR"
+      ],
+      "icon": "Shield"
+    },
+    {
+      "title": "Cloud",
+      "description": "Migración y gestión en la nube para escalar sin rehacer nada.",
+      "tags": [
+        "AWS",
+        "Azure",
+        "Google Cloud",
+        "Serverless"
+      ],
+      "icon": "Cloud"
+    }
+  ]
+}
