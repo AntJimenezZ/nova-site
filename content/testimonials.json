@@ -17,6 +17,15 @@
       "comment": "La app móvil para nuestro restaurante es exactamente lo que necesitábamos. Firebase funciona perfecto y Stripe hace que los pagos sean súper seguros.",
       "rating": 5,
       "projectTitle": "Restaurant App"
+    },
+    {
+      "id": "3",
+      "name": "Carlos Jimenez",
+      "company": "Comunidad RPG",
+      "role": "Director de juego",
+      "comment": "Antes llevábamos todo en un servidor de discord y cada partida tardaba bastante en empezar. Ahora la gente entra, encuentra su personaje y se juega de una vez. Se nos llenaron las campañas y la comunidad creció sola.",
+      "rating": 5,
+      "projectTitle": "MudHakar"
     }
   ]
 }

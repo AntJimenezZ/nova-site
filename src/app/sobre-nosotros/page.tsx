@@ -5,15 +5,16 @@ import { ArrowUpRight } from "lucide-react";
 import { team } from "@/lib/team";
 import { testimonials } from "@/lib/testimonials";
 import { Testimonial } from "@/components/testimonial";
-import { openGraphFor, site } from "@/lib/site";
+import { JsonLd } from "@/components/json-ld";
+import { breadcrumbSchema, openGraphFor, site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Estudio",
+  title: "Equipo",
   description: `Quiénes somos y cómo trabajamos. Cinco personas en ${site.address.locality}, ${site.address.region}, haciendo páginas web y software a medida para empresas de Costa Rica.`,
   alternates: { canonical: "/sobre-nosotros" },
   openGraph: openGraphFor(
     "/sobre-nosotros",
-    "Estudio · NovaSite",
+    "Equipo · NovaSite",
     "Cinco personas en Costa Rica. Trabajas directamente con quien construye tu producto, sin capas de gestión en medio.",
   ),
 };
@@ -22,15 +23,15 @@ export default function SobreNosotrosPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
       <header className="py-14 md:py-20">
-        <p className="label text-brand">Estudio</p>
+        <p className="label text-brand">Equipo</p>
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
-          Un equipo pequeño
+          Quiénes
           <br />
-          que entrega.
+          Somos?
         </h1>
         <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-          Somos cinco personas en {site.address.locality}, {site.address.region},
-          que unen estrategia, diseño y código. Trabajas directamente con quien
+          Somos cinco colegas de {site.address.locality}, {site.address.region},
+          que logran estrategia, diseño y código. Trabajas directamente con quien
           construye tu producto.
         </p>
       </header>
@@ -52,12 +53,15 @@ export default function SobreNosotrosPage() {
               className="reveal group overflow-hidden rounded-2xl border border-line bg-surface"
             >
               <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
+                {/* El gris solo donde hay puntero: en táctil no existe el hover
+                    que lo quita, así que la foto se quedaba en blanco y negro
+                    para siempre. */}
                 <Image
                   src={m.avatar}
                   alt={m.name}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover object-top grayscale transition-all duration-500 group-hover:scale-[1.03] group-hover:grayscale-0"
+                  className="object-cover object-top transition-all duration-500 group-hover:scale-[1.03] pointer-fine:grayscale pointer-fine:group-hover:grayscale-0"
                 />
               </div>
               <div className="p-6">
@@ -124,6 +128,10 @@ export default function SobreNosotrosPage() {
           </Link>
         </div>
       </section>
+
+      <JsonLd
+        data={breadcrumbSchema([{ name: "Equipo", path: "/sobre-nosotros" }])}
+      />
     </div>
   );
 }

@@ -259,15 +259,18 @@
   animation: hero-text-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Deriva lenta de la imagen del showreel. Dura más que el intervalo de rotación
-   para que nunca llegue a detenerse en pantalla. */
+/* Deriva lenta de la imagen del showreel.
+   `infinite alternate` en vez de `both`: la animación ya no se reinicia con cada
+   rotación —ahora envuelve las tres capas a la vez, ver showreel.tsx— así que
+   necesita no terminarse nunca para que la imagen no se quede quieta. Al
+   alternar, va y vuelve entre los mismos dos valores sin ningún salto. */
 @keyframes slow-zoom {
   from { transform: scale(1.06); }
   to   { transform: scale(1); }
 }
 
 .slow-zoom {
-  animation: slow-zoom 7.5s linear both;
+  animation: slow-zoom 7.5s linear infinite alternate;
 }
 
 @keyframes marquee {
@@ -311,6 +314,31 @@
   .logo-link:hover .logo-mark {
     transform: perspective(120px) rotateY(180deg);
   }
+}
+
+/* Menú móvil.
+   ────────────────────────────────────────────────────────────────────────────
+   La animación ya no vive aquí: la trae el componente Sheet de shadcn, que usa
+   `data-[state=open]` y las utilidades de tw-animate-css.
+
+   Aquí hubo unas 70 líneas de <dialog> nativo con @starting-style y
+   `transition-behavior: allow-discrete`. Funcionaba en Chrome y se rompía en
+   Safari de iOS por dos motivos distintos a la vez; el detalle está en el
+   commit, pero el resumen es que mantener a mano el ciclo de vida de la capa
+   superior no compensa cuando Radix ya lo tiene resuelto y probado.
+
+   Lo único que sobrevive es esto: con el menú abierto, el hero y las
+   revelaciones quedan detrás de un panel opaco y no se ve ni un píxel de
+   ellos. Seguir animándolos obliga al compositor a rehacer una veintena de
+   capas en cada fotograma justo mientras el panel se desliza.
+
+   Medido con LayerTree: 29 capas compuestas a mitad de apertura, de las cuales
+   ~17 eran .reveal con ActiveTransformAnimation permanente —usan
+   animation-timeline: view(), que Chrome considera siempre activas— más el
+   hero a 412x775 animando sin parar. */
+body:has([data-slot="sheet-content"][data-state="open"]) .slow-zoom,
+body:has([data-slot="sheet-content"][data-state="open"]) .reveal {
+  animation-play-state: paused;
 }
 
 /* Accesibilidad: respeta la preferencia del sistema en TODO, incluido Framer Motion */

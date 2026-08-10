@@ -4,7 +4,9 @@ import { ArrowUpRight, Check } from "lucide-react";
 import { services } from "@/lib/services";
 import { testimonials } from "@/lib/testimonials";
 import { Testimonial } from "@/components/testimonial";
-import { openGraphFor } from "@/lib/site";
+import { JsonLd } from "@/components/json-ld";
+import { formatPrice, pricing } from "@/lib/pricing";
+import { breadcrumbSchema, offerCatalogSchema, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Servicios",
@@ -17,41 +19,6 @@ export const metadata: Metadata = {
     "Cuánto cuesta una página web, qué incluye cada servicio y en cuánto tiempo se entrega. Precios orientativos de partida.",
   ),
 };
-
-/**
- * ⚠️ PENDIENTE ANTES DE DESPLEGAR: sustituir cada "$XXX" por el rango real.
- *
- * "Cuánto cuesta una página web en Costa Rica" es una búsqueda de alta
- * intención comercial y hoy el sitio no responde esa pregunta en ninguna
- * parte —salvo, irónicamente, en el select del formulario, que se la hace
- * al cliente antes de contestarla.
- */
-const pricing = [
-  {
-    title: "Landing page",
-    from: "$XXX",
-    time: "1–3 semanas",
-    detail: "Una página, un objetivo: que te escriban o te compren.",
-  },
-  {
-    title: "Sitio web corporativo",
-    from: "$XXX",
-    time: "3–5 semanas",
-    detail: "Varias secciones, blog o catálogo y panel para editarlo tú.",
-  },
-  {
-    title: "Tienda en línea",
-    from: "$XXX",
-    time: "4–8 semanas",
-    detail: "Catálogo, carrito, pagos e inventario conectados.",
-  },
-  {
-    title: "Aplicación a medida",
-    from: "Cotización",
-    time: "Por etapas",
-    detail: "Sistemas internos y productos que no salen de una plantilla.",
-  },
-];
 
 /** Tu cliente no sabe si necesita "landing" o "sitio corporativo": esto lo traduce. */
 const guidance = [
@@ -174,7 +141,7 @@ export default function ServiciosPage() {
             <li key={p.title} className="reveal flex flex-col bg-surface p-7">
               <h3 className="font-display text-base font-semibold">{p.title}</h3>
               <p className="tnum mt-4 font-display text-[clamp(1.5rem,3vw,2rem)] font-bold leading-none tracking-tighter text-brand">
-                {p.from === "Cotización" ? p.from : `desde ${p.from}`}
+                {formatPrice(p.from)}
               </p>
               <p className="label mt-3 text-muted-foreground">{p.time}</p>
               <p className="mt-5 flex-1 text-sm leading-relaxed text-muted-foreground">
@@ -256,6 +223,9 @@ export default function ServiciosPage() {
           </Link>
         </div>
       </section>
+
+      <JsonLd data={offerCatalogSchema(pricing)} />
+      <JsonLd data={breadcrumbSchema([{ name: "Servicios", path: "/servicios" }])} />
     </div>
   );
 }

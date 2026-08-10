@@ -23,6 +23,15 @@ export const site = {
     country: "CR",
   },
   coverage: "San Carlos · Alajuela · San José · todo Costa Rica",
+  /**
+   * Perfiles reales, no menciones compradas. Alimentan a la vez la lista de
+   * canales de /contacto y el `sameAs` del JSON-LD: es como Google enlaza el
+   * sitio con la entidad "NovaSite" que ya conoce por otro lado.
+   */
+  profiles: {
+    instagram: "https://www.instagram.com/novasitesc/",
+    x: "https://x.com/nova_sitesc",
+  },
 } as const;
 
 /**
@@ -73,7 +82,53 @@ export const businessSchema = {
   },
   areaServed: { "@type": "Country", name: "Costa Rica" },
   priceRange: "$$",
+  sameAs: [site.profiles.instagram, site.profiles.x],
 };
+
+/**
+ * Catálogo de servicios con precio de partida, para /servicios.
+ *
+ * Google dice explícitamente que los datos estructurados NO son obligatorios
+ * para aparecer en las funciones de IA. Este existe por una razón concreta:
+ * "cuánto cuesta una página web" es la consulta que trae al cliente, y un
+ * `minPrice` dentro de un `Offer` es un dato citable, no prosa que haya que
+ * interpretar. Los números salen del mismo array que pinta la tabla, así que
+ * no pueden desincronizarse con lo que ve la persona.
+ */
+export const offerCatalogSchema = (
+  offers: { title: string; detail: string; from: number | null }[],
+) => ({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: `Desarrollo de software · ${site.name}`,
+  serviceType: "Desarrollo web, e-commerce y software a medida",
+  url: `${site.url}/servicios`,
+  provider: {
+    "@type": "ProfessionalService",
+    name: site.name,
+    url: site.url,
+    telephone: site.phone,
+  },
+  areaServed: { "@type": "Country", name: "Costa Rica" },
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Servicios de NovaSite",
+    itemListElement: offers.map((o) => ({
+      "@type": "Offer",
+      name: o.title,
+      description: o.detail,
+      // `minPrice` y no `price`: lo publicado es un punto de partida. Declarar
+      // un precio cerrado que luego no se cumple es peor que no declararlo.
+      ...(o.from !== null && {
+        priceSpecification: {
+          "@type": "PriceSpecification",
+          minPrice: o.from,
+          priceCurrency: "USD",
+        },
+      }),
+    })),
+  },
+});
 
 /** Migas en el resultado de búsqueda en vez de la URL cruda. */
 export const breadcrumbSchema = (trail: { name: string; path: string }[]) => ({

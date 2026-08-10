@@ -77,26 +77,56 @@ const ROUTES = [
   await ctx.close();
 }
 
-// 2. Menú móvil: <dialog> nativo con foco atrapado y cierre por Escape.
+// 2. Menú móvil: Sheet de shadcn (Radix Dialog) con foco atrapado y Escape.
+//    Ya no es un <dialog> nativo: Radix monta un div con role=dialog en un
+//    portal, así que el selector es el data-slot, no `dialog[open]`.
+const PANEL = '[data-slot="sheet-content"]';
 {
   const ctx = await browser.newContext({ viewport: { width: 375, height: 780 } });
   const page = await ctx.newPage();
   await page.goto(BASE, { waitUntil: "networkidle" });
 
   await page.locator('button[aria-label="Abrir menú"]').click();
-  await page.waitForTimeout(350);
-  check("el menú móvil abre", (await page.locator("dialog[open]").count()) === 1);
+  await page.waitForTimeout(600);
+  check("el menú móvil abre", (await page.locator(PANEL).count()) === 1);
+
+  // Radix no pone aria-modal: marca aria-hidden sobre el resto del documento y
+  // bloquea el scroll del body. Es su mecanismo, más robusto que el atributo.
+  //
+  // Se comprueba <header> y no <main>: main queda sin ocultar a propósito de la
+  // librería aria-hidden, porque el formulario lleva dentro un [aria-live] y
+  // conserva toda la cadena de ancestros de una región viva para que siga
+  // siendo anunciable. Es la única parte del fondo que un lector de pantalla
+  // alcanza con el menú abierto; el <dialog> nativo sí lo inertizaba.
+  check(
+    "el panel es un diálogo y el fondo queda oculto al lector",
+    (await page.locator(`${PANEL}[role=dialog]`).count()) === 1 &&
+      (await page.evaluate(
+        () =>
+          document.querySelector("header")?.getAttribute("aria-hidden") === "true" &&
+          getComputedStyle(document.body).overflow === "hidden"
+      ))
+  );
 
   check(
     "el foco queda dentro del diálogo",
     await page.evaluate(
-      () => document.querySelector("dialog[open]")?.contains(document.activeElement) ?? false
+      (sel) => document.querySelector(sel)?.contains(document.activeElement) ?? false,
+      PANEL
     )
   );
 
+  // El panel deja ver una franja de la página detrás: es lo que hace que se
+  // lea como un cajón lateral y no como un cambio de pantalla entero.
+  const ancho = await page.evaluate((sel) => {
+    const r = document.querySelector(sel).getBoundingClientRect();
+    return Math.round((r.width / innerWidth) * 100);
+  }, PANEL);
+  check("el panel no tapa toda la pantalla", ancho < 90, `ocupa el ${ancho}% del ancho`);
+
   await page.keyboard.press("Escape");
-  await page.waitForTimeout(350);
-  check("Escape cierra el menú", (await page.locator("dialog[open]").count()) === 0);
+  await page.waitForTimeout(600);
+  check("Escape cierra el menú", (await page.locator(PANEL).count()) === 0);
   await ctx.close();
 }
 
@@ -131,7 +161,10 @@ const ROUTES = [
   });
   const page = await ctx.newPage();
   await page.goto(BASE, { waitUntil: "networkidle" });
-  const sel = "section[aria-roledescription=carrusel] h2";
+  // Los tres slides están siempre en el DOM apilados en la misma celda de grid
+  // —así el hero no cambia de alto al rotar y el CLS se queda en cero—, así que
+  // hay tres h2. El visible es el único que lleva .hero-text-in.
+  const sel = "section[aria-roledescription=carrusel] .hero-text-in h2";
   const first = await page.locator(sel).innerText();
   await page.waitForTimeout(7500); // supera el intervalo de 6 s
   const later = await page.locator(sel).innerText();
@@ -227,6 +260,41 @@ const ROUTES = [
     '"Aún no lo sé" es la primera opción de presupuesto',
     primera.trim() === "Aún no lo sé",
     `primera: ${primera}`,
+  );
+
+  // Enviar abre WhatsApp con el mensaje ya redactado. Se comprueba la URL
+  // entera porque los tres fallos posibles son mudos: el número equivocado, el
+  // texto sin codificar (se corta en el primer &) y los opcionales vacíos
+  // colándose como líneas sueltas.
+  await page.evaluate(() => {
+    window.__waUrl = null;
+    // Devuelve un objeto: el handler comprueba que window.open no dio null
+    // antes de darlo por bueno, y le asigna .opener.
+    window.open = (url) => ((window.__waUrl = url), {});
+  });
+  await page.fill('input[name="nombre"]', "Ana Solís");
+  await page.fill('input[name="email"]', "ana@ejemplo.cr");
+  await page.selectOption('select[name="tipo-proyecto"]', "landing-page");
+  await page.fill('textarea[name="descripcion"]', "Quiero una página & rápida");
+  await page.click('form button[type="submit"]');
+
+  const waUrl = await page.evaluate(() => window.__waUrl);
+  const texto = decodeURIComponent(new URL(waUrl ?? "https://x/").search.slice(6));
+  check(
+    "enviar abre WhatsApp sobre el número del sitio",
+    (waUrl ?? "").startsWith("https://wa.me/50683047436?text="),
+    `url: ${String(waUrl).slice(0, 45)}…`,
+  );
+  check(
+    "el mensaje lleva los datos y respeta el & de la descripción",
+    texto.includes("Nombre: Ana Solís") &&
+      texto.includes("Tipo de proyecto: Landing page") &&
+      texto.includes("Quiero una página & rápida"),
+    `texto: ${JSON.stringify(texto.slice(0, 60))}…`,
+  );
+  check(
+    "los opcionales vacíos no viajan en el mensaje",
+    !texto.includes("Empresa:") && !texto.includes("Integrantes:"),
   );
   await ctx.close();
 }
@@ -360,6 +428,92 @@ const ROUTES = [
   );
 
   await ctx.close();
+}
+
+// 10. El showreel no debe mover nada al rotar.
+//
+// El hero ancla su texto abajo, así que cuando los slides no compartían caja
+// cada rotación empujaba el bloque 37px. Como el carrusel no se detiene nunca,
+// el CLS no tenía techo: subía mientras la persona siguiera en la home. Se veía
+// solo si medías quieto en el hero —bastaba hacer scroll para que los saltos
+// quedaran fuera de pantalla y dejaran de contar—, que es justo por lo que
+// pasó desapercibido tanto tiempo.
+{
+  const ctx = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => {
+    window.__cls = 0;
+    new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) if (!e.hadRecentInput) window.__cls += e.value;
+    }).observe({ type: "layout-shift", buffered: true });
+  });
+  await page.goto(BASE, { waitUntil: "load" });
+  // Sin tocar nada y sin scroll: hay que quedarse en el hero para que los
+  // saltos cuenten. 20 s son tres rotaciones del intervalo de 6 s.
+  await page.waitForTimeout(20000);
+  const cls = await page.evaluate(() => window.__cls);
+  // 0.1 es el umbral de "bueno" de Core Web Vitals; aquí debería ser 0 clavado.
+  check("tres rotaciones del showreel no producen CLS", cls < 0.01, `CLS: ${cls.toFixed(4)}`);
+  await ctx.close();
+}
+
+// 11. El menú móvil entra y sale deslizando, y con reduced-motion no desliza.
+{
+  for (const rm of ["no-preference", "reduce"]) {
+    const ctx = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      isMobile: true,
+      hasTouch: true,
+      reducedMotion: rm,
+    });
+    const page = await ctx.newPage();
+    await page.goto(BASE, { waitUntil: "load" });
+    await page.waitForTimeout(1200);
+
+    // El click va por JS a propósito: Lenis mueve el scroll bajo los pies de
+    // Playwright y el click nativo se vuelve intermitente.
+    //
+    // El panel lo monta Radix en un portal, así que no existe hasta que se
+    // abre: hay que esperarlo antes de medirlo.
+    const posiciones = await page.evaluate(async () => {
+      const sel = '[data-slot="sheet-content"]';
+      document.querySelector('button[aria-label="Abrir menú"]').click();
+      await new Promise((r) =>
+        (function esperar() {
+          document.querySelector(sel) ? r() : requestAnimationFrame(esperar);
+        })()
+      );
+      const panel = document.querySelector(sel);
+      const x = () => new DOMMatrix(getComputedStyle(panel).transform).m41;
+      const vistas = new Set();
+      const t0 = performance.now();
+      await new Promise((done) =>
+        (function tick() {
+          vistas.add(Math.round(x()));
+          performance.now() - t0 < 700 ? requestAnimationFrame(tick) : done();
+        })()
+      );
+      return { pasos: vistas.size, final: x() };
+    });
+
+    check(
+      `el panel acaba abierto (reduced-motion: ${rm})`,
+      posiciones.final === 0,
+      `x final: ${posiciones.final}`
+    );
+    check(
+      rm === "reduce"
+        ? "con reduced-motion el panel no desliza"
+        : "el panel entra deslizando",
+      rm === "reduce" ? posiciones.pasos <= 2 : posiciones.pasos > 4,
+      `posiciones intermedias: ${posiciones.pasos}`
+    );
+    await ctx.close();
+  }
 }
 
 await browser.close();

@@ -38,13 +38,8 @@ yarn-error.log*
 # vercel
 .vercel
 
-# tinacms: lo generado en cada build/dev. El resto de tina/__generated__
-# (schema, client, types) sí se versiona: el build de producción lo necesita.
-/public/admin
-/tina/__generated__/.cache
-/tina/__generated__/config.prebuild.jsx
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 novasitecontext.md
+public/logos/requerimientos_paulo.pdf

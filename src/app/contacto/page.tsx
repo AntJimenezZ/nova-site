@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { RequirementsForm } from "@/components/requirements-form";
 import { socials } from "@/components/brand-icons";
-import { openGraphFor } from "@/lib/site";
+import { JsonLd } from "@/components/json-ld";
+import { breadcrumbSchema, openGraphFor } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contacto",
@@ -83,6 +84,8 @@ export default function ContactoPage() {
           <RequirementsForm />
         </div>
       </div>
+
+      <JsonLd data={breadcrumbSchema([{ name: "Contacto", path: "/contacto" }])} />
     </div>
   );
 }

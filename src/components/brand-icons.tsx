@@ -9,28 +9,36 @@
  * ambos temas sin variantes.
  */
 
+import { site } from "@/lib/site";
+
 type IconProps = { className?: string };
 
 const base = "shrink-0";
 
-/** Canales oficiales. Fuente única para footer y /contacto. */
+/**
+ * Canales oficiales para footer y /contacto.
+ *
+ * Las URLs y el teléfono salen de `site`, no escritos otra vez aquí: son los
+ * mismos que consume el `sameAs` del JSON-LD. Duplicarlos es justo la deriva
+ * de NAP contra la que avisa src/lib/site.ts.
+ */
 export const socials = [
   {
     name: "WhatsApp",
-    handle: "+506 8304 7436",
-    href: "https://wa.me/50683047436",
+    handle: site.phoneDisplay,
+    href: site.whatsapp,
     Icon: WhatsAppIcon,
   },
   {
     name: "Instagram",
     handle: "@novasitesc",
-    href: "https://www.instagram.com/novasitesc/",
+    href: site.profiles.instagram,
     Icon: InstagramIcon,
   },
   {
     name: "X",
     handle: "@nova_sitesc",
-    href: "https://x.com/nova_sitesc",
+    href: site.profiles.x,
     Icon: XIcon,
   },
 ];

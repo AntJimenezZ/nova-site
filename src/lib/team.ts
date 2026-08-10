@@ -8,5 +8,5 @@ export type Member = {
   technologies: string[]
 }
 
-/** Contenido en content/team.json, editable desde /admin (TinaCMS). */
+/** Contenido en content/team.json. */
 export const team = data.members as Member[]

@@ -1,6 +1,19 @@
 {
   "members": [
     {
+      "name": "Paulo",
+      "role": "Frontend & UI/UX",
+      "bio": "Diseño de interfaz y desarrollo full-stack de aplicaciones web y móviles.",
+      "avatar": "/logos/FotoPaulo.jpeg",
+      "technologies": [
+        "React",
+        "UI/UX",
+        "GSAP",
+        "Three.js",
+        "Tailwind CSS"
+      ]
+    },
+    {
       "name": "Gabriel",
       "role": "Software Developer",
       "bio": "Desarrollo full stack y soluciones a medida, de la base de datos a la interfaz.",
@@ -50,19 +63,6 @@
         "PostgreSQL",
         "Docker",
         "Kubernetes"
-      ]
-    },
-    {
-      "name": "Paulo",
-      "role": "Frontend & UI/UX",
-      "bio": "Diseño de interfaz y desarrollo full-stack de aplicaciones web y móviles.",
-      "avatar": "/logos/FotoPaulo.jpeg",
-      "technologies": [
-        "React",
-        "UI/UX",
-        "GSAP",
-        "Three.js",
-        "Tailwind CSS"
       ]
     }
   ]

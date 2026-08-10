@@ -12,12 +12,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/guia-proyecto",
   ];
   const casos = projects.map((p) => `/proyectos/${p.slug}`);
-  const lastModified = new Date();
 
-  return [...paginas, ...casos].map((ruta) => ({
-    url: `${site.url}${ruta}`,
-    lastModified,
-    changeFrequency: ruta === "" ? "weekly" : "monthly",
-    priority: ruta === "" ? 1 : ruta === "/contacto" ? 0.9 : 0.8,
-  }));
+  /**
+   * Solo URLs, a propósito.
+   *
+   * `changefreq` y `priority` Google los ignora desde hace años. `lastmod` sí
+   * lo usa —pero antes valía `new Date()`, así que cada build declaraba que
+   * las once páginas habían cambiado hoy. Google detecta ese patrón y deja de
+   * fiarse del lastmod de todo el sitemap, incluido el de la página que sí
+   * cambió. Un sitemap que solo enumera URLs es válido y no miente.
+   *
+   * Si algún día hay blog, ahí sí toca un lastmod real por entrada.
+   */
+  return [...paginas, ...casos].map((ruta) => ({ url: `${site.url}${ruta}` }));
 }

@@ -27,8 +27,7 @@ export type Project = {
 }
 
 /**
- * El contenido vive en content/projects.json, editable desde /admin (TinaCMS).
- * El JSON no puede expresar las uniones de `imageKind` ni `category`, así que
- * el cast las reafirma aquí; el esquema de Tina las restringe en el editor.
+ * El contenido vive en content/projects.json. El JSON no puede expresar las
+ * uniones de `imageKind` ni `category`, así que el cast las reafirma aquí.
  */
 export const projects = (data.items as Project[]).filter(Boolean)

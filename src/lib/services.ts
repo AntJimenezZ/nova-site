@@ -15,8 +15,7 @@ import data from "../../content/services.json"
  * El JSON guarda el icono por nombre; aquí se resuelve al componente. El mapa
  * es explícito a propósito: importar lucide-react entero para buscar por
  * nombre en runtime metería el set completo de iconos en el bundle.
- * Para añadir uno: impórtalo arriba, añádelo aquí y a las opciones del campo
- * `icon` en tina/config.ts.
+ * Para añadir uno: impórtalo arriba y añádelo aquí.
  */
 export const serviceIcons = {
   Cloud,

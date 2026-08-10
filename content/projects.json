@@ -2,7 +2,7 @@
   "items": [
     {
       "slug": "mea-culpa",
-      "title": "Mea Culpa",
+      "title": "MudHakar",
       "summary": "Plataforma RPG interactiva estilo Dungeons & Dragons.",
       "description": "RPG narrativo inspirado en Dungeons & Dragons con creación de personajes y sistema de roles",
       "image": "/mea-culpa.webp",
@@ -14,7 +14,7 @@
         "Node.js",
         "PostgreSQL"
       ],
-      "longDescription": "Desarrollamos Mea Culpa, un RPG online basado en la experiencia de Dungeons & Dragons, centrado en interpretación de personajes y desempeño de roles dentro de campañas narrativas. Implementamos creación de personajes, fichas dinámicas, gestión de habilidades, inventario y progresión por sesiones, junto con herramientas para directores de juego.",
+      "longDescription": "Desarrollamos MudHakar, un RPG online basado en la experiencia de Dungeons & Dragons, centrado en interpretación de personajes y desempeño de roles dentro de campañas narrativas. Implementamos creación de personajes, fichas dinámicas, gestión de habilidades, inventario y progresión por sesiones, junto con herramientas para directores de juego.",
       "features": [
         "Creación y personalización de personajes",
         "Sistema de fichas con atributos, clases y habilidades",

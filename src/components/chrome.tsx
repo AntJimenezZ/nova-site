@@ -1,9 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Mail, Menu, Moon, Sun, X, ArrowUpRight } from "lucide-react";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { lenis } from "@/components/smooth-scroll";
 import { socials, WhatsAppIcon } from "@/components/brand-icons";
 import { site } from "@/lib/site";
@@ -15,7 +22,7 @@ const NAV = [
   { href: "/proyectos", label: "Trabajo" },
   { href: "/servicios", label: "Servicios" },
   { href: "/guia-proyecto", label: "Cómo trabajamos" },
-  { href: "/sobre-nosotros", label: "Estudio" },
+  { href: "/sobre-nosotros", label: "Equipo" },
   { href: "/contacto", label: "Contacto" },
 ];
 
@@ -115,7 +122,6 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -124,19 +130,13 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // <dialog> nativo: nos da foco atrapado, Escape y fondo inerte sin escribirlo a mano.
-  // Lenis se para aparte: mantiene su propio rAF y seguiría moviendo el fondo.
+  /**
+   * Radix bloquea el scroll del documento, pero Lenis mantiene su propio bucle
+   * de rAF y seguiría moviendo el fondo por su cuenta. Hay que pararlo aparte.
+   */
   useEffect(() => {
-    const el = dialogRef.current;
-    if (!el) return;
-    if (open && !el.open) {
-      el.showModal();
-      lenis.current?.stop();
-    }
-    if (!open && el.open) {
-      el.close();
-      lenis.current?.start();
-    }
+    if (open) lenis.current?.stop();
+    else lenis.current?.start();
   }, [open]);
 
   useEffect(() => setOpen(false), [pathname]);
@@ -191,62 +191,68 @@ export function SiteHeader() {
             Iniciar proyecto
             <ArrowUpRight className="size-4" />
           </Link>
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-label="Abrir menú"
-            className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-line text-foreground lg:hidden"
-          >
-            <Menu className="size-[18px]" />
-          </button>
+          {/*
+            Sheet (shadcn sobre Radix Dialog) en vez del <dialog> nativo que
+            había aquí. El nativo funcionaba en Chrome pero se rompía en Safari
+            de iOS por dos motivos a la vez, ver comentario largo abajo.
+          */}
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger
+              aria-label="Abrir menú"
+              className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-line text-foreground lg:hidden"
+            >
+              <Menu className="size-[18px]" />
+            </SheetTrigger>
+
+            <SheetContent
+              side="right"
+              showCloseButton={false}
+              // El ancho se deja el de shadcn (w-3/4 sm:max-w-sm) a propósito.
+              // Antes esto llevaba w-full y el panel barría la pantalla entera
+              // al entrar: en un iPhone eso no se lee como un cajón que se abre,
+              // se lee como que la página se va y viene otra. Dejando ver una
+              // franja del fondo, el movimiento se entiende solo.
+              className="gap-0 border-line bg-background p-6"
+            >
+              {/* Radix exige un título accesible; el visible es la marca. */}
+              <SheetTitle className="sr-only">Menú de navegación</SheetTitle>
+
+              <div className="flex items-center justify-between">
+                <Wordmark className="text-foreground" />
+                <SheetClose
+                  aria-label="Cerrar menú"
+                  className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-line text-foreground"
+                >
+                  <X className="size-[18px]" />
+                </SheetClose>
+              </div>
+
+              <nav aria-label="Móvil" className="mt-12 flex flex-col">
+                {NAV.map((item, i) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center justify-between border-b border-line py-5 font-display text-2xl text-foreground"
+                  >
+                    <span>{item.label}</span>
+                    <span className="label tnum text-muted-foreground">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </Link>
+                ))}
+              </nav>
+
+              <Link
+                href="/contacto"
+                className="mt-auto inline-flex h-14 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-base font-medium text-primary-foreground"
+              >
+                Iniciar proyecto
+                <ArrowUpRight className="size-4" />
+              </Link>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-
-      <dialog
-        ref={dialogRef}
-        onClose={() => setOpen(false)}
-        onClick={(e) => {
-          if (e.target === dialogRef.current) setOpen(false);
-        }}
-        className="m-0 h-[100dvh] max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-foreground/40 backdrop:backdrop-blur-sm open:flex open:justify-end"
-      >
-        <div className="flex h-full w-full flex-col bg-background p-6 sm:max-w-sm sm:border-l sm:border-line">
-          <div className="flex items-center justify-between">
-            <Wordmark className="text-foreground" />
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Cerrar menú"
-              className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-line text-foreground"
-            >
-              <X className="size-[18px]" />
-            </button>
-          </div>
-
-          <nav aria-label="Móvil" className="mt-12 flex flex-col">
-            {NAV.map((item, i) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center justify-between border-b border-line py-5 font-display text-2xl text-foreground"
-              >
-                <span>{item.label}</span>
-                <span className="label tnum text-muted-foreground">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </Link>
-            ))}
-          </nav>
-
-          <Link
-            href="/contacto"
-            className="mt-auto inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary text-base font-medium text-primary-foreground"
-          >
-            Iniciar proyecto
-            <ArrowUpRight className="size-4" />
-          </Link>
-        </div>
-      </dialog>
     </header>
   );
 }
@@ -282,7 +288,7 @@ export function SiteFooter() {
             <p className="measure mt-5 text-sm leading-relaxed text-muted-foreground">
               Empresa de diseño y desarrollo de páginas web en Costa Rica.
               Hacemos sitios, tiendas en línea y sistemas a medida que llegan a
-              producción y se quedan ahí.
+              producción.
             </p>
             {/* Señal local: le dice a la persona y a Google dónde operamos. */}
             <p className="mt-5 text-xs leading-relaxed text-muted-foreground">

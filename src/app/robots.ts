@@ -6,9 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // /admin es el editor de TinaCMS, que se sirve como archivo estático.
-      // Esto lo saca del índice; NO lo protege: eso es autenticación aparte.
-      disallow: ["/admin", "/admin/", "/api/"],
+      disallow: ["/api/"],
     },
     sitemap: `${site.url}/sitemap.xml`,
   };

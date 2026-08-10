@@ -58,18 +58,28 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      {/* Las tres capas quedan montadas y solo cambia la opacidad: el crossfade
-          es una transición CSS compuesta en GPU, sin librería de animación. */}
-      {projects.map((p, i) =>
-        i === 0 || warm || i === index ? (
-          <div
-            key={p.slug}
-            aria-hidden={i !== index}
-            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-              i === index ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <div className={i === index ? "slow-zoom h-full w-full" : "h-full w-full"}>
+      {/* El zoom envuelve LAS TRES capas en vez de ir en cada una.
+          Antes la clase saltaba de una capa a otra al rotar, y la que entraba
+          pasaba de scale(1) a scale(1.06) en un solo fotograma: un salto de 47px
+          que el navegador contabiliza como layout shift. Era el resto del CLS
+          que quedaba después de apilar los textos, y solo aparecía en pantallas
+          estrechas porque ahí el hero es más alto y el 6% pesa más.
+
+          Envuelto aquí la animación no se reinicia nunca, así que no hay salto.
+          De paso es una sola capa compuesta en vez de tres animándose a la vez,
+          que en un móvil de gama baja es la diferencia que se nota. */}
+      <div className="slow-zoom absolute inset-0">
+        {/* Las tres capas quedan montadas y solo cambia la opacidad: el crossfade
+            es una transición CSS compuesta en GPU, sin librería de animación. */}
+        {projects.map((p, i) =>
+          i === 0 || warm || i === index ? (
+            <div
+              key={p.slug}
+              aria-hidden={i !== index}
+              className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                i === index ? "opacity-100" : "opacity-0"
+              }`}
+            >
               {/* q=68: la imagen va bajo un velo oscuro, la pérdida no se percibe
                   y recorta un tercio de los bytes del LCP. */}
               <ProjectMedia
@@ -79,9 +89,9 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
                 sizes="100vw"
               />
             </div>
-          </div>
-        ) : null
-      )}
+          ) : null
+        )}
+      </div>
 
       {/* Velo en dos capas. Concentrado en la banda inferior donde vive el texto:
           arriba deja ver la captura, que es el objetivo del showreel.
@@ -109,14 +119,45 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
               </span>
             </div>
 
-            {/* key fuerza el remontaje, así la animación de entrada se repite */}
-            <div key={active.slug} className="hero-text-in">
-              <h2 className="mt-4 font-display text-[clamp(2.5rem,8vw,5.5rem)] font-bold leading-[0.92] tracking-tighter text-stage-foreground">
-                {active.title}
-              </h2>
-              <p className="measure mt-4 text-base leading-relaxed text-stage-muted md:text-lg">
-                {active.summary}
-              </p>
+            {/*
+              Los tres textos se apilan en la MISMA celda de grid y solo se ve
+              el activo. Suena raro, pero es lo que arregla el CLS: el bloque
+              está anclado abajo (justify-end del contenedor) y cada título
+              ocupa distinto número de líneas, así que al rotar el contenido
+              saltaba 37px cada 6 segundos. Y como el showreel no para nunca,
+              el CLS no tenía techo: subía mientras la persona siguiera en la
+              home —0.11 al medio minuto, y de ahí para arriba—.
+
+              Apilados, la celda mide siempre lo que el título más alto y ya
+              no se mueve nada. Un min-height a ojo habría hecho lo mismo hasta
+              que alguien editara un título desde el CMS; esto se mide solo.
+
+              items-end mantiene el texto pegado abajo, junto al botón, que es
+              donde estaba antes: el hueco de los títulos cortos queda arriba.
+            */}
+            <div className="mt-4 grid items-end">
+              {projects.map((p) => {
+                const on = p.slug === active.slug;
+                return (
+                  <div
+                    key={p.slug}
+                    // Los ocultos siguen ocupando su sitio (es el punto), pero
+                    // ni el lector de pantalla ni el tabulador deben entrar.
+                    aria-hidden={!on}
+                    inert={!on}
+                    className={`col-start-1 row-start-1 ${
+                      on ? "hero-text-in" : "invisible"
+                    }`}
+                  >
+                    <h2 className="font-display text-[clamp(2.5rem,8vw,5.5rem)] font-bold leading-[0.92] tracking-tighter text-stage-foreground">
+                      {p.title}
+                    </h2>
+                    <p className="measure mt-4 text-base leading-relaxed text-stage-muted md:text-lg">
+                      {p.summary}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
 
             <Link

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight, ChevronDown, Mail } from "lucide-react";
 import { WhatsAppIcon } from "@/components/brand-icons";
 import { JsonLd } from "@/components/json-ld";
+import { formatPrice, pricing } from "@/lib/pricing";
 import { breadcrumbSchema, openGraphFor, site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -19,11 +20,11 @@ export const metadata: Metadata = {
 
 const steps = [
   {
-    title: "Define tus objetivos",
+    title: "Definimos tus objetivos",
     body: "Qué necesitas, para quién, qué funcionalidades no pueden faltar y en qué plazo.",
   },
   {
-    title: "Reúne referencias",
+    title: "Escuchamos tus referencias",
     body: "Ejemplos, marcas, paletas e inspiración visual. Alinear expectativas ahorra semanas después.",
   },
   {
@@ -47,7 +48,7 @@ const steps = [
 const method = [
   {
     title: "Comunicación clara",
-    body: "Puntos de control, reportes breves y feedback continuo para alinear expectativas.",
+    body: "Mostramos avances, reportes breves y feedback continuo para cubrir las expectativas.",
   },
   {
     title: "Iteración ágil",
@@ -67,15 +68,33 @@ const helpful = [
   "Plazos tentativos y presupuesto",
 ];
 
+/**
+ * Google premia la respuesta concreta sobre la evasiva: "depende del alcance"
+ * no se puede citar en una respuesta generada, "$500" sí. Y esta cadena viaja
+ * literalmente dentro del `acceptedAnswer` del FAQPage.
+ *
+ * La prosa va escrita a mano y solo se interpolan los números. Generar también
+ * la frase desde el array salía más corto y producía "un tienda en línea": la
+ * concordancia de género del español no se deduce de un title.
+ */
+const priceOf = (title: string) =>
+  formatPrice(pricing.find((t) => t.title === title)?.from ?? null);
+
+const priceAnswer = `Una landing page parte ${priceOf("Landing page")}, un sitio web corporativo ${priceOf("Sitio web corporativo")} y una tienda en línea o ERPs (PLanificación de recursos empresariales) ${priceOf("Tienda en línea")}. Una aplicación a medida se cotiza por etapas según el alcance.`;
+
 const faqs: { q: string; a: string; href?: string }[] = [
   {
     q: "¿Cuánto cuesta una página web?",
-    a: "Una landing page parte desde un rango fijo y un sitio corporativo o una tienda en línea suben según el alcance. Publicamos los precios orientativos de partida en la página de Servicios para que no tengas que preguntarlos. El número final depende de cuántas secciones, integraciones y contenido necesites.",
+    // Se compone desde lib/pricing en vez de escribir los números aquí: esta
+    // respuesta va tal cual dentro del FAQPage del JSON-LD, así que un número
+    // desactualizado no sería una errata, sería un dato falso publicado en un
+    // formato pensado para que las máquinas lo citen literalmente.
+    a: `${priceAnswer} El número final depende de cuántas secciones, integraciones y contenido necesites, y lo cerramos antes de empezar: no hay cargos que aparezcan a mitad del proyecto.`,
     href: "/servicios#precios",
   },
   {
     q: "¿Y si no sé cuánto me puedo gastar?",
-    a: "Es lo normal si nunca has comprado software. Cuéntanos qué necesitas y te proponemos un alcance que quepa en lo que puedas invertir, o te decimos con franqueza si no da. Ningún campo de presupuesto es obligatorio en nuestro formulario.",
+    a: "Es lo normal si nunca has comprado software. Cuéntanos qué necesitas y te proponemos un alcance que quepa en lo que puedas invertir, o te decimos si está fuera de alcance. Ningún campo de presupuesto es obligatorio en nuestro formulario.",
   },
   {
     q: "¿Cuánto tarda un proyecto?",
@@ -99,7 +118,7 @@ const faqs: { q: string; a: string; href?: string }[] = [
   },
   {
     q: "¿Cómo será la comunicación durante el proyecto?",
-    a: "Definimos un canal principal (email o chat) y puntos de contacto semanales breves para seguimiento.",
+    a: "Definimos un canal principal (email o mensajes de texto) y puntos de contacto semanales breves para seguimiento.",
   },
   {
     q: "¿Incluyen SEO y rendimiento?",
@@ -115,14 +134,13 @@ export default function GuiaProyectoPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
       <header className="py-14 md:py-20">
-        <p className="label text-brand">Cómo trabajamos</p>
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
-          De la idea al
+          Cómo
           <br />
-          primer despliegue.
+          Trabajamos
         </h1>
         <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-          Seis etapas, sin sorpresas. Esto es exactamente lo que pasa desde que
+          Nuestro trabajo consiste en estas seis etapas. Esto es lo que pasa desde que
           nos escribes hasta que tu proyecto está en producción.
         </p>
       </header>

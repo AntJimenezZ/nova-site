@@ -36,6 +36,30 @@ export const metadata: Metadata = {
   creator: "NovaSite",
   publisher: "NovaSite",
   formatDetection: { email: false, address: false, telephone: false },
+  /**
+   * Requisito de entrada para AI Overviews y AI Mode: Google solo usa páginas
+   * "indexadas y elegibles para mostrarse con un fragmento". Sin declarar nada
+   * el límite de fragmento queda al criterio de Google, que lo recorta; y un
+   * `max-snippet` corto o un `nosnippet` heredado deja la página fuera de las
+   * funciones generativas por completo.
+   *
+   * -1 = sin límite de longitud. `max-image-preview: large` es además lo que
+   * habilita la miniatura grande, que es como se cita un caso de estudio.
+   *
+   * Vive en el layout y no en cada página: Next hereda `robots` a todas las
+   * rutas que no lo sobrescriban, y ninguna lo hace.
+   */
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
