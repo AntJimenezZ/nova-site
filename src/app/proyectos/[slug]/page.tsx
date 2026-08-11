@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { projects } from "@/lib/projects";
 import { CaseStudy } from "@/components/case-study";
 import { JsonLd } from "@/components/json-ld";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { breadcrumbSchema, openGraphFor } from "@/lib/site";
 
 /**
@@ -54,6 +55,7 @@ export default async function ProyectoPage({ params }: Params) {
 
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
+      <ScrollToTop />
       <nav aria-label="Miga de pan" className="pt-10 md:pt-14">
         <Link
           href="/proyectos"
@@ -74,7 +76,7 @@ export default async function ProyectoPage({ params }: Params) {
       <section className="border-t border-line py-16 md:py-24">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="label text-brand">Siguiente caso</p>
+
             <p className="mt-3 font-display text-[clamp(1.5rem,4vw,2.25rem)] font-bold tracking-tighter">
               {next.title}
             </p>

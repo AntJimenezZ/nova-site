@@ -42,7 +42,7 @@ export default function ServiciosPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
       <header className="py-14 md:py-20">
-        <p className="label text-brand">Servicios</p>
+
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
           Cuatro formas de
           <br />

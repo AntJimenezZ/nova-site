@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { projects } from "@/lib/projects";
-import { ProjectMedia } from "@/components/project-media";
 import { JsonLd } from "@/components/json-ld";
 import { breadcrumbSchema, openGraphFor } from "@/lib/site";
+import { ProyectosList } from "@/components/proyectos-list";
 
 export const metadata: Metadata = {
   title: "Trabajo",
@@ -36,61 +36,7 @@ export default function ProyectosPage() {
         </p>
       </header>
 
-      <ol className="grid gap-6 border-t border-line py-14 md:grid-cols-2 md:py-20">
-        {projects.map((p, i) => (
-          <li key={p.slug} className="reveal">
-            <Link
-              href={`/proyectos/${p.slug}`}
-              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-line-strong"
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-stage">
-                <ProjectMedia
-                  project={p}
-                  priority={i === 0}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-              </div>
-
-              <div className="flex flex-1 flex-col p-7 md:p-8">
-                <div className="flex items-center gap-3">
-                  <span className="label tnum text-brand">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="h-px w-8 bg-line-strong" />
-                  <span className="label text-muted-foreground">
-                    {p.category} · {p.year}
-                  </span>
-                </div>
-
-                <h2 className="mt-5 font-display text-[clamp(1.5rem,3vw,2rem)] font-bold leading-tight tracking-tighter">
-                  {p.title}
-                </h2>
-
-                <p className="measure mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  {p.description}
-                </p>
-
-                <ul className="mt-6 flex flex-wrap gap-1.5">
-                  {p.tech.slice(0, 4).map((t) => (
-                    <li
-                      key={t}
-                      className="rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[0.7rem] text-muted-foreground"
-                    >
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-
-                <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-brand">
-                  Ver el caso
-                  <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </span>
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ol>
+      <ProyectosList projects={projects} />
 
       <section className="border-t border-line py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">

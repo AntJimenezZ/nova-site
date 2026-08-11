@@ -77,9 +77,9 @@ export default function HomePage() {
       >
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="label text-brand">Servicios</p>
+
             <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
-              Lo que hacemos
+              Nos enfocamos en:
             </h2>
           </div>
           <Link
@@ -126,7 +126,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1400px] px-5 md:px-10">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="label text-brand">Trabajo</p>
+
               <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
                 Casos recientes
               </h2>
@@ -175,7 +175,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="label text-brand">Proceso</p>
+
             <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
               Cómo trabajamos
             </h2>
@@ -214,7 +214,7 @@ export default function HomePage() {
         className="border-y border-line bg-surface-2 py-20 md:py-28"
       >
         <div className="mx-auto max-w-[1400px] px-5 md:px-10">
-          <p className="label text-brand">Equipo</p>
+
           <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
             Quién lo construye
           </h2>
@@ -247,7 +247,7 @@ export default function HomePage() {
         aria-label="Testimonios de clientes"
         className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28"
       >
-        <p className="label text-brand">Clientes</p>
+
         <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
           Qué dicen de nosotros
         </h2>
@@ -266,7 +266,7 @@ export default function HomePage() {
       >
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-20">
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <p className="label text-brand">Contacto</p>
+
             <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
               Cuéntanos
               <br />

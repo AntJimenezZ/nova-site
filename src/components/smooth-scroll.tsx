@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
 
@@ -18,6 +19,7 @@ export const lenis: { current: Lenis | null } = { current: null };
  * animation-timeline: view() siguen funcionando. Verificado en tests/ui.mjs.
  */
 export function SmoothScroll() {
+  const pathname = usePathname();
   useEffect(() => {
     // Con reduced-motion no se instancia: interpolar el scroll es justo el tipo
     // de movimiento que el usuario ha pedido evitar.
@@ -34,9 +36,13 @@ export function SmoothScroll() {
       anchors: { offset: -96 },
     });
 
+    // Agregar la clase .lenis al html para desactivar el scroll-behavior: smooth nativo
+    document.documentElement.classList.add("lenis");
+
     lenis.current = instance;
 
     return () => {
+      document.documentElement.classList.remove("lenis");
       instance.destroy();
       lenis.current = null;
     };
