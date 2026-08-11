@@ -14,12 +14,14 @@ export function ProjectMedia({
   sizes = "100vw",
   quality,
   className = "",
+  fit = "contain",
 }: {
   project: Project;
   priority?: boolean;
   sizes?: string;
   quality?: number;
   className?: string;
+  fit?: "cover" | "contain";
 }) {
   if (project.imageKind === "mark") {
     return (
@@ -66,7 +68,7 @@ export function ProjectMedia({
       priority={priority}
       quality={quality}
       sizes={sizes}
-      className={`object-cover object-top ${className}`}
+      className={`${fit === "contain" ? "object-contain object-center p-1" : "object-cover object-top"} ${className}`}
     />
   );
 }

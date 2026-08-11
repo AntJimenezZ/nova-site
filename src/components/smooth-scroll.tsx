@@ -34,9 +34,13 @@ export function SmoothScroll() {
       anchors: { offset: -96 },
     });
 
+    // Agregar la clase .lenis al html para desactivar el scroll-behavior: smooth nativo
+    document.documentElement.classList.add("lenis");
+
     lenis.current = instance;
 
     return () => {
+      document.documentElement.classList.remove("lenis");
       instance.destroy();
       lenis.current = null;
     };

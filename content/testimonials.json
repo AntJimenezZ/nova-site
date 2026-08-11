@@ -11,12 +11,12 @@
     },
     {
       "id": "2",
-      "name": "Diego Morales",
-      "company": "Bistro Moderno",
-      "role": "Propietario",
-      "comment": "La app móvil para nuestro restaurante es exactamente lo que necesitábamos. Firebase funciona perfecto y Stripe hace que los pagos sean súper seguros.",
+      "name": "Esteban Monge",
+      "company": "Ganadera El Roble",
+      "role": "Gerente de Operaciones",
+      "comment": "SGGE transformó la administración de nuestra finca. Pasar las facturas PDF directamente a costos operativos y tener trazabilidad por arete y corral nos ahorra horas cada semana y nos da claridad financiera real.",
       "rating": 5,
-      "projectTitle": "Restaurant App"
+      "projectTitle": "SGGE — Gestión Ganadera"
     },
     {
       "id": "3",

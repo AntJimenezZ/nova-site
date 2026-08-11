@@ -22,21 +22,20 @@ export default function ContactoPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
       <header className="py-14 md:py-20">
-        <p className="label text-brand">Contacto</p>
+
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
           Hablemos de
           <br />
           tu proyecto.
         </h1>
         <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-          Rellena el formulario y te devolvemos alcance, plazo y precio. Sin
-          compromiso y sin llamadas de descubrimiento de una hora.
+          Rellena el formulario y con gusto te responderemos en menos de 24 horas hábiles.
         </p>
       </header>
 
       <div className="grid gap-12 border-t border-line py-14 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20 md:py-20">
         <aside className="lg:sticky lg:top-28 lg:self-start">
-          <div className="flex items-start gap-3 rounded-2xl border border-line bg-surface p-6">
+          <div className="flex items-start gap-3">
             <Clock className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
             <div>
               <p className="text-sm font-medium">Respuesta en 24 h</p>

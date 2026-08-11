@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Check } from "lucide-react";
 import type { Project } from "@/lib/projects";
-import { ProjectMedia } from "@/components/project-media";
+import { CaseStudyGallery } from "@/components/case-study-gallery";
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
@@ -89,14 +89,8 @@ export function CaseStudy({
           )}
         </div>
 
-        <div className="flex flex-col gap-5">
-          <figure className="reveal relative aspect-[16/11] overflow-hidden rounded-2xl border border-line bg-stage">
-            <ProjectMedia
-              project={project}
-              priority={index === 0}
-              sizes="(max-width: 1024px) 100vw, 60vw"
-            />
-          </figure>
+        <div className="flex flex-col gap-6">
+          <CaseStudyGallery project={project} priority={index === 0} />
 
           {project.features && (
             <div className="reveal rounded-2xl border border-line bg-surface p-7 md:p-9">

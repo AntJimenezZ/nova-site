@@ -45,20 +45,7 @@ const steps = [
   },
 ];
 
-const method = [
-  {
-    title: "Comunicación clara",
-    body: "Mostramos avances, reportes breves y feedback continuo para cubrir las expectativas.",
-  },
-  {
-    title: "Iteración ágil",
-    body: "Entregas frecuentes y validaciones tempranas para reducir riesgos.",
-  },
-  {
-    title: "Calidad y soporte",
-    body: "Pruebas, documentación y acompañamiento después del lanzamiento.",
-  },
-];
+
 
 const helpful = [
   "Objetivos del proyecto y problema a resolver",
@@ -171,21 +158,7 @@ export default function GuiaProyectoPage() {
           Cómo trabajamos
         </h2>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {method.map((m) => (
-            <div
-              key={m.title}
-              className="reveal rounded-2xl border border-line bg-surface p-7"
-            >
-              <h3 className="font-display text-lg font-semibold">{m.title}</h3>
-              <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
-                {m.body}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-5 grid gap-5 md:grid-cols-2">
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
           <div className="rounded-2xl border border-line bg-surface p-7 md:p-8">
             <h3 className="label text-muted-foreground">
               Qué información nos ayuda

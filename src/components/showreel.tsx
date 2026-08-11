@@ -87,6 +87,7 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
                 priority={i === 0}
                 quality={68}
                 sizes="100vw"
+                fit="cover"
               />
             </div>
           ) : null
