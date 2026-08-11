@@ -30,7 +30,7 @@ const check = (name, ok, extra = "") => {
 const ROUTES = [
   "/",
   "/proyectos",
-  "/proyectos/restaurant-app",
+  "/proyectos/sgge",
   "/servicios",
   "/sobre-nosotros",
   "/contacto",
@@ -191,12 +191,12 @@ const PANEL = '[data-slot="sheet-content"]';
   const page = await ctx.newPage();
 
   await page.goto(`${BASE}/proyectos`, { waitUntil: "networkidle" });
-  await page.locator('a[href="/proyectos/restaurant-app"]').first().click();
-  await page.waitForURL("**/proyectos/restaurant-app");
+  await page.locator('a[href="/proyectos/sgge"]').first().click();
+  await page.waitForURL("**/proyectos/sgge");
 
   check(
     "el índice lleva al caso y el título es el h1",
-    (await page.locator("h1").innerText()).includes("Restaurant App"),
+    (await page.locator("h1").innerText()).includes("SGGE"),
   );
 
   const canonical = await page
@@ -204,7 +204,7 @@ const PANEL = '[data-slot="sheet-content"]';
     .getAttribute("href");
   check(
     "el caso declara su propio canonical",
-    canonical?.endsWith("/proyectos/restaurant-app"),
+    canonical?.endsWith("/proyectos/sgge"),
     `canonical=${canonical}`,
   );
   await ctx.close();

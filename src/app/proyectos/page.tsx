@@ -26,15 +26,13 @@ export default function ProyectosPage() {
   return (
     <div className="mx-auto max-w-[1400px] px-5 md:px-10">
       <header className="py-14 md:py-20">
-        <p className="label text-brand">Trabajo</p>
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
-          Casos, no capturas
+          Nuestros proyectos más
           <br />
-          sueltas.
+          representativos
         </h1>
         <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-          Cada proyecto con su alcance real, su stack y el número que movió. Lo
-          que no llegó a producción no está aquí.
+          Aquí compartimos lo que hemos creado para nuestros clientes, mostrando el stack tecnológico, el problema que resolvimos y los resultados obtenidos.
         </p>
       </header>
 

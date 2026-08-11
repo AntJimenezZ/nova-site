@@ -7,6 +7,7 @@ export type Project = {
   summary: string
   description: string
   image: string
+  gallery?: string[]
   /**
    * "shot" = captura real del producto, se muestra a sangre.
    * "mark" = solo tenemos el icono/logo, se compone un póster de marca en su lugar.

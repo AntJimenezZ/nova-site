@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight, Check } from "lucide-react";
 import { services } from "@/lib/services";
-import { testimonials } from "@/lib/testimonials";
-import { Testimonial } from "@/components/testimonial";
+
 import { JsonLd } from "@/components/json-ld";
 import { formatPrice, pricing } from "@/lib/pricing";
 import { breadcrumbSchema, offerCatalogSchema, openGraphFor } from "@/lib/site";
@@ -186,19 +185,7 @@ export default function ServiciosPage() {
         </ul>
       </section>
 
-      <section
-        aria-label="Testimonios de clientes"
-        className="border-t border-line py-14 md:py-20"
-      >
-        <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
-          Qué dicen los clientes
-        </h2>
-        <ul className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((t) => (
-            <Testimonial key={t.id} testimonial={t} />
-          ))}
-        </ul>
-      </section>
+
 
       <section className="border-t border-line py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">

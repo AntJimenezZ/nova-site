@@ -87,43 +87,56 @@
       "client": "Servicios B2B"
     },
     {
-      "slug": "restaurant-app",
-      "title": "Restaurant App",
-      "summary": "Reservas, pedidos y pagos en mesa desde el móvil del cliente.",
-      "description": "Aplicación de reservas y pedidos para restaurantes",
-      "image": "/logos/restaurant_2075450.png",
-      "imageKind": "mark",
-      "year": "2024",
-      "category": "Móvil",
-      "tech": [
-        "React Native",
-        "Firebase",
-        "Stripe"
+      "slug": "sgge",
+      "title": "SGGE — Gestión Ganadera",
+      "summary": "Gestión ganadera de engorda bovina, del arete al reporte financiero.",
+      "description": "Sistema de gestión ganadera de engorda bovina con control de inventario, alimentación, salud, costos y facturación electrónica.",
+      "image": "/SGGE_PantallaPrincipal.jpeg",
+      "imageKind": "shot",
+      "gallery": [
+        "/SGGE_Dashboard.jpeg",
+        "/SGGE_GestionDeDatos.jpeg"
       ],
-      "longDescription": "App móvil para reservas, pedidos y pagos en mesa y delivery. Notificaciones push, seguimiento de pedido en tiempo real y panel para el staff.",
+      "year": "2025",
+      "category": "Web",
+      "tech": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "PostgreSQL",
+        "Procesamiento PDF"
+      ],
+      "longDescription": "SGGE (Sistema de Gestión Ganadera de Engorda) es una plataforma web integral diseñada para operar granjas de engorda bovina en Costa Rica. Centraliza en un solo lugar el inventario por arete, ocupación de corrales, programas de alimentación, tratamientos sanitarios veterinarios, ventas y análisis de rentabilidad. Su gran diferenciador es la conversión automática de facturas electrónicas PDF en registros operativos y de costos sin re-digitación manual.",
       "features": [
-        "Reservas con recordatorios push",
-        "Pedidos y pagos en app (Stripe)",
-        "Tracking en tiempo real",
-        "Panel para cocina y meseros"
+        "Inventario bovino y seguimiento individual por arete",
+        "Gestión de corrales, capacidad y ocupación operativa",
+        "Control de alimentación, insumos y raciones por lote",
+        "Módulo de salud veterinaria, tratamientos y alertas sanitarias",
+        "Comprobantes PDF: conversión automática de facturas a datos de costos y compras",
+        "Dashboard gerencial con ganancia diaria de peso (GDP) y rentabilidad",
+        "Bandeja de autorizaciones internas y bitácora de auditoría por roles"
       ],
       "outcomes": [
-        "+22% de rotación de mesas",
-        "+18% de ticket promedio"
+        "Automatización del ingreso de facturas PDF a costos operativos sin re-digitación",
+        "Trazabilidad total por arete, corral y lote con visión financiera en tiempo real"
       ],
       "metrics": [
         {
-          "label": "Descargas",
-          "value": "5K+"
+          "label": "Módulos operativos",
+          "value": "12"
         },
         {
-          "label": "Retención 30 d",
-          "value": "46%"
+          "label": "Trazabilidad hato",
+          "value": "100%"
+        },
+        {
+          "label": "Procesamiento PDF",
+          "value": "Automatizado"
         }
       ],
-      "role": "Mobile lead y backend en tiempo real",
-      "duration": "8 semanas",
-      "client": "Cadena gastronómica"
+      "role": "Full-stack (arquitectura web, ingestión PDF, dashboard)",
+      "duration": "12 semanas",
+      "client": "Sector Agropecuario / Engorda Bovina"
     }
   ]
 }
