@@ -85,7 +85,7 @@ export default function ServiciosPage() {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <div className="rounded-2xl border border-line bg-surface p-7 md:p-8">
+              <div className="glass-card rounded-2xl p-7 md:p-8">
                 <h3 className="label text-muted-foreground">Qué incluye</h3>
                 <ul className="mt-6 space-y-4">
                   {service.features.map((f) => (
@@ -97,19 +97,19 @@ export default function ServiciosPage() {
                 </ul>
               </div>
 
-              <div className="rounded-2xl border border-line bg-surface p-7 md:p-8">
+              <div className="glass-card rounded-2xl p-7 md:p-8">
                 <h3 className="label text-muted-foreground">Stack habitual</h3>
                 <ul className="mt-6 flex flex-wrap gap-2">
                   {service.tech.map((t) => (
                     <li
                       key={t}
-                      className="rounded-full border border-line bg-surface-2 px-3 py-1.5 font-display text-xs text-muted-foreground"
+                      className="glass-pill rounded-full px-3 py-1.5 font-display text-xs text-muted-foreground"
                     >
                       {t}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-6 border-t border-line/60 pt-5 text-sm leading-relaxed text-muted-foreground">
                   {service.summary}
                 </p>
               </div>
@@ -135,9 +135,9 @@ export default function ServiciosPage() {
           proyectos que ya entregamos.
         </p>
 
-        <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {pricing.map((p) => (
-            <li key={p.title} className="reveal flex flex-col bg-surface p-7">
+            <li key={p.title} className="reveal glass-card-interactive flex flex-col rounded-2xl p-7">
               <h3 className="font-display text-base font-semibold">{p.title}</h3>
               <p className="tnum mt-4 font-display text-[clamp(1.5rem,3vw,2rem)] font-bold leading-none tracking-tighter text-brand">
                 {formatPrice(p.from)}
@@ -165,12 +165,12 @@ export default function ServiciosPage() {
           Si no sabes cómo se llama lo que buscas, empieza por aquí.
         </p>
 
-        <ul className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-3">
+        <ul className="mt-10 grid gap-5 md:grid-cols-3">
           {guidance.map((g) => (
-            <li key={g.href} className="reveal bg-surface">
+            <li key={g.href} className="reveal">
               <a
                 href={g.href}
-                className="group flex h-full flex-col p-7 transition-colors hover:bg-surface-2"
+                className="group glass-card-interactive flex h-full flex-col rounded-2xl p-7"
               >
                 <p className="measure text-base leading-relaxed">
                   «{g.q}»

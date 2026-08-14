@@ -47,16 +47,18 @@ export default function ContactoPage() {
           </div>
 
           <h2 className="label mt-10 text-muted-foreground">Canales directos</h2>
-          <ul className="mt-5 flex flex-col gap-px overflow-hidden rounded-2xl border border-line bg-line">
+          <ul className="mt-5 flex flex-col gap-2.5">
             {socials.map(({ name, handle, href, Icon }) => (
               <li key={name}>
                 <a
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-4 bg-surface px-5 py-4 transition-colors hover:bg-surface-2"
+                  className="group glass-card-interactive flex items-center gap-4 rounded-2xl px-5 py-4"
                 >
-                  <Icon className="size-[18px] text-brand" />
+                  <div className="glass-pill flex size-9 items-center justify-center rounded-xl">
+                    <Icon className="size-[18px] text-brand" />
+                  </div>
                   <span className="min-w-0">
                     <span className="block text-sm font-medium">{handle}</span>
                     <span className="block text-xs text-muted-foreground">
@@ -79,7 +81,7 @@ export default function ContactoPage() {
           </p>
         </aside>
 
-        <div className="rounded-2xl border border-line bg-surface p-6 md:p-10">
+        <div className="glass-card rounded-3xl p-6 md:p-10 shadow-xl">
           <RequirementsForm />
         </div>
       </div>

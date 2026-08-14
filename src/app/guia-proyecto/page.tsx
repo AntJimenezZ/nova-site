@@ -136,9 +136,9 @@ export default function GuiaProyectoPage() {
         aria-label="Etapas del proyecto"
         className="border-t border-line py-14 md:py-20"
       >
-        <ol className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-2 lg:grid-cols-3">
+        <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {steps.map((s, i) => (
-            <li key={s.title} className="reveal bg-surface p-7 md:p-8">
+            <li key={s.title} className="reveal glass-card-interactive flex flex-col rounded-2xl p-7 md:p-8">
               <span className="label tnum text-brand">
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -159,7 +159,7 @@ export default function GuiaProyectoPage() {
         </h2>
 
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          <div className="rounded-2xl border border-line bg-surface p-7 md:p-8">
+          <div className="glass-card rounded-2xl p-7 md:p-8">
             <h3 className="label text-muted-foreground">
               Qué información nos ayuda
             </h3>
@@ -176,7 +176,7 @@ export default function GuiaProyectoPage() {
             </ul>
           </div>
 
-          <div className="rounded-2xl border border-line bg-surface p-7 md:p-8">
+          <div className="glass-card rounded-2xl p-7 md:p-8">
             <h3 className="label text-muted-foreground">Contacto directo</h3>
             <ul className="mt-6 space-y-4">
               <li>
@@ -200,7 +200,7 @@ export default function GuiaProyectoPage() {
                 </a>
               </li>
             </ul>
-            <p className="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-6 border-t border-line/60 pt-5 text-sm leading-relaxed text-muted-foreground">
               Si prefieres escribir un correo antes que llenar un formulario,
               este es el nuestro. Te contestamos igual de rápido.
             </p>
@@ -214,14 +214,14 @@ export default function GuiaProyectoPage() {
           Preguntas frecuentes
         </h2>
 
-        <div className="mt-10 overflow-hidden rounded-2xl border border-line">
+        <div className="glass-card mt-10 overflow-hidden rounded-2xl">
           {faqs.map((f) => (
             <details
               key={f.q}
               name="faq"
-              className="group border-b border-line bg-surface last:border-b-0"
+              className="group border-b border-line/60 last:border-b-0"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-left text-sm font-medium transition-colors hover:bg-surface-2 [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-left text-sm font-medium transition-colors hover:bg-surface-2/50 [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <ChevronDown
                   className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"

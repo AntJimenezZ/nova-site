@@ -49,172 +49,140 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
   const active = projects[index];
 
   return (
-    <section
-      aria-label="Proyectos destacados"
-      aria-roledescription="carrusel"
-      className="relative isolate h-[calc(100dvh-4rem)] min-h-[34rem] w-full overflow-hidden bg-stage md:h-[calc(100dvh-5rem)]"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
-    >
-      {/* El zoom envuelve LAS TRES capas en vez de ir en cada una.
-          Antes la clase saltaba de una capa a otra al rotar, y la que entraba
-          pasaba de scale(1) a scale(1.06) en un solo fotograma: un salto de 47px
-          que el navegador contabiliza como layout shift. Era el resto del CLS
-          que quedaba después de apilar los textos, y solo aparecía en pantallas
-          estrechas porque ahí el hero es más alto y el 6% pesa más.
-
-          Envuelto aquí la animación no se reinicia nunca, así que no hay salto.
-          De paso es una sola capa compuesta en vez de tres animándose a la vez,
-          que en un móvil de gama baja es la diferencia que se nota. */}
-      <div className="slow-zoom absolute inset-0">
-        {/* Las tres capas quedan montadas y solo cambia la opacidad: el crossfade
-            es una transición CSS compuesta en GPU, sin librería de animación. */}
-        {projects.map((p, i) =>
-          i === 0 || warm || i === index ? (
-            <div
-              key={p.slug}
-              aria-hidden={i !== index}
-              className={`absolute inset-0 transition-opacity duration-700 ease-out ${
-                i === index ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              {/* q=68: la imagen va bajo un velo oscuro, la pérdida no se percibe
-                  y recorta un tercio de los bytes del LCP. */}
-              <ProjectMedia
-                project={p}
-                priority={i === 0}
-                quality={68}
-                sizes="100vw"
-                fit="cover"
-              />
-            </div>
-          ) : null
-        )}
-      </div>
-
-      {/* Velo en dos capas. Concentrado en la banda inferior donde vive el texto:
-          arriba deja ver la captura, que es el objetivo del showreel.
-          Los porcentajes están medidos contra el texto real, no estimados. */}
+    <div className="relative mx-auto w-full max-w-[1400px] px-4 py-8 sm:px-8 sm:py-12 md:px-10 md:py-16 lg:px-12 lg:py-20">
+      {/* Ambient background glows for the liquid glass card */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-t from-stage from-0% via-stage/88 via-58% to-transparent to-90% md:via-stage/80 md:via-30% md:to-72%"
+        className="pointer-events-none absolute -top-8 left-10 size-80 rounded-full bg-brand-vivid/20 blur-3xl"
       />
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-stage/70 from-0% via-stage/10 via-45% to-transparent"
+        className="pointer-events-none absolute -bottom-8 right-10 size-80 rounded-full bg-cyan-500/15 blur-3xl"
       />
 
-      <div className="relative z-10 mx-auto flex h-full max-w-[1400px] flex-col justify-end px-5 pb-8 md:px-10 md:pb-12">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
-          <div className="min-w-0">
-            <div className="flex items-center gap-3">
-              <span className="label tnum text-brand-vivid">
-                {String(index + 1).padStart(2, "0")} /{" "}
-                {String(projects.length).padStart(2, "0")}
-              </span>
-              <span className="h-px w-8 bg-stage-muted/40" />
-              <span className="label text-stage-muted">
-                {active.category} · {active.year}
-              </span>
-            </div>
+      {/* The Floating Liquid Glass Hero Carousel Card */}
+      <section
+        aria-label="Proyectos destacados"
+        aria-roledescription="carrusel"
+        className="liquid-glass-hero relative isolate flex h-[85vh] min-h-[40rem] max-h-[880px] w-full flex-col justify-end overflow-hidden rounded-3xl md:rounded-[2.5rem] shadow-2xl"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocusCapture={() => setPaused(true)}
+        onBlurCapture={() => setPaused(false)}
+      >
+        {/* Specular top sheen line */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[2px] bg-gradient-to-r from-transparent via-white/80 to-transparent"
+        />
 
-            {/*
-              Los tres textos se apilan en la MISMA celda de grid y solo se ve
-              el activo. Suena raro, pero es lo que arregla el CLS: el bloque
-              está anclado abajo (justify-end del contenedor) y cada título
-              ocupa distinto número de líneas, así que al rotar el contenido
-              saltaba 37px cada 6 segundos. Y como el showreel no para nunca,
-              el CLS no tenía techo: subía mientras la persona siguiera en la
-              home —0.11 al medio minuto, y de ahí para arriba—.
-
-              Apilados, la celda mide siempre lo que el título más alto y ya
-              no se mueve nada. Un min-height a ojo habría hecho lo mismo hasta
-              que alguien editara un título desde el CMS; esto se mide solo.
-
-              items-end mantiene el texto pegado abajo, junto al botón, que es
-              donde estaba antes: el hueco de los títulos cortos queda arriba.
-            */}
-            <div className="mt-4 grid items-end">
-              {projects.map((p) => {
-                const on = p.slug === active.slug;
-                return (
-                  <div
-                    key={p.slug}
-                    // Los ocultos siguen ocupando su sitio (es el punto), pero
-                    // ni el lector de pantalla ni el tabulador deben entrar.
-                    aria-hidden={!on}
-                    inert={!on}
-                    className={`col-start-1 row-start-1 ${
-                      on ? "hero-text-in" : "invisible"
-                    }`}
-                  >
-                    <h2 className="font-display text-[clamp(2.5rem,8vw,5.5rem)] font-bold leading-[0.92] tracking-tighter text-stage-foreground">
-                      {p.title}
-                    </h2>
-                    <p className="measure mt-4 text-base leading-relaxed text-stage-muted md:text-lg">
-                      {p.summary}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <Link
-              href={`/proyectos/${active.slug}`}
-              className="mt-7 inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-stage-foreground px-6 text-sm font-medium text-stage transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
-            >
-              Ver el caso
-              <ArrowUpRight className="size-4" />
-            </Link>
-          </div>
-
-          {/* No es un hueco vacío: es el posicionamiento del estudio
-              más el índice navegable del showreel. */}
-          <div className="shrink-0 lg:max-w-xs lg:text-right">
-            {/* Este es el h1 de la home: es la frase estable que describe el sitio.
-                El título del showreel va en h2 porque rota. Visualmente no cambia:
-                font-sans y tracking normal anulan el estilo de encabezado. */}
-            <h1 className="font-sans text-sm font-normal leading-relaxed tracking-normal text-stage-muted">
-              Estudio de software en Costa Rica.
-              <br className="hidden lg:block" /> De la idea a producción.
-            </h1>
-
-            {/* me-16 en lg deja libre la esquina del botón flotante de WhatsApp */}
-            {/* La pausa va primero en el DOM: rota cada 6 s, así que tiene que
-                alcanzarse con un tabulador, no después de todos los puntos. */}
-            <div className="mt-6 flex items-center gap-2 lg:me-16 lg:justify-end">
-              <button
-                type="button"
-                onClick={() => setPaused((p) => !p)}
-                aria-label={paused ? "Reanudar rotación" : "Pausar rotación"}
-                className="mr-1 grid size-11 cursor-pointer place-items-center rounded-full border border-stage-muted/25 text-stage-muted transition-colors hover:border-stage-muted/60 hover:text-stage-foreground"
+        {/* Background images without slow zoom */}
+        <div className="absolute inset-0">
+          {projects.map((p, i) =>
+            i === 0 || warm || i === index ? (
+              <div
+                key={p.slug}
+                aria-hidden={i !== index}
+                className={`absolute inset-0 transition-opacity duration-700 ease-out ${i === index ? "opacity-100" : "opacity-0"
+                  }`}
               >
-                {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
-              </button>
-              {projects.map((p, i) => (
-                <button
-                  key={p.slug}
-                  type="button"
-                  onClick={() => setIndex(i)}
-                  aria-label={`Ver ${p.title}`}
-                  aria-current={i === index ? "true" : undefined}
-                  className="group grid size-11 cursor-pointer place-items-center"
-                >
-                  <span
-                    className={`h-1 rounded-full transition-all duration-300 ${
-                      i === index
-                        ? "w-8 bg-brand-vivid"
-                        : "w-4 bg-stage-muted/40 group-hover:bg-stage-muted"
-                    }`}
-                  />
-                </button>
-              ))}
+                <ProjectMedia
+                  project={p}
+                  priority={i === 0}
+                  quality={68}
+                  sizes="(max-width: 1440px) 100vw, 1400px"
+                  fit="cover"
+                />
+              </div>
+            ) : null
+          )}
+        </div>
+
+        {/* Velo degradado Liquid Glass en capas */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-stage from-0% via-stage/85 via-50% to-transparent to-90% md:via-stage/75 md:via-28% md:to-70%"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-r from-stage/75 from-0% via-stage/15 via-45% to-transparent"
+        />
+
+        {/* Floating Content Area */}
+        <div className="relative z-10 flex h-full flex-col justify-end p-6 sm:p-8 md:p-12 lg:p-14">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+            <div className="min-w-0">
+              <div className="mt-4 grid items-end">
+                {projects.map((p) => {
+                  const on = p.slug === active.slug;
+                  return (
+                    <div
+                      key={p.slug}
+                      aria-hidden={!on}
+                      inert={!on}
+                      className={`col-start-1 row-start-1 ${on ? "hero-text-in" : "invisible"
+                        }`}
+                    >
+                      <h2 className="font-display text-[clamp(2.25rem,6.5vw,5rem)] font-bold leading-[0.92] tracking-tighter text-stage-foreground">
+                        {p.title}
+                      </h2>
+                      <p className="measure mt-4 text-base leading-relaxed text-stage-muted md:text-lg">
+                        {p.summary}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <Link
+                href={`/proyectos/${active.slug}`}
+                className="mt-7 inline-flex h-12 cursor-pointer items-center gap-2 rounded-full bg-stage-foreground px-6 text-sm font-medium text-stage shadow-lg transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
+              >
+                Ver el caso
+                <ArrowUpRight className="size-4" />
+              </Link>
+            </div>
+
+            {/* Posicionamiento del estudio y controles del carrusel */}
+            <div className="shrink-0 lg:max-w-xs lg:text-right">
+              <h1 className="font-sans text-sm font-normal leading-relaxed tracking-normal text-stage-muted">
+                Estudio de software en Costa Rica.
+                <br className="hidden lg:block" /> De la idea a producción.
+              </h1>
+
+              <div className="mt-6 flex items-center lg:justify-end">
+                <div className="glass-dock inline-flex items-center gap-1.5 rounded-full p-1.5 shadow-xl">
+                  <button
+                    type="button"
+                    onClick={() => setPaused((p) => !p)}
+                    aria-label={paused ? "Reanudar rotación" : "Pausar rotación"}
+                    className="glass-button grid size-9 cursor-pointer place-items-center rounded-full text-stage-muted hover:text-white"
+                  >
+                    {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
+                  </button>
+                  {projects.map((p, i) => (
+                    <button
+                      key={p.slug}
+                      type="button"
+                      onClick={() => setIndex(i)}
+                      aria-label={`Ver ${p.title}`}
+                      aria-current={i === index ? "true" : undefined}
+                      className="group grid size-9 cursor-pointer place-items-center"
+                    >
+                      <span
+                        className={`h-1.5 rounded-full transition-all duration-300 ${i === index
+                          ? "w-7 bg-brand-vivid shadow-[0_0_12px_rgba(96,165,250,0.9)]"
+                          : "w-3 bg-white/30 group-hover:bg-white/70"
+                          }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

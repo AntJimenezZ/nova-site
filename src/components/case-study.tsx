@@ -42,10 +42,6 @@ export function CaseStudy({
             <span className="label tnum text-brand">
               {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </span>
-            <span className="h-px w-8 bg-line-strong" />
-            <span className="label text-muted-foreground">
-              {project.category} · {project.year}
-            </span>
           </div>
 
           <Heading
@@ -69,7 +65,7 @@ export function CaseStudy({
             {project.tech.map((t) => (
               <li
                 key={t}
-                className="rounded-full border border-line bg-surface-2 px-3 py-1.5 font-display text-xs text-muted-foreground"
+                className="glass-pill rounded-full px-3 py-1.5 font-display text-xs text-muted-foreground"
               >
                 {t}
               </li>
@@ -93,7 +89,7 @@ export function CaseStudy({
           <CaseStudyGallery project={project} priority={index === 0} />
 
           {project.features && (
-            <div className="reveal rounded-2xl border border-line bg-surface p-7 md:p-9">
+            <div className="reveal glass-card rounded-2xl p-7 md:p-9">
               <h3 className="label text-muted-foreground">Qué construimos</h3>
               <ul className="mt-6 grid gap-4 sm:grid-cols-2">
                 {project.features.map((f) => (
@@ -107,7 +103,7 @@ export function CaseStudy({
           )}
 
           {(project.metrics || project.outcomes) && (
-            <div className="reveal rounded-2xl border border-line bg-surface p-7 md:p-9">
+            <div className="reveal glass-card rounded-2xl p-7 md:p-9">
               <h3 className="label text-muted-foreground">Resultado</h3>
 
               {project.metrics && (
@@ -126,7 +122,7 @@ export function CaseStudy({
               )}
 
               {project.outcomes && (
-                <ul className="mt-8 space-y-3 border-t border-line pt-6">
+                <ul className="mt-8 space-y-3 border-t border-line/60 pt-6">
                   {project.outcomes.map((o) => (
                     <li
                       key={o}

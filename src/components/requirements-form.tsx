@@ -45,7 +45,7 @@ const TIMELINES = [
 const SIN_RESPUESTA = "Aún no lo sé";
 
 const field =
-  "h-12 w-full rounded-xl border border-line bg-surface px-4 text-sm text-foreground placeholder:text-muted-foreground/70 transition-colors focus:border-brand-vivid";
+  "h-12 w-full rounded-xl border border-line/80 bg-surface/80 backdrop-blur-md px-4 text-sm text-foreground placeholder:text-muted-foreground/70 transition-all focus:border-brand-vivid focus:bg-surface focus:shadow-sm";
 
 const selectField = `${field} cursor-pointer appearance-none bg-[length:1rem] bg-[right_1rem_center] bg-no-repeat pr-10`;
 

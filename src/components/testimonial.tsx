@@ -6,7 +6,7 @@ import type { Testimonial as TestimonialType } from "@/lib/testimonials";
  */
 export function Testimonial({ testimonial: t }: { testimonial: TestimonialType }) {
   return (
-    <li className="reveal flex flex-col rounded-2xl border border-line bg-surface p-7">
+    <li className="reveal glass-card-interactive flex flex-col rounded-2xl p-7 md:p-8">
       <div className="flex items-center justify-between gap-3">
         <span className="label text-brand">{t.projectTitle}</span>
         {/* El número va en texto: el color y las estrellas por sí solos
