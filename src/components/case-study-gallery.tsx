@@ -33,10 +33,15 @@ export function CaseStudyGallery({
   ];
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
   const isOpen = selectedIndex !== null;
 
   const handleClose = useCallback(() => {
-    setSelectedIndex(null);
+    setIsClosing(true);
+    setTimeout(() => {
+      setSelectedIndex(null);
+      setIsClosing(false);
+    }, 250);
   }, []);
 
   const handlePrev = useCallback(() => {
@@ -75,7 +80,7 @@ export function CaseStudyGallery({
           <figure
             key={img.src}
             onClick={() => setSelectedIndex(idx)}
-            className="reveal group relative aspect-[16/10] cursor-zoom-in overflow-hidden rounded-2xl border border-line bg-stage/80 transition-all duration-300 hover:border-brand/60 hover:shadow-2xl"
+            className="reveal group glass-card-interactive relative aspect-[16/10] cursor-zoom-in overflow-hidden rounded-2xl"
           >
             {idx === 0 ? (
               <ProjectMedia
@@ -90,14 +95,14 @@ export function CaseStudyGallery({
                 alt={img.alt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
-                className="object-contain object-center p-1 transition-transform duration-300 group-hover:scale-[1.01]"
+                className="object-contain object-center p-1 transition-transform duration-500 ease-out group-hover:scale-[1.02]"
               />
             )}
 
             {/* Indicator badge on hover */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              <div className="flex items-center gap-2 rounded-full bg-background/90 px-4 py-2 text-xs font-medium text-foreground shadow-lg backdrop-blur-md">
-                <ZoomIn className="size-4 text-brand" />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
+              <div className="glass-button flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-white shadow-xl">
+                <ZoomIn className="size-4 text-brand-vivid" />
                 <span>Ampliar imagen</span>
               </div>
             </div>
@@ -105,77 +110,79 @@ export function CaseStudyGallery({
         ))}
       </div>
 
-      {/* Lightbox Modal */}
-      {isOpen && selectedIndex !== null && (
+      {/* Liquid Glass Modal */}
+      {selectedIndex !== null && (
         <div
           role="dialog"
           aria-modal="true"
           aria-label="Vista ampliada de imagen"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-md animate-in fade-in duration-200"
+          className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 lg:p-12 bg-black/65 backdrop-blur-xl duration-250 ${
+            isClosing ? "animate-out fade-out" : "animate-in fade-in"
+          }`}
           onClick={handleClose}
         >
           <div
-            className="relative flex max-h-[94vh] max-w-[96vw] flex-col items-center justify-center"
+            className={`liquid-glass-modal relative flex max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl md:rounded-[2.25rem] p-4 sm:p-6 md:p-7 text-stage-foreground ${
+              isClosing ? "animate-out zoom-out-95 fade-out duration-250" : "animate-modal-in"
+            }`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top header bar */}
-            <div className="mb-3 flex w-full items-center justify-between px-2 text-white">
-              <span className="text-xs font-medium text-white/80">
-                {images[selectedIndex].caption} ({selectedIndex + 1}/{images.length})
-              </span>
+            <div className="mb-4 flex w-full items-center justify-end gap-3 px-1 text-white">
+
               <button
                 type="button"
                 onClick={handleClose}
                 aria-label="Cerrar imagen ampliada"
-                className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 active:scale-95"
+                className="glass-button flex size-9 cursor-pointer items-center justify-center rounded-full text-white"
               >
-                <X className="size-5" />
+                <X className="size-4" />
               </button>
             </div>
 
-            {/* Full Uncropped Image View */}
-            <div className="relative flex h-[78vh] w-[90vw] max-w-[1200px] items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-black/60 p-2 shadow-2xl">
+            {/* Stage: Frame for uncropped image with liquid glass inner lighting */}
+            <div className="relative flex min-h-[38vh] sm:min-h-[48vh] md:min-h-[54vh] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/50 shadow-inner">
               <Image
                 src={images[selectedIndex].src}
                 alt={images[selectedIndex].alt}
                 fill
-                sizes="90vw"
+                sizes="(max-width: 1200px) 90vw, 1100px"
                 priority
-                className="object-contain select-none p-2"
+                className="object-contain select-none p-3 transition-opacity duration-200"
               />
+
+              {/* Prev / Next controls floating on stage */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrev();
+                    }}
+                    aria-label="Imagen anterior"
+                    className="glass-button absolute left-3 top-1/2 -translate-y-1/2 z-20 flex size-11 cursor-pointer items-center justify-center rounded-full text-white"
+                  >
+                    <ChevronLeft className="size-6" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNext();
+                    }}
+                    aria-label="Siguiente imagen"
+                    className="glass-button absolute right-3 top-1/2 -translate-y-1/2 z-20 flex size-11 cursor-pointer items-center justify-center rounded-full text-white"
+                  >
+                    <ChevronRight className="size-6" />
+                  </button>
+                </>
+              )}
             </div>
 
-            {/* Prev / Next controls */}
+            {/* Thumbnail navigation dock */}
             {images.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrev();
-                  }}
-                  aria-label="Imagen anterior"
-                  className="absolute -left-12 top-1/2 -translate-y-1/2 flex size-11 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md transition-all hover:bg-white/30 active:scale-95 max-md:left-2 z-10"
-                >
-                  <ChevronLeft className="size-6" />
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNext();
-                  }}
-                  aria-label="Siguiente imagen"
-                  className="absolute -right-12 top-1/2 -translate-y-1/2 flex size-11 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-md transition-all hover:bg-white/30 active:scale-95 max-md:right-2 z-10"
-                >
-                  <ChevronRight className="size-6" />
-                </button>
-              </>
-            )}
-
-            {/* Thumbnail navigation bar */}
-            {images.length > 1 && (
-              <div className="mt-4 flex items-center gap-3">
+              <div className="glass-dock mt-4 flex items-center justify-center gap-2.5 overflow-x-auto rounded-2xl p-2 hidden-scrollbar">
                 {images.map((img, idx) => (
                   <button
                     key={img.src}
@@ -184,17 +191,17 @@ export function CaseStudyGallery({
                       e.stopPropagation();
                       setSelectedIndex(idx);
                     }}
-                    className={`relative h-12 w-20 overflow-hidden rounded-lg border transition-all ${
+                    className={`relative h-11 w-18 shrink-0 overflow-hidden rounded-xl border transition-all duration-200 ${
                       idx === selectedIndex
-                        ? "border-brand ring-2 ring-brand/50 scale-105"
-                        : "border-white/20 opacity-60 hover:opacity-100"
+                        ? "border-brand-vivid ring-2 ring-brand-vivid/60 scale-105 shadow-md opacity-100"
+                        : "border-white/15 opacity-50 hover:opacity-90 hover:border-white/30"
                     }`}
                   >
                     <Image
                       src={img.src}
                       alt={img.alt}
                       fill
-                      sizes="80px"
+                      sizes="72px"
                       className="object-cover"
                     />
                   </button>

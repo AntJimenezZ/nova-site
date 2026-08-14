@@ -355,10 +355,12 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-16 flex flex-col gap-3 border-t border-line pt-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {site.name}. Todos los derechos reservados.</p>
-          <p className="tnum">
+          <p suppressHydrationWarning>© {new Date().getFullYear()} {site.name}. Todos los derechos reservados.</p>
+          <p className="tnum" suppressHydrationWarning>
             {site.address.locality}, {site.address.region}, Costa Rica ·{" "}
-            {site.phoneDisplay}
+            <a href={`tel:${site.phone}`} className="hover:text-brand transition-colors">
+              {site.phoneDisplay}
+            </a>
           </p>
         </div>
       </div>

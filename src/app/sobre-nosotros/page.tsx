@@ -50,21 +50,18 @@ export default function SobreNosotrosPage() {
           {team.map((m) => (
             <li
               key={m.name}
-              className="reveal group overflow-hidden rounded-2xl border border-line bg-surface"
+              className="reveal group glass-card-interactive overflow-hidden rounded-2xl p-3"
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
-                {/* El gris solo donde hay puntero: en táctil no existe el hover
-                    que lo quita, así que la foto se quedaba en blanco y negro
-                    para siempre. */}
+              <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-surface-2">
                 <Image
                   src={m.avatar}
                   alt={m.name}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover object-top transition-all duration-500 group-hover:scale-[1.03] pointer-fine:grayscale pointer-fine:group-hover:grayscale-0"
+                  className="object-cover object-top transition-all duration-500 group-hover:scale-[1.03]"
                 />
               </div>
-              <div className="p-6">
+              <div className="p-4 pt-5">
                 <div className="flex items-baseline justify-between gap-3">
                   <h3 className="font-display text-lg font-semibold">
                     {m.name}
@@ -78,7 +75,7 @@ export default function SobreNosotrosPage() {
                   {m.technologies.map((t) => (
                     <li
                       key={t}
-                      className="rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[0.7rem] text-muted-foreground"
+                      className="glass-pill rounded-full px-2.5 py-1 text-[0.7rem] text-muted-foreground"
                     >
                       {t}
                     </li>

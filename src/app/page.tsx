@@ -1,28 +1,17 @@
-import Image from "next/image";
+
 import Link from "next/link";
 import { ArrowUpRight, Mail } from "lucide-react";
 
 import { HeroShowreel } from "@/components/showreel";
+import { Gallery6 } from "@/components/blocks/gallery6";
 import { RequirementsForm } from "@/components/requirements-form";
 import { Testimonial } from "@/components/testimonial";
 import { WhatsAppIcon } from "@/components/brand-icons";
 import { projects } from "@/lib/projects";
 import { services } from "@/lib/services";
-import { team } from "@/lib/team";
 import { testimonials } from "@/lib/testimonials";
 import { site } from "@/lib/site";
 
-/**
- * Cifras que el visitante puede verificar bajando a la sección de trabajo.
- * Antes decía "+20 proyectos entregados" con tres casos publicados: un número
- * que el usuario desmiente en un scroll cuesta más que no poner número.
- */
-const stats = [
-  { value: `${projects.length}`, label: "Proyectos en producción" },
-  { value: "100%", label: "Entregados y funcionando" },
-  { value: "<24 h", label: "Tiempo de respuesta" },
-  { value: `${team.length}`, label: "Personas en el equipo" },
-];
 
 const process = [
   {
@@ -43,41 +32,27 @@ const process = [
   },
 ];
 
+const galleryItems = projects.map((p) => ({
+  id: p.slug,
+  title: p.title,
+  summary: p.summary,
+  url: `/proyectos/${p.slug}`,
+  image: p.image,
+}));
+
 export default function HomePage() {
   return (
     <>
       <HeroShowreel projects={projects} />
 
-      {/* Cifras: da contexto inmediato tras el showreel, sin párrafos de relleno */}
-      <section
-        aria-label="Cifras del estudio"
-        className="border-b border-line bg-surface-2"
-      >
-        <dl className="mx-auto grid max-w-[1400px] grid-cols-2 gap-px px-5 py-10 md:grid-cols-4 md:px-10 md:py-14">
-          {stats.map((s) => (
-            <div key={s.label} className="px-2">
-              <dt className="sr-only">{s.label}</dt>
-              <dd>
-                <span className="tnum block font-display text-[clamp(2rem,4vw,3rem)] font-bold leading-none tracking-tighter">
-                  {s.value}
-                </span>
-                <span className="mt-2 block text-xs leading-snug text-muted-foreground md:text-sm">
-                  {s.label}
-                </span>
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </section>
 
       {/* Servicios */}
       <section
         id="servicios"
-        className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28"
+        className="relative mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28 overflow-hidden"
       >
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-
             <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
               Nos enfocamos en:
             </h2>
@@ -91,27 +66,31 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <ul className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2">
+        <ul className="relative z-10 mt-12 grid gap-6 sm:grid-cols-2">
           {services.map((s) => (
-            <li key={s.slug} className="reveal bg-surface">
+            <li key={s.slug} className="reveal">
               <Link
                 href={`/servicios#${s.slug}`}
-                className="group flex h-full flex-col p-7 transition-colors duration-200 hover:bg-surface-2 md:p-9"
+                className="group glass-card-interactive flex h-full flex-col rounded-2xl p-7 md:p-9"
               >
-                <s.icon
-                  className="size-6 text-brand transition-transform duration-300 group-hover:-translate-y-0.5"
-                  aria-hidden
-                />
+                <div className="flex items-center justify-between">
+                  <div className="glass-pill flex size-12 items-center justify-center rounded-xl">
+                    <s.icon
+                      className="size-6 text-foreground transition-transform duration-300 group-hover:-translate-y-0.5"
+                      aria-hidden
+                    />
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    Ver detalle
+                    <ArrowUpRight className="size-3.5" />
+                  </span>
+                </div>
                 <h3 className="mt-6 font-display text-xl font-semibold">
                   {s.title}
                 </h3>
                 <p className="measure mt-3 text-sm leading-relaxed text-muted-foreground">
                   {s.summary}
                 </p>
-                <span className="mt-6 inline-flex items-center gap-1.5 text-xs font-medium text-brand opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                  Ver detalle
-                  <ArrowUpRight className="size-3.5" />
-                </span>
               </Link>
             </li>
           ))}
@@ -119,57 +98,9 @@ export default function HomePage() {
       </section>
 
       {/* Trabajo seleccionado: índice tipo tabla, la ficha completa vive en /proyectos */}
-      <section
-        id="trabajo"
-        className="border-y border-line bg-surface-2 py-20 md:py-28"
-      >
-        <div className="mx-auto max-w-[1400px] px-5 md:px-10">
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <div>
-
-              <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
-                Casos recientes
-              </h2>
-            </div>
-            <Link
-              href="/proyectos"
-              className="group inline-flex items-center gap-2 text-sm font-medium text-brand"
-            >
-              Ver todos los casos
-              <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-
-          <ol className="mt-12 border-t border-line">
-            {projects.map((p, i) => (
-              <li key={p.slug} className="reveal">
-                <Link
-                  href={`/proyectos/${p.slug}`}
-                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-5 gap-y-2 border-b border-line py-6 transition-colors hover:bg-surface md:grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)_auto_auto] md:gap-x-8 md:py-8"
-                >
-                  <span className="label tnum text-muted-foreground">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-
-                  <h3 className="font-display text-xl font-semibold tracking-tight transition-transform duration-300 group-hover:translate-x-1 md:text-2xl">
-                    {p.title}
-                  </h3>
-
-                  <p className="col-start-2 row-start-2 text-sm text-muted-foreground md:col-start-3 md:row-start-1 md:truncate">
-                    {p.summary}
-                  </p>
-
-                  <span className="label col-start-3 row-start-1 text-muted-foreground md:col-start-4">
-                    {p.category} · {p.year}
-                  </span>
-
-                  <ArrowUpRight className="col-start-3 row-start-2 size-5 justify-self-end text-muted-foreground transition-all duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand md:col-start-5 md:row-start-1" />
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      <div id="trabajo">
+        <Gallery6 heading="Casos recientes" demoUrl="/proyectos" items={galleryItems} />
+      </div>
 
       {/* Proceso */}
       <section className="mx-auto max-w-[1400px] px-5 py-20 md:px-10 md:py-28">
@@ -185,11 +116,11 @@ export default function HomePage() {
             </p>
           </div>
 
-          <ol className="border-t border-line">
+          <ol className="">
             {process.map((step, i) => (
               <li
                 key={step.title}
-                className="reveal grid grid-cols-[auto_1fr] gap-x-6 border-b border-line py-8 md:gap-x-10 md:py-10"
+                className="reveal grid grid-cols-[auto_1fr] gap-x-6 py-8 md:gap-x-10 md:py-10"
               >
                 <span className="label tnum pt-1.5 text-brand">
                   {String(i + 1).padStart(2, "0")}
@@ -208,38 +139,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Equipo */}
-      <section
-        id="equipo"
-        className="border-y border-line bg-surface-2 py-20 md:py-28"
-      >
-        <div className="mx-auto max-w-[1400px] px-5 md:px-10">
-
-          <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
-            Quién lo construye
-          </h2>
-
-          <ul className="mt-12 grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-5">
-            {team.map((m) => (
-              <li key={m.name} className="reveal group">
-                <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-line bg-surface">
-                  <Image
-                    src={m.avatar}
-                    alt={m.name}
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                    className="object-cover grayscale transition-all duration-500 group-hover:scale-[1.03] group-hover:grayscale-0"
-                  />
-                </div>
-                <h3 className="mt-4 font-display text-base font-semibold">
-                  {m.name}
-                </h3>
-                <p className="text-xs text-muted-foreground">{m.role}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
 
       {/* Testimonios justo antes del formulario: la prueba social vale donde
           la persona decide, no en /sobre-nosotros, que es la que menos visita. */}
@@ -304,7 +203,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-line bg-surface p-6 md:p-9">
+          <div className="glass-card rounded-3xl p-6 md:p-9 shadow-xl">
             <RequirementsForm />
           </div>
         </div>

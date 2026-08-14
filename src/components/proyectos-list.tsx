@@ -56,10 +56,6 @@ export function ProyectosList({ projects }: { projects: Project[] }) {
                     <span className="label tnum text-brand">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="h-px w-8 bg-line-strong" />
-                    <span className="label text-muted-foreground">
-                      {p.category} · {p.year}
-                    </span>
                   </div>
 
                   <h2
@@ -80,7 +76,7 @@ export function ProyectosList({ projects }: { projects: Project[] }) {
                     {p.tech.slice(0, 4).map((t) => (
                       <li
                         key={t}
-                        className="rounded-full border border-line bg-surface-2 px-3 py-1.5 text-xs text-muted-foreground"
+                        className="glass-pill rounded-full px-3 py-1.5 font-display text-xs text-muted-foreground"
                       >
                         {t}
                       </li>
