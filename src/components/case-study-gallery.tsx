@@ -116,13 +116,13 @@ export function CaseStudyGallery({
           role="dialog"
           aria-modal="true"
           aria-label="Vista ampliada de imagen"
-          className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 lg:p-12 bg-black/65 backdrop-blur-xl duration-250 ${
+          className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 lg:p-12 bg-black/40 backdrop-blur-xl duration-250 ${
             isClosing ? "animate-out fade-out" : "animate-in fade-in"
           }`}
           onClick={handleClose}
         >
           <div
-            className={`liquid-glass-modal relative flex max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl md:rounded-[2.25rem] p-4 sm:p-6 md:p-7 text-stage-foreground ${
+            className={`liquid-glass-modal relative flex h-[95vh] w-[95vw] max-w-[1600px] flex-col overflow-hidden rounded-3xl md:rounded-[2.25rem] p-4 sm:p-6 md:p-7 text-stage-foreground ${
               isClosing ? "animate-out zoom-out-95 fade-out duration-250" : "animate-modal-in"
             }`}
             onClick={(e) => e.stopPropagation()}

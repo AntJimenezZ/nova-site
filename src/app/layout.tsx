@@ -6,6 +6,7 @@ import { SiteHeader, SiteFooter, WhatsAppFab } from "@/components/chrome";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Locator } from "@/components/locator";
 import { JsonLd } from "@/components/json-ld";
+import { AmbientBackground } from "@/components/ambient-background";
 import { businessSchema, openGraphFor, site } from "@/lib/site";
 
 const archivo = Archivo({
@@ -118,11 +119,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <body
         className={`${archivo.variable} ${spaceGrotesk.variable} min-h-[100dvh] overflow-x-hidden`}
       >
-        {/* Global ambient background glows (Liquid Glass Aesthetic) */}
-        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute -left-[10%] top-[10%] size-[50vw] rounded-full bg-brand-vivid/15 blur-[120px]" />
-          <div className="absolute -right-[10%] bottom-[10%] size-[50vw] rounded-full bg-cyan-500/15 blur-[120px]" />
-        </div>
+        {/* GPU-accelerated ambient background glow (WebGL Shader) */}
+        <AmbientBackground />
 
         <noscript>
           <iframe

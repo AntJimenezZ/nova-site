@@ -34,7 +34,7 @@ export function CaseStudy({
     <section
       id={project.slug}
       aria-labelledby={`${project.slug}-title`}
-      className="scroll-mt-24 border-t border-line py-16 first:border-t-0 md:py-24"
+      className="scroll-mt-24 py-16 md:py-24"
     >
       <div className="grid gap-10 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] lg:gap-16">
         <div className="lg:sticky lg:top-28 lg:self-start">
@@ -85,15 +85,15 @@ export function CaseStudy({
           )}
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-10 md:gap-14">
           <CaseStudyGallery project={project} priority={index === 0} />
 
           {project.features && (
-            <div className="reveal glass-card rounded-2xl p-7 md:p-9">
+            <div className="reveal">
               <h3 className="label text-muted-foreground">Qué construimos</h3>
-              <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+              <ul className="mt-5 grid gap-4 sm:grid-cols-2">
                 {project.features.map((f) => (
-                  <li key={f} className="flex gap-3 text-sm leading-relaxed">
+                  <li key={f} className="flex items-start gap-3 text-sm leading-relaxed text-foreground">
                     <Check className="mt-0.5 size-4 shrink-0 text-brand" />
                     <span>{f}</span>
                   </li>
@@ -103,14 +103,14 @@ export function CaseStudy({
           )}
 
           {(project.metrics || project.outcomes) && (
-            <div className="reveal glass-card rounded-2xl p-7 md:p-9">
+            <div className="reveal">
               <h3 className="label text-muted-foreground">Resultado</h3>
 
               {project.metrics && (
-                <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
+                <div className="mt-5 grid grid-cols-2 gap-6 sm:grid-cols-3">
                   {project.metrics.map((m) => (
                     <div key={m.label}>
-                      <p className="tnum font-display text-3xl font-bold leading-none md:text-4xl">
+                      <p className="tnum font-display text-3xl font-bold leading-none text-foreground md:text-4xl">
                         {m.value}
                       </p>
                       <p className="mt-2 text-xs leading-snug text-muted-foreground">
@@ -122,11 +122,11 @@ export function CaseStudy({
               )}
 
               {project.outcomes && (
-                <ul className="mt-8 space-y-3 border-t border-line/60 pt-6">
+                <ul className="mt-6 space-y-3">
                   {project.outcomes.map((o) => (
                     <li
                       key={o}
-                      className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
+                      className="flex items-start gap-3 text-sm leading-relaxed text-muted-foreground"
                     >
                       <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand-vivid" />
                       <span>{o}</span>

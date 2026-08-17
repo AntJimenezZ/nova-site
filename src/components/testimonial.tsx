@@ -21,7 +21,7 @@ export function Testimonial({ testimonial: t }: { testimonial: TestimonialType }
         “{t.comment}”
       </blockquote>
 
-      <footer className="mt-6 border-t border-line pt-4">
+      <footer className="mt-6 pt-2">
         <p className="text-sm font-medium">{t.name}</p>
         <p className="text-xs text-muted-foreground">
           {t.role} · {t.company}

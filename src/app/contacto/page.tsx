@@ -33,7 +33,7 @@ export default function ContactoPage() {
         </p>
       </header>
 
-      <div className="grid gap-12 border-t border-line py-14 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20 md:py-20">
+      <div className="grid gap-12 py-14 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20 md:py-20">
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="flex items-start gap-3">
             <Clock className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />
@@ -47,25 +47,25 @@ export default function ContactoPage() {
           </div>
 
           <h2 className="label mt-10 text-muted-foreground">Canales directos</h2>
-          <ul className="mt-5 flex flex-col gap-2.5">
+          <ul className="mt-5 flex flex-col divide-y divide-line/60">
             {socials.map(({ name, handle, href, Icon }) => (
               <li key={name}>
                 <a
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group glass-card-interactive flex items-center gap-4 rounded-2xl px-5 py-4"
+                  className="group flex items-center gap-4 py-3.5 transition-colors"
                 >
-                  <div className="glass-pill flex size-9 items-center justify-center rounded-xl">
-                    <Icon className="size-[18px] text-brand" />
+                  <div className="flex size-9 items-center justify-center rounded-xl bg-surface-2 text-brand transition-colors group-hover:bg-brand-soft">
+                    <Icon className="size-4 text-brand" />
                   </div>
                   <span className="min-w-0">
-                    <span className="block text-sm font-medium">{handle}</span>
+                    <span className="block text-sm font-medium text-foreground transition-colors group-hover:text-brand">{handle}</span>
                     <span className="block text-xs text-muted-foreground">
                       {name}
                     </span>
                   </span>
-                  <ArrowUpRight className="ml-auto size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  <ArrowUpRight className="ml-auto size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand" />
                   <span className="sr-only">(se abre en una pestaña nueva)</span>
                 </a>
               </li>

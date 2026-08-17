@@ -134,18 +134,18 @@ export default function GuiaProyectoPage() {
 
       <section
         aria-label="Etapas del proyecto"
-        className="border-t border-line py-14 md:py-20"
+        className="py-14 md:py-20"
       >
-        <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <ol className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
           {steps.map((s, i) => (
-            <li key={s.title} className="reveal glass-card-interactive flex flex-col rounded-2xl p-7 md:p-8">
-              <span className="label tnum text-brand">
+            <li key={s.title} className="reveal flex flex-col">
+              <span className="label tnum text-brand text-sm font-semibold">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h2 className="mt-4 font-display text-lg font-semibold">
+              <h2 className="mt-3 font-display text-xl font-bold tracking-tight">
                 {s.title}
               </h2>
-              <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {s.body}
               </p>
             </li>
@@ -153,21 +153,21 @@ export default function GuiaProyectoPage() {
         </ol>
       </section>
 
-      <section className="border-t border-line py-14 md:py-20">
+      <section className="py-14 md:py-20">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
-          Cómo trabajamos
+          Para preparar tu proyecto
         </h2>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2">
-          <div className="glass-card rounded-2xl p-7 md:p-8">
+        <div className="mt-10 grid gap-10 sm:grid-cols-2 sm:gap-12 lg:gap-16">
+          <div className="flex flex-col">
             <h3 className="label text-muted-foreground">
               Qué información nos ayuda
             </h3>
-            <ul className="mt-6 space-y-3">
+            <ul className="mt-5 space-y-3">
               {helpful.map((h) => (
                 <li
                   key={h}
-                  className="flex gap-3 text-sm leading-relaxed text-muted-foreground"
+                  className="flex items-start gap-3 text-sm leading-relaxed text-muted-foreground"
                 >
                   <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand-vivid" />
                   <span>{h}</span>
@@ -176,9 +176,9 @@ export default function GuiaProyectoPage() {
             </ul>
           </div>
 
-          <div className="glass-card rounded-2xl p-7 md:p-8">
+          <div className="flex flex-col">
             <h3 className="label text-muted-foreground">Contacto directo</h3>
-            <ul className="mt-6 space-y-4">
+            <ul className="mt-5 space-y-4">
               <li>
                 <a
                   href={`mailto:${site.email}`}
@@ -200,7 +200,7 @@ export default function GuiaProyectoPage() {
                 </a>
               </li>
             </ul>
-            <p className="mt-6 border-t border-line/60 pt-5 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
               Si prefieres escribir un correo antes que llenar un formulario,
               este es el nuestro. Te contestamos igual de rápido.
             </p>
@@ -209,26 +209,26 @@ export default function GuiaProyectoPage() {
       </section>
 
       {/* <details> nativo: accesible por teclado y sin JavaScript */}
-      <section id="faqs" className="scroll-mt-24 border-t border-line py-14 md:py-20">
+      <section id="faqs" className="scroll-mt-24 py-14 md:py-20">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           Preguntas frecuentes
         </h2>
 
-        <div className="glass-card mt-10 overflow-hidden rounded-2xl">
+        <div className="mt-10 divide-y divide-line">
           {faqs.map((f) => (
             <details
               key={f.q}
               name="faq"
-              className="group border-b border-line/60 last:border-b-0"
+              className="group py-2"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 px-6 py-5 text-left text-sm font-medium transition-colors hover:bg-surface-2/50 [&::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-4 text-left text-sm font-medium transition-colors hover:text-brand [&::-webkit-details-marker]:hidden">
                 {f.q}
                 <ChevronDown
                   className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180"
                   aria-hidden
                 />
               </summary>
-              <div className="px-6 pb-6">
+              <div className="pb-4">
                 <p className="measure text-sm leading-relaxed text-muted-foreground">
                   {f.a}
                 </p>
@@ -250,7 +250,7 @@ export default function GuiaProyectoPage() {
       {/* El formulario vivía aquí y en /contacto, dos páginas que se enlazan
           entre sí: la misma persona se lo encontraba tres veces. Aquí queda
           la guía; el formulario, en un sitio solo. */}
-      <section className="border-t border-line py-20 text-center md:py-28">
+      <section className="py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
           ¿Listo para empezar?
         </h2>

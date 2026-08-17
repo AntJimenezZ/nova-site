@@ -69,7 +69,7 @@
   --surface-2: oklch(0.2450 0.0115 255);
 
   --foreground: oklch(0.9700 0.0030 250);
-  --muted-foreground: oklch(0.7000 0.0130 255);
+  --muted-foreground: oklch(0.8500 0.0130 255);
 
   --line: oklch(0.2950 0.0125 255);
   --line-strong: oklch(0.3850 0.0150 255);
@@ -397,6 +397,20 @@
 
 .hero-text-in {
   animation: hero-text-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Barra de progreso animada para el carrusel / reel showreel */
+@keyframes showreel-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.showreel-progress-fill {
+  transform-origin: left center;
+  animation-name: showreel-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  will-change: transform;
 }
 
 /* Deriva lenta de la imagen del showreel.

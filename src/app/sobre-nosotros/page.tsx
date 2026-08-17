@@ -27,12 +27,13 @@ export default function SobreNosotrosPage() {
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
           Quiénes
           <br />
-          Somos?
+          somos
         </h1>
         <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-          Somos cinco colegas de {site.address.locality}, {site.address.region},
-          que logran estrategia, diseño y código. Trabajas directamente con quien
-          construye tu producto.
+          Somos un equipo de {site.address.locality}, {site.address.region},
+          enfocado en diseño y desarrollo de software a medida.
+          Trabajas directamente con los desarrolladores e ingenieros que construyen tu producto,
+          sin intermediarios.
         </p>
       </header>
 
@@ -40,7 +41,7 @@ export default function SobreNosotrosPage() {
           "carpeta": una interacción que solo añadía un paso para ver contenido. */}
       <section
         aria-label="Nuestro equipo"
-        className="border-t border-line py-14 md:py-20"
+        className="py-14 md:py-20"
       >
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           Quién lo construye
@@ -89,7 +90,7 @@ export default function SobreNosotrosPage() {
 
       <section
         aria-label="Testimonios de clientes"
-        className="border-t border-line py-14 md:py-20"
+        className="py-14 md:py-20"
       >
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           Qué dicen los clientes
@@ -102,7 +103,7 @@ export default function SobreNosotrosPage() {
         </ul>
       </section>
 
-      <section className="border-t border-line py-20 text-center md:py-28">
+      <section className="py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
           ¿Construimos algo juntos?
         </h2>
