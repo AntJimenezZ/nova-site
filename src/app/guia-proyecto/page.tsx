@@ -134,7 +134,7 @@ export default function GuiaProyectoPage() {
 
       <section
         aria-label="Etapas del proyecto"
-        className="border-t border-line py-14 md:py-20"
+        className="py-14 md:py-20"
       >
         <ol className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {steps.map((s, i) => (
@@ -153,7 +153,7 @@ export default function GuiaProyectoPage() {
         </ol>
       </section>
 
-      <section className="border-t border-line py-14 md:py-20">
+      <section className="py-14 md:py-20">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           Cómo trabajamos
         </h2>
@@ -200,7 +200,7 @@ export default function GuiaProyectoPage() {
                 </a>
               </li>
             </ul>
-            <p className="mt-6 border-t border-line/60 pt-5 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-6 text-sm leading-relaxed text-muted-foreground">
               Si prefieres escribir un correo antes que llenar un formulario,
               este es el nuestro. Te contestamos igual de rápido.
             </p>
@@ -209,7 +209,7 @@ export default function GuiaProyectoPage() {
       </section>
 
       {/* <details> nativo: accesible por teclado y sin JavaScript */}
-      <section id="faqs" className="scroll-mt-24 border-t border-line py-14 md:py-20">
+      <section id="faqs" className="scroll-mt-24 py-14 md:py-20">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           Preguntas frecuentes
         </h2>
@@ -250,7 +250,7 @@ export default function GuiaProyectoPage() {
       {/* El formulario vivía aquí y en /contacto, dos páginas que se enlazan
           entre sí: la misma persona se lo encontraba tres veces. Aquí queda
           la guía; el formulario, en un sitio solo. */}
-      <section className="border-t border-line py-20 text-center md:py-28">
+      <section className="py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
           ¿Listo para empezar?
         </h2>

@@ -33,7 +33,7 @@ export default function ContactoPage() {
         </p>
       </header>
 
-      <div className="grid gap-12 border-t border-line py-14 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20 md:py-20">
+      <div className="grid gap-12 py-14 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-20 md:py-20">
         <aside className="lg:sticky lg:top-28 lg:self-start">
           <div className="flex items-start gap-3">
             <Clock className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden />

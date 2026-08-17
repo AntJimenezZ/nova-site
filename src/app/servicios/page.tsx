@@ -59,7 +59,7 @@ export default function ServiciosPage() {
           key={service.slug}
           id={service.slug}
           aria-labelledby={`${service.slug}-title`}
-          className="scroll-mt-24 border-t border-line py-14 md:py-20"
+          className="scroll-mt-24 py-14 md:py-20"
         >
           <div className="grid gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-16">
             <div className="lg:sticky lg:top-28 lg:self-start">
@@ -84,12 +84,12 @@ export default function ServiciosPage() {
               </p>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="glass-card rounded-2xl p-7 md:p-8">
+            <div className="grid gap-10 sm:grid-cols-2 sm:gap-8 lg:gap-12">
+              <div className="flex flex-col">
                 <h3 className="label text-muted-foreground">Qué incluye</h3>
-                <ul className="mt-6 space-y-4">
+                <ul className="mt-5 space-y-3.5">
                   {service.features.map((f) => (
-                    <li key={f} className="flex gap-3 text-sm leading-relaxed">
+                    <li key={f} className="flex items-start gap-3 text-sm leading-relaxed text-foreground">
                       <Check className="mt-0.5 size-4 shrink-0 text-brand" />
                       <span>{f}</span>
                     </li>
@@ -97,9 +97,9 @@ export default function ServiciosPage() {
                 </ul>
               </div>
 
-              <div className="glass-card rounded-2xl p-7 md:p-8">
+              <div className="flex flex-col">
                 <h3 className="label text-muted-foreground">Stack habitual</h3>
-                <ul className="mt-6 flex flex-wrap gap-2">
+                <ul className="mt-5 flex flex-wrap gap-2">
                   {service.tech.map((t) => (
                     <li
                       key={t}
@@ -109,7 +109,7 @@ export default function ServiciosPage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-6 border-t border-line/60 pt-5 text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
                   {service.summary}
                 </p>
               </div>
@@ -121,7 +121,7 @@ export default function ServiciosPage() {
       <section
         id="precios"
         aria-labelledby="precios-title"
-        className="scroll-mt-24 border-t border-line py-14 md:py-20"
+        className="scroll-mt-24 py-14 md:py-20"
       >
         <h2
           id="precios-title"
@@ -157,7 +157,7 @@ export default function ServiciosPage() {
         </p>
       </section>
 
-      <section className="border-t border-line py-14 md:py-20">
+      <section className="py-14 md:py-20">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           ¿Qué necesito?
         </h2>
@@ -187,7 +187,7 @@ export default function ServiciosPage() {
 
 
 
-      <section className="border-t border-line py-20 text-center md:py-28">
+      <section className="py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
           ¿Cuál encaja con lo tuyo?
         </h2>

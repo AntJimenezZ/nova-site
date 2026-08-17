@@ -40,7 +40,7 @@ export default function SobreNosotrosPage() {
           "carpeta": una interacción que solo añadía un paso para ver contenido. */}
       <section
         aria-label="Nuestro equipo"
-        className="border-t border-line py-14 md:py-20"
+        className="py-14 md:py-20"
       >
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           Quién lo construye
@@ -89,7 +89,7 @@ export default function SobreNosotrosPage() {
 
       <section
         aria-label="Testimonios de clientes"
-        className="border-t border-line py-14 md:py-20"
+        className="py-14 md:py-20"
       >
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold tracking-tighter">
           Qué dicen los clientes
@@ -102,7 +102,7 @@ export default function SobreNosotrosPage() {
         </ul>
       </section>
 
-      <section className="border-t border-line py-20 text-center md:py-28">
+      <section className="py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
           ¿Construimos algo juntos?
         </h2>

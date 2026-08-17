@@ -50,15 +50,6 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
 
   return (
     <div className="relative mx-auto w-full max-w-[1400px] px-4 py-8 sm:px-8 sm:py-12 md:px-10 md:py-16 lg:px-12 lg:py-20">
-      {/* Ambient background glows for the liquid glass card */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-8 left-10 size-80 rounded-full bg-brand-vivid/20 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-8 right-10 size-80 rounded-full bg-cyan-500/15 blur-3xl"
-      />
 
       {/* The Floating Liquid Glass Hero Carousel Card */}
       <section

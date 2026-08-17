@@ -38,7 +38,7 @@ export default function ProyectosPage() {
 
       <ProyectosList projects={projects} />
 
-      <section className="border-t border-line py-20 text-center md:py-28">
+      <section className="py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
           ¿Tu proyecto es el siguiente?
         </h2>

@@ -73,7 +73,7 @@ export default async function ProyectoPage({ params }: Params) {
         heading="h1"
       />
 
-      <section className="border-t border-line py-16 md:py-24">
+      <section className="py-16 md:py-24">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
 
@@ -91,7 +91,7 @@ export default async function ProyectoPage({ params }: Params) {
         </div>
       </section>
 
-      <section className="border-t border-line py-20 text-center md:py-28">
+      <section className="py-20 text-center md:py-28">
         <h2 className="font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold tracking-tighter">
           ¿Tu proyecto es el siguiente?
         </h2>

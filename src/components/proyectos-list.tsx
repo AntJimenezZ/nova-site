@@ -5,7 +5,7 @@ import type { Project } from "@/lib/projects";
 
 export function ProyectosList({ projects }: { projects: Project[] }) {
   return (
-    <div className="py-14 md:py-20 border-t border-line">
+    <div className="py-14 md:py-20">
       <ol className="flex flex-col gap-16 md:gap-32">
         {projects.map((p, i) => {
           const isFeatured = i === 0;
