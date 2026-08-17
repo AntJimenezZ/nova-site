@@ -3,13 +3,13 @@
     {
       "slug": "web",
       "title": "Desarrollo web",
-      "summary": "Sitios y aplicaciones que cargan rápido y se ven bien en cualquier pantalla.",
-      "description": "Construimos interfaces de alto rendimiento con frameworks modernos. Cada decisión de diseño se mide contra un objetivo de negocio, no contra una tendencia.",
+      "summary": "Sitios y aplicaciones web rápidas, claras y pensadas para convertir visitas en clientes.",
+      "description": "Diseñamos y programamos páginas web modernas optimizadas para cargar al instante en cualquier teléfono y posicionar en Google. Sin plantillas infladas ni código innecesario.",
       "features": [
-        "Aplicaciones de una sola página (SPA)",
-        "Renderizado en servidor (SSR) e islas estáticas",
-        "Animación con GSAP y Framer Motion",
-        "SEO técnico y Core Web Vitals"
+        "Diseño a medida adaptado a la identidad de tu marca",
+        "Velocidad de carga instantánea en móviles y escritorio",
+        "Estructura optimizada para posicionar en Google (SEO)",
+        "Panel autogestionable, intuitivo y seguro"
       ],
       "tech": [
         "Next.js",
@@ -23,32 +23,32 @@
     {
       "slug": "ecommerce",
       "title": "E-commerce",
-      "summary": "Tiendas con pago, inventario y reportes que aguantan temporada alta.",
-      "description": "Desarrollamos motores de venta escalables, listos para volumen alto de transacciones y enfocados en quitar fricción del checkout.",
+      "summary": "Tiendas en línea con pasarelas de pago locales e internacionales, catálogo y control de stock.",
+      "description": "Creamos tiendas virtuales enfocadas en vender: integración con SINPE Móvil, tarjetas y Stripe, cálculo automático de envíos y administración sencilla de productos.",
       "features": [
-        "Pasarelas de pago y cobro recurrente",
-        "Panel de administración y analítica",
-        "Inventario automatizado multinivel",
-        "Protección activa contra fraude"
+        "Integración de pagos (SINPE Móvil, tarjetas, Stripe)",
+        "Gestión de inventario y pedidos en tiempo real",
+        "Checkout rápido sin pasos confusos para el comprador",
+        "Notificaciones automáticas de compra por correo y WhatsApp"
       ],
       "tech": [
         "Stripe",
         "PostgreSQL",
-        "Next.js Commerce",
+        "Next.js",
         "Redis"
       ],
       "icon": "ShoppingCart"
     },
     {
       "slug": "mantenimiento",
-      "title": "Mantenimiento",
-      "summary": "Monitoreo, parches y mejoras continuas sin parar la operación.",
-      "description": "Mantenemos la infraestructura estable y actualizada, aplicando parches de seguridad y ajustes de rendimiento sin ventanas de caída.",
+      "title": "Mantenimiento y soporte",
+      "summary": "Monitoreo constante, copias de seguridad y mejoras continuas para tu plataforma.",
+      "description": "Nos encargamos de que tu plataforma esté siempre disponible, protegida y actualizada, resolviendo incidencias y adaptando nuevas funciones conforme crece tu negocio.",
       "features": [
-        "Monitoreo 24/7 con alertas",
-        "Auditoría de seguridad periódica",
-        "Escalado dinámico en la nube",
-        "Refactorización de código heredado"
+        "Monitoreo preventivo y copias de seguridad periódicas",
+        "Actualizaciones de seguridad y parches continuos",
+        "Optimización de velocidad y tiempos de respuesta",
+        "Atención directa y soporte técnico sin intermediarios"
       ],
       "tech": [
         "AWS",
@@ -61,14 +61,14 @@
     },
     {
       "slug": "backend",
-      "title": "Backend a medida",
-      "summary": "APIs y bases de datos diseñadas alrededor de tu lógica de negocio.",
-      "description": "Diseñamos la lógica que sostiene el producto: microservicios, bases relacionales o NoSQL, con alta disponibilidad y baja latencia.",
+      "title": "Sistemas y software a medida",
+      "summary": "Herramientas internas, bases de datos y automatizaciones para ordenar la operación.",
+      "description": "Digitalizamos tareas que hoy llevas en hojas de cálculo o en papel: paneles de control, gestión de clientes, inventarios y conexión con facturación electrónica.",
       "features": [
-        "APIs REST y GraphQL documentadas",
-        "Arquitectura de microservicios",
-        "Caché de alto rendimiento",
-        "Integraciones corporativas a medida"
+        "Automatización de flujos de trabajo y tareas repetitivas",
+        "Bases de datos centralizadas, seguras y respaldadas",
+        "Conexión con facturación electrónica y servicios externos",
+        "Roles de usuario con permisos y control de acceso"
       ],
       "tech": [
         "Node.js",

@@ -22,7 +22,7 @@ export const site = {
     region: "Alajuela",
     country: "CR",
   },
-  coverage: "San Carlos · Alajuela · San José · todo Costa Rica",
+  coverage: "Costa Rica",
   /**
    * Perfiles reales, no menciones compradas. Alimentan a la vez la lista de
    * canales de /contacto y el `sameAs` del JSON-LD: es como Google enlaza el

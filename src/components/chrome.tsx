@@ -286,9 +286,8 @@ export function SiteFooter() {
           <div>
             <Wordmark className="text-foreground" />
             <p className="measure mt-5 text-sm leading-relaxed text-muted-foreground">
-              Empresa de diseño y desarrollo de páginas web en Costa Rica.
-              Hacemos sitios, tiendas en línea y sistemas a medida que llegan a
-              producción.
+              Estudio de diseño y desarrollo de software.
+              Construimos sitios, tiendas en línea y sistemas a medida enfocados en resultados reales.
             </p>
             {/* Señal local: le dice a la persona y a Google dónde operamos. */}
             <p className="mt-5 text-xs leading-relaxed text-muted-foreground">

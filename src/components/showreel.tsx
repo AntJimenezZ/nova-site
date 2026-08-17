@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Pause, Play } from "lucide-react";
 import type { Project } from "@/lib/projects";
@@ -35,16 +35,9 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
     return () => clearTimeout(t);
   }, []);
 
-  const autoplay = !reduced && !paused;
-
-  useEffect(() => {
-    if (!autoplay) return;
-    const id = setInterval(
-      () => setIndex((i) => (i + 1) % projects.length),
-      ROTATE_MS
-    );
-    return () => clearInterval(id);
-  }, [autoplay, projects.length]);
+  const handleNext = useCallback(() => {
+    setIndex((i) => (i + 1) % projects.length);
+  }, [projects.length]);
 
   const active = projects[index];
 
@@ -74,8 +67,9 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
               <div
                 key={p.slug}
                 aria-hidden={i !== index}
-                className={`absolute inset-0 transition-opacity duration-700 ease-out ${i === index ? "opacity-100" : "opacity-0"
-                  }`}
+                className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+                  i === index ? "opacity-100" : "opacity-0"
+                }`}
               >
                 <ProjectMedia
                   project={p}
@@ -111,8 +105,9 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
                       key={p.slug}
                       aria-hidden={!on}
                       inert={!on}
-                      className={`col-start-1 row-start-1 ${on ? "hero-text-in" : "invisible"
-                        }`}
+                      className={`col-start-1 row-start-1 ${
+                        on ? "hero-text-in" : "invisible"
+                      }`}
                     >
                       <h2 className="font-display text-[clamp(2.25rem,6.5vw,5rem)] font-bold leading-[0.92] tracking-tighter text-stage-foreground">
                         {p.title}
@@ -146,28 +141,53 @@ export function HeroShowreel({ projects }: { projects: Project[] }) {
                   <button
                     type="button"
                     onClick={() => setPaused((p) => !p)}
-                    aria-label={paused ? "Reanudar rotación" : "Pausar rotación"}
-                    className="glass-button grid size-9 cursor-pointer place-items-center rounded-full text-stage-muted hover:text-white"
+                    aria-label={paused ? "Reanudar rotación automática" : "Pausar rotación automática"}
+                    title={paused ? "Reanudar" : "Pausar"}
+                    className="glass-button grid size-9 cursor-pointer place-items-center rounded-full text-stage-muted hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-brand-vivid focus-visible:outline-none"
                   >
                     {paused ? <Play className="size-3.5" /> : <Pause className="size-3.5" />}
                   </button>
-                  {projects.map((p, i) => (
-                    <button
-                      key={p.slug}
-                      type="button"
-                      onClick={() => setIndex(i)}
-                      aria-label={`Ver ${p.title}`}
-                      aria-current={i === index ? "true" : undefined}
-                      className="group grid size-9 cursor-pointer place-items-center"
-                    >
-                      <span
-                        className={`h-1.5 rounded-full transition-all duration-300 ${i === index
-                          ? "w-7 bg-brand-vivid shadow-[0_0_12px_rgba(96,165,250,0.9)]"
-                          : "w-3 bg-white/30 group-hover:bg-white/70"
+                  {projects.map((p, i) => {
+                    const isActive = i === index;
+                    return (
+                      <button
+                        key={p.slug}
+                        type="button"
+                        onClick={() => setIndex(i)}
+                        aria-label={`Ver proyecto ${i + 1} de ${projects.length}: ${p.title}`}
+                        aria-current={isActive ? "true" : undefined}
+                        className="group relative flex h-9 items-center justify-center px-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-vivid focus-visible:rounded-full focus-visible:outline-none"
+                      >
+                        {/* Pista del indicador */}
+                        <span
+                          className={`relative block h-1.5 overflow-hidden rounded-full transition-all duration-300 ${
+                            isActive
+                              ? "w-11 sm:w-14 bg-white/20"
+                              : "w-3 sm:w-3.5 bg-white/25 group-hover:w-5 group-hover:bg-white/50"
                           }`}
-                      />
-                    </button>
-                  ))}
+                        >
+                          {/* Barra de progreso activa animada */}
+                          {isActive && (
+                            <span
+                              key={index}
+                              onAnimationEnd={(e) => {
+                                if (e.target === e.currentTarget && !reduced) {
+                                  handleNext();
+                                }
+                              }}
+                              style={{
+                                animationDuration: `${ROTATE_MS}ms`,
+                                animationPlayState: paused ? "paused" : "running",
+                              }}
+                              className={`absolute inset-0 origin-left rounded-full bg-brand-vivid shadow-[0_0_10px_rgba(96,165,250,0.85)] ${
+                                reduced ? "w-full" : "showreel-progress-fill"
+                              }`}
+                            />
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>

@@ -16,11 +16,11 @@ import { site } from "@/lib/site";
 const process = [
   {
     title: "Entender",
-    body: "Una sesión para separar lo que hay que construir de lo que suena bien. Salimos con alcance, plazo y precio.",
+    body: "Programamos una reunión para conversar sobre tu idea y el estado actual de tu negocio. En esta primera conversación definimos el alcance, el cronograma y el presupuesto estimado del proyecto.",
   },
   {
     title: "Diseñar",
-    body: "Wireframe y prototipo navegable antes de escribir la primera línea. Si algo no funciona, se cambia aquí.",
+    body: "Diseñamos un prototipo navegable del sitio web o software para que puedas visualizar cómo quedará antes de comenzar a programarlo. En esta fase podemos hacer los cambios necesarios.",
   },
   {
     title: "Construir",
@@ -28,7 +28,7 @@ const process = [
   },
   {
     title: "Sostener",
-    body: "Monitoreo, parches y mejoras después del lanzamiento. Un proyecto en producción no está terminado.",
+    body: "Monitoreo, parches y mejoras después del lanzamiento.",
   },
 ];
 
@@ -54,14 +54,14 @@ export default function HomePage() {
         <div className="relative z-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className="mt-4 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[0.95] tracking-tighter">
-              Nos enfocamos en:
+              ¿Qué Ofrecemos?
             </h2>
           </div>
           <Link
             href="/servicios"
             className="group inline-flex items-center gap-2 text-sm font-medium text-brand"
           >
-            Ver el detalle
+            Ver todos los servicios
             <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -71,16 +71,16 @@ export default function HomePage() {
             <li key={s.slug} className="reveal">
               <Link
                 href={`/servicios#${s.slug}`}
-                className="group glass-card-interactive flex h-full flex-col rounded-2xl p-7 md:p-9"
+                className="group flex h-full flex-col rounded-2xl border border-line bg-surface/50 backdrop-blur-md p-7 transition-all duration-300 hover:border-line-strong hover:bg-surface md:p-9"
               >
                 <div className="flex items-center justify-between">
-                  <div className="glass-pill flex size-12 items-center justify-center rounded-xl">
+                  <div className="flex size-12 items-center justify-center rounded-xl bg-surface-2 text-brand transition-colors group-hover:bg-brand-soft">
                     <s.icon
-                      className="size-6 text-foreground transition-transform duration-300 group-hover:-translate-y-0.5"
+                      className="size-6 text-brand transition-transform duration-300 group-hover:-translate-y-0.5"
                       aria-hidden
                     />
                   </div>
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-brand opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                     Ver detalle
                     <ArrowUpRight className="size-3.5" />
                   </span>
@@ -111,8 +111,7 @@ export default function HomePage() {
               Cómo trabajamos
             </h2>
             <p className="measure mt-5 text-sm leading-relaxed text-muted-foreground">
-              Cuatro etapas, sin sorpresas en el camino. Cada una termina con
-              algo que puedes ver y aprobar.
+              Cuatro etapas principales. Siempre con comunicación abierta y entregas claras
             </p>
           </div>
 
@@ -173,7 +172,6 @@ export default function HomePage() {
             </h2>
             <p className="measure mt-5 leading-relaxed text-muted-foreground">
               Te respondemos en menos de 24 horas con alcance, plazo y precio.
-              Sin compromiso y sin llamadas de descubrimiento de una hora.
             </p>
 
             <div className="mt-8 flex flex-col gap-3">

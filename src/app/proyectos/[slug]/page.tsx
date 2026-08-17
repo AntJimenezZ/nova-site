@@ -6,7 +6,7 @@ import { projects } from "@/lib/projects";
 import { CaseStudy } from "@/components/case-study";
 import { JsonLd } from "@/components/json-ld";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import { breadcrumbSchema, openGraphFor } from "@/lib/site";
+import { breadcrumbSchema, openGraphFor, site } from "@/lib/site";
 
 /**
  * Un caso por URL. Antes los tres vivían como anclas dentro de /proyectos, y
@@ -112,6 +112,20 @@ export default async function ProyectoPage({ params }: Params) {
           { name: "Trabajo", path: "/proyectos" },
           { name: project.title, path: `/proyectos/${project.slug}` },
         ])}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: project.title,
+          description: project.description,
+          image: [site.url + project.image],
+          author: {
+            "@type": "Organization",
+            name: "NovaSite",
+            url: site.url,
+          },
+        }}
       />
     </div>
   );

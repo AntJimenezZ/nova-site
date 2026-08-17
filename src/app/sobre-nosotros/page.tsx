@@ -27,12 +27,13 @@ export default function SobreNosotrosPage() {
         <h1 className="mt-4 font-display text-[clamp(2.5rem,7vw,4.5rem)] font-bold leading-[0.92] tracking-tighter">
           Quiénes
           <br />
-          Somos?
+          somos
         </h1>
         <p className="measure mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-          Somos cinco colegas de {site.address.locality}, {site.address.region},
-          que logran estrategia, diseño y código. Trabajas directamente con quien
-          construye tu producto.
+          Somos un equipo de {site.address.locality}, {site.address.region},
+          enfocado en diseño y desarrollo de software a medida.
+          Trabajas directamente con los desarrolladores e ingenieros que construyen tu producto,
+          sin intermediarios.
         </p>
       </header>
 
