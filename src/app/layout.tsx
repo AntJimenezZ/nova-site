@@ -93,7 +93,7 @@ export const viewport: Viewport = {
  * cada visita se contaba dos veces. La etiqueta de GA4 se configura dentro
  * del contenedor, no aquí.
  */
-const GTM_ID = "GTM-P54PF2ZQ";
+const GTM_ID = "GTM-NPZ6DCG8";
 
 /**
  * Se ejecuta antes del primer paint para evitar el flash de tema equivocado.
