@@ -7,6 +7,7 @@ import { SmoothScroll } from "@/components/smooth-scroll";
 import { Locator } from "@/components/locator";
 import { JsonLd } from "@/components/json-ld";
 import { AmbientBackground } from "@/components/ambient-background";
+import { CookieBanner } from "@/components/cookie-banner";
 import { businessSchema, openGraphFor, site } from "@/lib/site";
 
 const archivo = Archivo({
@@ -148,6 +149,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* Vive aquí y no en cada página: antes faltaba justo en /servicios y
             /proyectos, donde el visitante termina de decidirse. */}
         <WhatsAppFab />
+        <CookieBanner />
 
         <JsonLd data={businessSchema} />
       </body>

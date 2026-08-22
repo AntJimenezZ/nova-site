@@ -34,6 +34,7 @@ const FRAGMENT_SHADER_SOURCE = `
   uniform vec2 u_mouse;
   uniform float u_time;
   uniform float u_is_dark;
+  uniform float u_is_mobile;
   uniform float u_motion_reduced;
 
   // Pseudo-random noise for smooth organic perturbation
@@ -85,39 +86,52 @@ const FRAGMENT_SHADER_SOURCE = `
     vec2 mOffset = (mouseNorm - vec2(0.5 * aspect, 0.5)) * 0.15;
 
     // --- Orb 1: Brand Vivid Electric Cobalt / Sapphire ---
-    // Position drifts in a smooth Lissajous orbit in the top-left quadrant
-    vec2 orb1Pos = vec2(
-      aspect * 0.12 + sin(t * 0.8) * 0.12 + cos(t * 0.3) * 0.06,
-      0.82 + cos(t * 0.7) * 0.10 + sin(t * 0.4) * 0.05
+    vec2 orb1Base = u_is_mobile > 0.5 
+      ? vec2(aspect * 0.28, 0.80) 
+      : vec2(aspect * 0.12, 0.82);
+    vec2 orb1Pos = orb1Base + vec2(
+      sin(t * 0.8) * 0.10 + cos(t * 0.3) * 0.05,
+      cos(t * 0.7) * 0.08 + sin(t * 0.4) * 0.04
     ) + mOffset * 0.7;
 
     // Noise perturbation for fluid edge
-    float n1 = snoise(p * 1.0 + vec2(t * 0.2, -t * 0.15)) * 0.12;
+    float n1 = snoise(p * 1.0 + vec2(t * 0.2, -t * 0.15)) * 0.10;
     float dist1 = length(p - orb1Pos) + n1;
     // Gaussian falloff with broad, soft dispersion
-    float glow1 = exp(-dist1 * dist1 * 1.4);
+    float falloff1 = u_is_mobile > 0.5 ? 1.0 : 1.4;
+    float glow1 = exp(-dist1 * dist1 * falloff1);
 
     // --- Orb 2: Electric Cyan / Turquoise Accent ---
-    // Position drifts in the bottom-right quadrant
-    vec2 orb2Pos = vec2(
-      aspect * 0.88 + cos(t * 0.75 + 1.5) * 0.14 + sin(t * 0.35) * 0.07,
-      0.18 + sin(t * 0.65 + 2.0) * 0.12 + cos(t * 0.25) * 0.06
+    vec2 orb2Base = u_is_mobile > 0.5
+      ? vec2(aspect * 0.72, 0.20)
+      : vec2(aspect * 0.88, 0.18);
+    vec2 orb2Pos = orb2Base + vec2(
+      cos(t * 0.75 + 1.5) * 0.12 + sin(t * 0.35) * 0.06,
+      sin(t * 0.65 + 2.0) * 0.10 + cos(t * 0.25) * 0.05
     ) + mOffset * 0.9;
 
-    float n2 = snoise(p * 1.2 - vec2(t * 0.18, t * 0.22)) * 0.10;
+    float n2 = snoise(p * 1.2 - vec2(t * 0.18, t * 0.22)) * 0.08;
     float dist2 = length(p - orb2Pos) + n2;
-    float glow2 = exp(-dist2 * dist2 * 1.5);
+    float falloff2 = u_is_mobile > 0.5 ? 1.1 : 1.5;
+    float glow2 = exp(-dist2 * dist2 * falloff2);
 
     // --- Orb 3: Subtle Central Harmony (Deep Indigo / Violet) ---
-    // Bridges the two primary orbs dynamically
-    vec2 orb3Pos = mix(orb1Pos, orb2Pos, 0.5) + vec2(sin(t * 0.5) * 0.15, cos(t * 0.6) * 0.15);
+    vec2 orb3Pos = mix(orb1Pos, orb2Pos, 0.5) + vec2(sin(t * 0.5) * 0.12, cos(t * 0.6) * 0.12);
     float dist3 = length(p - orb3Pos);
-    float glow3 = exp(-dist3 * dist3 * 2.8) * 0.5;
+    float falloff3 = u_is_mobile > 0.5 ? 2.0 : 2.8;
+    float glow3 = exp(-dist3 * dist3 * falloff3) * 0.5;
 
     // Color definitions (sRGB calibrated to match NovaSite design tokens)
     vec3 colorCobalt = vec3(0.08, 0.42, 0.98);
     vec3 colorCyan   = vec3(0.01, 0.74, 0.86);
     vec3 colorIndigo = vec3(0.34, 0.25, 0.92);
+
+    // Mobile: Aclarar y desaturar para un fondo suave, aireado y no invasivo
+    if (u_is_mobile > 0.5) {
+      colorCobalt = mix(colorCobalt, vec3(0.35, 0.65, 0.95), 0.45);
+      colorCyan   = mix(colorCyan,   vec3(0.40, 0.82, 0.90), 0.45);
+      colorIndigo = mix(colorIndigo, vec3(0.48, 0.42, 0.92), 0.45);
+    }
 
     // Color composition
     vec3 color = colorCobalt * glow1 + colorCyan * glow2 + colorIndigo * glow3;
@@ -129,14 +143,18 @@ const FRAGMENT_SHADER_SOURCE = `
 
     if (u_is_dark > 0.5) {
       // Dark Mode: Deep luminous ambient glow against slate background
-      float intensity = clamp(totalIntensity * 0.65, 0.0, 1.0);
-      finalColor = color * 1.15;
-      finalAlpha = intensity * 0.50;
+      float intensityFactor = u_is_mobile > 0.5 ? 0.42 : 0.65;
+      float alphaFactor     = u_is_mobile > 0.5 ? 0.32 : 0.50;
+      float intensity = clamp(totalIntensity * intensityFactor, 0.0, 1.0);
+      finalColor = color * (u_is_mobile > 0.5 ? 1.0 : 1.15);
+      finalAlpha = intensity * alphaFactor;
     } else {
       // Light Mode: Vibrant, elegant ambient aura clearly visible against white
-      float intensity = clamp(totalIntensity * 0.75, 0.0, 1.0);
-      finalColor = color * 1.05;
-      finalAlpha = intensity * 0.36;
+      float intensityFactor = u_is_mobile > 0.5 ? 0.48 : 0.75;
+      float alphaFactor     = u_is_mobile > 0.5 ? 0.23 : 0.36;
+      float intensity = clamp(totalIntensity * intensityFactor, 0.0, 1.0);
+      finalColor = color * (u_is_mobile > 0.5 ? 0.95 : 1.05);
+      finalAlpha = intensity * alphaFactor;
     }
 
     // Micro-dithering (prevents any 8-bit banding on gradients)
@@ -244,6 +262,7 @@ export function AmbientBackground() {
     const uMouse = gl.getUniformLocation(program, "u_mouse");
     const uTime = gl.getUniformLocation(program, "u_time");
     const uIsDark = gl.getUniformLocation(program, "u_is_dark");
+    const uIsMobile = gl.getUniformLocation(program, "u_is_mobile");
     const uMotionReduced = gl.getUniformLocation(program, "u_motion_reduced");
 
     // Enable proper blending for luminous transparency
@@ -263,13 +282,18 @@ export function AmbientBackground() {
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
 
-    // Viewport resizing with DPI clamp for high efficiency
+    // Viewport resizing with DPI clamp and visualViewport support
     let width = 0;
     let height = 0;
+    let isMobile = false;
+
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      const displayWidth = Math.floor(window.innerWidth * dpr);
-      const displayHeight = Math.floor(window.innerHeight * dpr);
+      const vw = window.innerWidth;
+      const vh = Math.max(window.innerHeight, document.documentElement.clientHeight);
+      isMobile = vw < 768;
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 1.5);
+      const displayWidth = Math.floor(vw * dpr);
+      const displayHeight = Math.floor(vh * dpr);
 
       if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
         canvas.width = displayWidth;
@@ -281,6 +305,8 @@ export function AmbientBackground() {
     };
 
     window.addEventListener("resize", resize, { passive: true });
+    window.visualViewport?.addEventListener("resize", resize, { passive: true });
+    window.addEventListener("orientationchange", resize, { passive: true });
     resize();
 
     // Render loop
@@ -312,6 +338,7 @@ export function AmbientBackground() {
       gl.uniform2f(uMouse, currentMouseX, currentMouseY);
       gl.uniform1f(uTime, elapsedSeconds);
       gl.uniform1f(uIsDark, isDark ? 1.0 : 0.0);
+      gl.uniform1f(uIsMobile, isMobile ? 1.0 : 0.0);
       gl.uniform1f(uMotionReduced, isReducedMotion ? 1.0 : 0.0);
 
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
@@ -332,6 +359,8 @@ export function AmbientBackground() {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("resize", resize);
+      window.visualViewport?.removeEventListener("resize", resize);
+      window.removeEventListener("orientationchange", resize);
       motionMediaQuery.removeEventListener("change", handleMotionChange);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       observer.disconnect();
@@ -348,13 +377,13 @@ export function AmbientBackground() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      className="pointer-events-none fixed -inset-y-12 inset-x-0 -z-10 overflow-hidden"
     >
       <canvas
         ref={canvasRef}
         className="size-full opacity-90 transition-opacity duration-700"
         style={{
-          contain: "strict",
+          contain: "paint",
           willChange: "transform",
         }}
       />
