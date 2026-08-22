@@ -10,6 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/sobre-nosotros",
     "/contacto",
     "/guia-proyecto",
+    "/privacidad",
+    "/terminos",
   ];
   const casos = projects.map((p) => `/proyectos/${p.slug}`);
 

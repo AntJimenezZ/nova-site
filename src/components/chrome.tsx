@@ -353,8 +353,19 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-3 border-t border-line pt-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p suppressHydrationWarning>© {new Date().getFullYear()} {site.name}. Todos los derechos reservados.</p>
+        <div className="mt-16 flex flex-col gap-4 border-t border-line pt-8 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <p suppressHydrationWarning>© {new Date().getFullYear()} {site.name}. Todos los derechos reservados.</p>
+            <span className="hidden text-line sm:inline" aria-hidden="true">·</span>
+            <Link href="/privacidad" className="hover:text-brand transition-colors">
+              Privacidad
+            </Link>
+            <span className="text-line" aria-hidden="true">·</span>
+            <Link href="/terminos" className="hover:text-brand transition-colors">
+              Términos
+            </Link>
+          </div>
+
           <p className="tnum" suppressHydrationWarning>
             {site.address.locality}, {site.address.region}, Costa Rica ·{" "}
             <a href={`tel:${site.phone}`} className="hover:text-brand transition-colors">
